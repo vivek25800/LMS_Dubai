@@ -1,0 +1,68 @@
+/* calaender.css */
+
+/* Blinking animation */
+.blink {
+    animation: blink-animation 1.5s steps(5, start) infinite;
+}
+.blink-red {
+    animation: blink-red-animation 1.5s steps(5, start) infinite;
+}
+
+@keyframes blink-animation {
+    to {
+        visibility: hidden;
+    }
+}
+
+/* Existing styles for the calendar */
+.react-calendar {
+    width: 100%; /* Full width of the browser */
+    max-width: 100%; /* Ensures it doesn't exceed the browser width */
+    background-color: rgb(118, 98, 245);
+    color: #ffffff;
+    padding: 1rem;
+    border-radius: 10px;
+    margin: 1rem 0;
+}
+
+.react-calendar_month-viewdays_day {
+    height: 150px; /* Increase cell height to 200px */
+    width: 150px; /* Increase cell width to 200px */
+}
+
+.react-calendar__tile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.2s ease-in-out; /* Animation on hover */
+}
+
+.react-calendar__tile:hover {
+    background-color: #e0f7fa; /* Light blue on hover */
+    color: #000;
+}
+
+
+/* input, textarea, select {
+    width: 30%;
+    padding: 10px;
+    margin: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+} */
+/* button
+{
+    width: 10%;
+   margin: 10px;
+} */
+
+/* input:focus, textarea:focus, select:focus {
+    border-color: #008cba; 
+    box-shadow: 0 0 5px rgba(0, 140, 186, 0.5); 
+} */
+
+.highlight {
+    background-color: blue; 
+    border-radius: 50%; 
+}

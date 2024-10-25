@@ -1,0 +1,44 @@
+
+.attendene-list{
+    /* border: #000 solid 2px; */
+    padding: 1.5rem;
+    border-radius: 10px;
+    background-color: #ffffff;
+}
+.title-div-two{
+    /* border: #000 solid 2px; */
+    height: 8rem;
+    background-color: #2E073F;
+    color: #ffffff;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    padding-left: 3rem;
+}
+.upload-attendene{
+    display: grid;
+    grid-template-columns: auto auto auto;
+    column-gap: 1rem;
+    row-gap: 1rem;
+}
+.date-div, .time-div{
+    display: flex;
+    gap: 30px;
+    width: 100%;
+}
+
+.info-div-item{
+    width: 100%;
+}
+ .info-div-item input, select{
+    height: 2.5rem;
+    width: 100%;
+    padding: 0 10px;
+ }
+
+ label{
+    font-size: 14px;
+ }
