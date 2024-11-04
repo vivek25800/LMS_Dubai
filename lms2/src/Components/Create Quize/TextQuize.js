@@ -206,7 +206,7 @@ function TextQuize({ index, onDelete, onChange }) {
                 type={answerType === 'short' ? 'text' : 'textarea'}
                 value={option.text}
                 onChange={(e) => handleOptionChange(idx, e.target.value)}
-                placeholder={`Enter your answer ${idx + 1}`}
+                placeholder={`Answer options ${idx + 1}`}
                 style={{ width: '100%', height: answerType === 'short' ? 'auto' : '100px' }}
               />
             </div>
@@ -219,6 +219,50 @@ function TextQuize({ index, onDelete, onChange }) {
         <button className="add-option-btn" onClick={addOption}>
           <i className="fa-solid fa-plus"></i>Add Answer
         </button>
+      </div>
+
+      {/* <div className="dropdowns">
+          <div>
+            <label>Main Category:</label>
+            <select
+              value={mainCategory}
+              onChange={(e) => setMainCategory(e.target.value)}
+            >
+              <option value="">Select Main Category</option>
+              <option value="Category 1">Category 1</option>
+              <option value="Category 2">Category 2</option>
+            </select>
+          </div>
+          <div>
+            <label>Sub Category:</label>
+            <select
+              value={subCategory}
+              onChange={(e) => setSubCategory(e.target.value)}
+            >
+              <option value="">Select Sub Category</option>
+              <option value="Sub Category 1">Sub Category 1</option>
+              <option value="Sub Category 2">Sub Category 2</option>
+            </select>
+          </div>
+        </div> */}
+
+      {/* Answer Type Selection */}
+      <div style={{ marginTop: '10px' }}>
+        <Form.Check
+          type="radio"
+          label="Short Answer"
+          name={`answerType-${index}`}
+          checked={answerType === 'short'}
+          onChange={() => setAnswerType('short')}
+          style={{ marginRight: '10px' }}
+        />
+        <Form.Check
+          type="radio"
+          label="Long Answer"
+          name={`answerType-${index}`}
+          checked={answerType === 'long'}
+          onChange={() => setAnswerType('long')}
+        />
       </div>
 
       <div className="dropdowns">
@@ -246,25 +290,6 @@ function TextQuize({ index, onDelete, onChange }) {
           </div>
         </div>
 
-      {/* Answer Type Selection */}
-      <div style={{ marginTop: '10px' }}>
-        <Form.Check
-          type="radio"
-          label="Short Answer"
-          name={`answerType-${index}`}
-          checked={answerType === 'short'}
-          onChange={() => setAnswerType('short')}
-          style={{ marginRight: '10px' }}
-        />
-        <Form.Check
-          type="radio"
-          label="Long Answer"
-          name={`answerType-${index}`}
-          checked={answerType === 'long'}
-          onChange={() => setAnswerType('long')}
-        />
-      </div>
-
       {/* Footer Controls */}
       <div className="footer-controls">
         <div className="control-item">
@@ -276,7 +301,7 @@ function TextQuize({ index, onDelete, onChange }) {
           />
         </div>
 
-        <div className="control-item">
+        {/* <div className="control-item">
           <Form>
             <Form.Check
               type="switch"
@@ -310,7 +335,7 @@ function TextQuize({ index, onDelete, onChange }) {
               onChange={(e) => setRequired(e.target.checked)}
             />
           </Form>
-        </div>
+        </div> */}
       </div>
     </div>
     </div>

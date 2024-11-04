@@ -217,8 +217,8 @@ function AddNomination({selectedTraining}) {
                 <tr>
                   <th>Employee ID / Employee Name</th>
                   <th>Training Name</th>
-                  <th>Training Schedule Date From</th>
-                  <th>Training Schedule Date To</th>
+                  <th>Training Schedule Date</th>
+                  <th>Training Schedule Time</th>
                 </tr>
               </thead>
               <tbody>
@@ -234,8 +234,9 @@ function AddNomination({selectedTraining}) {
                     </select>
                   </td>
                   <td>{selectedTraining?.training_name}</td>
-                  <td>{new Date(selectedTraining?.from_date).toLocaleString()}</td>
-                  <td>{new Date(selectedTraining?.to_date).toLocaleString()}</td>
+                  {/* <td>{new Date(selectedTraining?.from_date).toLocaleString()} - {new Date(selectedTraining?.to_date).toLocaleString()}</td> */}
+                  <td>{selectedTraining?.from_date} - {selectedTraining?.to_date}</td>
+                  <td>{selectedTraining?.from_time} - {selectedTraining?.to_time}</td>
                 </tr>
               </tbody>
             </table>
@@ -257,6 +258,7 @@ function AddNomination({selectedTraining}) {
                     <th>Emp id</th>
                     <th>Emp email</th>
                     <th>Designation</th>
+                    <th>Attendence</th>
                     <th>Mail sent</th>
                     <th>Action</th>
                   </tr>
@@ -272,6 +274,7 @@ function AddNomination({selectedTraining}) {
                       <td>{employee.employee_id}</td>
                       <td>{employee.employee_email}</td>
                       <td>{employee.designation}</td>
+                      <td><input type='checkbox' /> Present <br/> <input type='checkbox' /> Absent</td>
                       <td>Mail Sent</td>
                       <td><button onClick={() =>delete_employee(employee)}>Delete</button></td>
                     </tr>

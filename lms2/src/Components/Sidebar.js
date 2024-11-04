@@ -38,6 +38,7 @@ function Sidebar() {
         { label: 'All Course List', link: '/AllCourseList' },
         { label: 'Create New Course', link: '/CreateNewCourse' },
         { label: 'Edit Course', link: '#' },
+        { label: 'Course View', link: '/maincourse' },
       ],
     },
   ];

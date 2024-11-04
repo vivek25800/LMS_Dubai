@@ -3,6 +3,7 @@ import MCQquize from './MCQquize';
 import TextQuize from './TextQuize';
 import RatingQuestionQuize from './RatingQuestionQuize';
 import StatementQuestion from './StatementQuestion';
+import DateQuestionForm from './DateQuestionForm';
 
 function CreateQuize() {
 
@@ -156,10 +157,10 @@ function CreateQuize() {
                             <button className="quick-button" onClick={TextQuestion}> <i class="fa-regular fa-file-lines"></i> Text</button>
                             <button className="quick-button" onClick={RatingQuestion}> <i class="fa-regular fa-thumbs-up"></i> Rating</button>
                             <button className="quick-button" onClick={DateQuestion}> <i class="fa-regular fa-calendar-days"></i> Date</button>
-                            <button className="quick-button"> <i class="fa-solid fa-ranking-star"></i> Ranking</button>
+                            {/* <button className="quick-button"> <i class="fa-solid fa-ranking-star"></i> Ranking</button> */}
                             <button className="quick-button" onClick={LikertQuestion}> <i class="fa-solid fa-ticket"></i>Likert</button>
                             <button className="quick-button"> <i class="fa-solid fa-file-arrow-up"></i> Upload File</button>
-                            <button className="quick-button"> <i class="fa-solid fa-gauge-high"></i> Net Promoter Score®</button>
+                            {/* <button className="quick-button"> <i class="fa-solid fa-gauge-high"></i> Net Promoter Score®</button> */}
                             <button className="quick-button"> <i class="fa-solid fa-layer-group"></i> Section</button>
                             </div>
                         </div>
@@ -202,7 +203,7 @@ function CreateQuize() {
                         <p>Qfhfjsd sdfsdhf fsdaf sdf sdfgsd fsdg fdfasg djfg </p>
                     </div>
                     <div className='dateType-div'>
-
+                        <DateQuestionForm/>
                     </div>
                 </div>
 

@@ -322,16 +322,19 @@ import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import { FaUpload } from 'react-icons/fa';
 import axios from 'axios';
+import { IconButton } from '@mui/material';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
-const QuestionForm = ({ index, onDelete,onSaveQuestion }) => {
+const QuestionForm = () => {
+  const [visible, setVisible] = useState(true); // State to control visibility
   const [question, setQuestion] = useState('');
   const [subtitle, setSubtitle] = useState('');
   const [options, setOptions] = useState([{ text: '', correct: false }]);
   const [points, setPoints] = useState(0);
-  const [mathToggle, setMathToggle] = useState(false);
   const [multipleAnswers, setMultipleAnswers] = useState(false);
-  const [required, setRequired] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState(null);
+  const [mainCategory, setMainCategory] = useState('');
+  const [subCategory, setSubCategory] = useState('');
 
   const handleOptionChange = (idx, value) => {
     const newOptions = [...options];
@@ -354,30 +357,11 @@ const QuestionForm = ({ index, onDelete,onSaveQuestion }) => {
     setOptions(newOptions);
   };
 
-  // const handleSaveQuestion = async () => {
+  const handleDelete = () => {
+    setVisible(false); // Set visible to false to hide the component
+  };
 
-  //   try {
-  //     console.log({       
-  //       question,
-  //       subtitle,
-  //       options,
-  //       points,
-  //   })
-  //     onSaveQuestion({       
-  //       question,
-  //       subtitle,
-  //       options,
-  //       points,
-  //   });      console.log({       
-  //       question,
-  //       subtitle,
-  //       options,
-  //       points,
-  //   })
-  //   } catch (error) {
-  //     console.error('Error saving question:', error);
-  //   }
-  // };
+  if (!visible) return null; // If visible is false, do not render the component
 
   return (
     <div className='main-container-div'>
@@ -454,10 +438,19 @@ const QuestionForm = ({ index, onDelete,onSaveQuestion }) => {
             height: 2.5rem;
             padding-left: 10px;
           }
+          .dropdowns {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+          }
+          .dropdowns select {
+            border-color: rgba(0,0,0,0.5);
+          }
           `}
         </style>
 
         <button
+          onClick={handleDelete} // Attach delete handler here
           style={{
             position: 'absolute',
             top: '10px',
@@ -474,14 +467,12 @@ const QuestionForm = ({ index, onDelete,onSaveQuestion }) => {
             alignItems: 'center',
             opacity: '0.7',
           }}
-          onClick={() => onDelete(index)}
         >
           <i className="fa-solid fa-trash-can"></i>
         </button>
 
-        <h5>Question No. {index + 1}</h5>
-
         <div className="question-input">
+          <div style={{ display: 'flex', alignItems: 'center' }}>
           <input
             type="text"
             value={question}
@@ -489,6 +480,11 @@ const QuestionForm = ({ index, onDelete,onSaveQuestion }) => {
             placeholder="Enter your question"
             style={{ width: '100%' }}
           />
+           <IconButton color="primary" component="label">
+              <input hidden accept="image/*" type="file" />
+              <AddPhotoAlternateIcon />
+            </IconButton>
+            </div>
         </div>
 
         <div className="subtitle-input">
@@ -527,6 +523,31 @@ const QuestionForm = ({ index, onDelete,onSaveQuestion }) => {
           </button>
         </div>
 
+        <div className="dropdowns">
+          <div>
+            <label>Main Category:</label>
+            <select
+              value={mainCategory}
+              onChange={(e) => setMainCategory(e.target.value)}
+            >
+              <option value="">Select Main Category</option>
+              <option value="Category 1">Category 1</option>
+              <option value="Category 2">Category 2</option>
+            </select>
+          </div>
+          <div>
+            <label>Sub Category:</label>
+            <select
+              value={subCategory}
+              onChange={(e) => setSubCategory(e.target.value)}
+            >
+              <option value="">Select Sub Category</option>
+              <option value="Sub Category 1">Sub Category 1</option>
+              <option value="Sub Category 2">Sub Category 2</option>
+            </select>
+          </div>
+        </div>
+
         <div className="footer-controls">
           <div className="control-item">
             <label>Points:</label>
@@ -536,20 +557,15 @@ const QuestionForm = ({ index, onDelete,onSaveQuestion }) => {
               onChange={(e) => setPoints(Number(e.target.value))}
             />
           </div>
-
           <div className="control-item">
-            <Form>
-              <Form.Check
-                type="switch"
-                id="math-switch"
-                label="Math:"
-                checked={mathToggle}
-                onChange={(e) => setMathToggle(e.target.checked)}
-              />
-            </Form>
+            <label>Correct answers:</label>
+            <input
+              type="number"
+              value={points}
+              onChange={(e) => setPoints(Number(e.target.value))}
+            />
           </div>
-
-          <div className="control-item">
+          {/* <div className="control-item">
             <Form>
               <Form.Check
                 type="switch"
@@ -559,71 +575,49 @@ const QuestionForm = ({ index, onDelete,onSaveQuestion }) => {
                 onChange={(e) => setMultipleAnswers(e.target.checked)}
               />
             </Form>
-          </div>
-
-          <div className="control-item">
-            <Form>
-              <Form.Check
-                type="switch"
-                id="required-switch"
-                label="Required:"
-                checked={required}
-                onChange={(e) => setRequired(e.target.checked)}
-              />
-            </Form>
-          </div>
+          </div> */}
         </div>
-{/* 
-        <div className="info-div-item btn-div" style={{ marginTop: '1rem' }}>
-          <button onClick={handleSaveQuestion}>
-            Save Question
-          </button>
-        </div>
-
-        {submissionStatus && <p>{submissionStatus}</p>} */}
       </div>
     </div>
   );
 };
 
-const AddQuestionContainer = ({onSaveQuestion}) => {
-  const [questions, setQuestions] = useState([]);
-  const addQuestion = (newQuestion) => {
-    onSaveQuestion(newQuestion);
-  };
-  const addNewQuestion = () => {
-    setQuestions([...questions, {}]);
-  };
+export default QuestionForm;
 
-  const deleteQuestion = (index) => {
-    const newQuestions = questions.filter((_, i) => i !== index);
-    setQuestions(newQuestions);
-  };
 
-  return (
-    <div>
-      <style>
-              {`
-              .btn-div button{
-              background-color: #7A1CAC;
-              }
-              .btn-div button:hover{
-              background-color: #2E073F;
-              }
-              `}
-          </style>
-      {questions.map((_, index) => (
-        <QuestionForm key={index} index={index} onDelete={deleteQuestion} onSaveQuestion={addQuestion} />
-      ))}
+// const AddQuestionContainer = ({onSaveQuestion}) => {
+//   const [questions, setQuestions] = useState([]);
+//   const addQuestion = (newQuestion) => {
+//     onSaveQuestion(newQuestion);
+//   };
+//   const addNewQuestion = () => {
+//     setQuestions([...questions, {}]);
+//   };
 
-      <div className="info-div-item btn-div">
-        <button id="add-newQues-btn" onClick={addNewQuestion}>
-          <i className="fa-solid fa-plus"></i> Add new question
-        </button>
-      </div>
-    </div>
-  );
-};
+//   return (
+//     <div>
+//       <style>
+//               {`
+//               .btn-div button{
+//               background-color: #7A1CAC;
+//               }
+//               .btn-div button:hover{
+//               background-color: #2E073F;
+//               }
+//               `}
+//           </style>
+//       {questions.map((_, index) => (
+//         <QuestionForm key={index} index={index} onSaveQuestion={addQuestion} />
+//       ))}
 
-export default AddQuestionContainer;
+//       <div className="info-div-item btn-div">
+//         <button id="add-newQues-btn" onClick={addNewQuestion}>
+//           <i className="fa-solid fa-plus"></i> Add new question
+//         </button>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default AddQuestionContainer;
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { TextField, Button, IconButton, FormControlLabel, Switch } from '@mui/material';
+import { TextField, Button, IconButton, Switch, FormControlLabel } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
 const StatementQuestion = () => {
@@ -12,7 +13,8 @@ const StatementQuestion = () => {
             {
                 id: questions.length + 1,
                 text: '',
-                statements: [{ text: '', selectedOption: null }],
+                options: Array(5).fill('').map((_, i) => `Option ${i + 1}`),
+                statements: [{ label: `Statement 1` }],
                 required: false,
             },
         ]);
@@ -23,42 +25,94 @@ const StatementQuestion = () => {
         setQuestions(updatedQuestions);
     };
 
+    const addOption = (questionIndex) => {
+        setQuestions(prevQuestions => {
+            const updatedQuestions = [...prevQuestions];
+            updatedQuestions[questionIndex].options.push(`Option ${updatedQuestions[questionIndex].options.length + 1}`);
+            return updatedQuestions;
+        });
+    };
+
+    const deleteOption = (questionIndex, optionIndex) => {
+        setQuestions(prevQuestions => {
+            const updatedQuestions = [...prevQuestions];
+            updatedQuestions[questionIndex].options.splice(optionIndex, 1);
+            return updatedQuestions;
+        });
+    };
+
     const addStatement = (questionIndex) => {
-        const updatedQuestions = [...questions];
-        updatedQuestions[questionIndex].statements.push({ text: '', selectedOption: null });
-        setQuestions(updatedQuestions);
+        setQuestions(prevQuestions => {
+            const updatedQuestions = [...prevQuestions];
+            const newStatementCount = updatedQuestions[questionIndex].statements.length + 1;
+            updatedQuestions[questionIndex].statements.push({
+                label: `Statement ${newStatementCount}`,
+            });
+            return updatedQuestions;
+        });
     };
 
     const deleteStatement = (questionIndex, statementIndex) => {
-        const updatedQuestions = [...questions];
-        updatedQuestions[questionIndex].statements = updatedQuestions[questionIndex].statements.filter(
-            (_, i) => i !== statementIndex
-        );
-        setQuestions(updatedQuestions);
+        setQuestions(prevQuestions => {
+            const updatedQuestions = [...prevQuestions];
+            updatedQuestions[questionIndex].statements.splice(statementIndex, 1);
+            return updatedQuestions;
+        });
     };
 
     const handleQuestionChange = (index, field, value) => {
-        const updatedQuestions = [...questions];
-        updatedQuestions[index][field] = value;
-        setQuestions(updatedQuestions);
+        setQuestions(prevQuestions => {
+            const updatedQuestions = [...prevQuestions];
+            updatedQuestions[index][field] = value;
+            return updatedQuestions;
+        });
     };
 
-    const handleStatementChange = (questionIndex, statementIndex, value) => {
-        const updatedQuestions = [...questions];
-        updatedQuestions[questionIndex].statements[statementIndex].text = value;
-        setQuestions(updatedQuestions);
+    const handleOptionLabelChange = (questionIndex, optionIndex, value) => {
+        setQuestions(prevQuestions => {
+            const updatedQuestions = [...prevQuestions];
+            updatedQuestions[questionIndex].options[optionIndex] = value;
+            return updatedQuestions;
+        });
     };
 
     return (
         <div>
             <style>
                 {`
-                .main-container-div {
+                .main-container {
                     background-color: #ffffff;
                     border-radius: 10px;
                     border-top: 5px solid #7A1CAC;
                     width: 100%;
                     padding: 2rem;
+                    height: fit-content;
+                }
+                .question-container {
+                    border: 1px solid #ccc;
+                    padding: 15px;
+                    border-radius: 10px;
+                    margin-bottom: 20px;
+                    overflow-x: auto;
+                    max-width: 100%;
+                }
+                .options-container, .statements-container {
+                    display: flex;
+                    
+                    gap: 10px;
+                    padding: 10px 0;
+                }
+                .option-box, .statement-box {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    min-width: 100px;
+                }
+                .statement-row {
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    margin-top: 5px;
                 }
                 .add-statement-btn, .addnewQ-btn {
                     background-color: #7A1CAC;
@@ -69,33 +123,15 @@ const StatementQuestion = () => {
                 .add-statement-btn:hover, .addnewQ-btn:hover {
                     background-color: #2E073F;
                 }
-                .statement-container {
-                    display: grid;
-                    grid-template-columns: 1fr repeat(5, minmax(50px, 1fr)) auto;
-                    align-items: center;
-                    gap: 10px;
-                    margin-top: 10px;
-                }
-                .options-container {
-                    display: grid;
-                    grid-template-columns: 1fr repeat(5, minmax(50px, 1fr));
-                    gap: 10px;
-                    margin-bottom: 5px;
-                    text-align: center;
-                    font-weight: bold;
-                }
-                .statement-input {
-                    max-width: 100%;
-                }
                 `}
             </style>
-            <div className="main-container-div">
-                <div>
-                    {questions.map((question, index) => (
-                        <div key={question.id} style={{ marginBottom: 20, border: '1px solid #ccc', padding: 15, borderRadius: 10 }}>
+            <div className="main-container">
+                <div style={{width: "100%"}}>
+                    {questions.map((question, qIndex) => (
+                        <div key={question.id} className="question-container">
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <h5>Question no. {index + 1}</h5>
-                                <IconButton aria-label="delete" onClick={() => deleteQuestion(index)} color="secondary">
+                                <h5>Question no. {qIndex + 1}</h5>
+                                <IconButton aria-label="delete" onClick={() => deleteQuestion(qIndex)} color="secondary">
                                     <DeleteIcon />
                                 </IconButton>
                             </div>
@@ -104,60 +140,84 @@ const StatementQuestion = () => {
                                     fullWidth
                                     label="Question"
                                     value={question.text}
-                                    onChange={(e) => handleQuestionChange(index, 'text', e.target.value)}
+                                    onChange={(e) => handleQuestionChange(qIndex, 'text', e.target.value)}
                                     placeholder="Enter your question"
                                     variant="outlined"
-                                    margin="normal"
                                 />
                                 <IconButton color="primary" component="label">
                                     <input hidden accept="image/*" type="file" />
                                     <AddPhotoAlternateIcon />
                                 </IconButton>
                             </div>
-                            <div style={{ marginTop: 10 }}>
-                                <div className="options-container">
-                                    <span>Statement</span>
-                                    <span>Option 1</span>
-                                    <span>Option 2</span>
-                                    <span>Option 3</span>
-                                    <span>Option 4</span>
-                                    <span>Option 5</span>
-                                </div>
-                                {question.statements.map((statement, sIndex) => (
-                                    <div key={sIndex} className="statement-container">
+                            <div className="options-container">
+                                {question.options.map((option, oIndex) => (
+                                    <div key={oIndex} className="option-box">
                                         <TextField
-                                            value={statement.text}
-                                            onChange={(e) => handleStatementChange(index, sIndex, e.target.value)}
-                                            placeholder={`Statement ${sIndex + 1}`}
+                                            value={option}
+                                            onChange={(e) => handleOptionLabelChange(qIndex, oIndex, e.target.value)}
+                                            placeholder={`Option ${oIndex + 1}`}
                                             variant="outlined"
-                                            className="statement-input"
                                         />
-                                        {[1, 2, 3, 4, 5].map((option) => (
-                                            <input
-                                                key={option}
-                                                type="radio"
-                                                name={`option-${index}-${sIndex}`}
-                                                style={{ justifySelf: 'center' }}
-                                            />
-                                        ))}
-                                        <IconButton aria-label="delete" onClick={() => deleteStatement(index, sIndex)} color="secondary">
-                                            <DeleteIcon />
+                                        <IconButton
+                                            aria-label="delete option"
+                                            onClick={() => deleteOption(qIndex, oIndex)}
+                                            color="secondary"
+                                            size="small"
+                                        >
+                                            <DeleteIcon fontSize="small" />
                                         </IconButton>
                                     </div>
                                 ))}
-                                <Button
-                                    variant="outlined"
-                                    onClick={() => addStatement(index)}
-                                    className="add-statement-btn"
-                                >
-                                    Add Statement
-                                </Button>
+                                <IconButton aria-label="add option" onClick={() => addOption(qIndex)} color="primary">
+                                    <AddIcon />
+                                </IconButton>
                             </div>
+                            <div className="statements-container">
+                                <span style={{ fontWeight: 'bold', marginRight: 5, width: "120px" }}>Statement</span>
+                                {question.options.map((option, oIndex) => (
+                                    <div key={oIndex} className="option-box">
+                                        <span>{option}</span> {/* Dynamically reflects option label */}
+                                    </div>
+                                ))}
+                            </div>
+                            {question.statements.map((statement, sIndex) => (
+                                <div key={sIndex} className="statement-row">
+                                    <TextField
+                                        // value={statement.label}
+                                        onChange={(e) =>
+                                            handleQuestionChange(qIndex, `statements[${sIndex}].label`, e.target.value)
+                                        }
+                                        placeholder={`Statement ${sIndex + 1}`}
+                                        variant="outlined"
+                                        style={{width: "120px"}}
+                                    />
+                                    {question.options.map((_, oIndex) => (
+                                        <div key={oIndex} style={{ display: 'flex', justifyContent: 'center' }}>
+                                            <input type="radio" name={`statement-${qIndex}-${sIndex}`} style={{width: "100px"}}/>
+                                        </div>
+                                    ))}
+                                    <IconButton
+                                        aria-label="delete statement"
+                                        onClick={() => deleteStatement(qIndex, sIndex)}
+                                        color="secondary"
+                                        size="small"
+                                    >
+                                        <DeleteIcon fontSize="small" />
+                                    </IconButton>
+                                </div>
+                            ))}
+                            <Button
+                                variant="contained"
+                                onClick={() => addStatement(qIndex)}
+                                className="add-statement-btn"
+                            >
+                                Add Statement
+                            </Button>
                             <FormControlLabel
                                 control={
                                     <Switch
                                         checked={question.required}
-                                        onChange={() => handleQuestionChange(index, 'required', !question.required)}
+                                        onChange={() => handleQuestionChange(qIndex, 'required', !question.required)}
                                     />
                                 }
                                 label="Required"
@@ -165,7 +225,7 @@ const StatementQuestion = () => {
                             />
                         </div>
                     ))}
-                    <Button variant="outlined" onClick={addNewQuestion} className="addnewQ-btn">
+                    <Button variant="contained" onClick={addNewQuestion} className="addnewQ-btn">
                         Add New Question
                     </Button>
                 </div>

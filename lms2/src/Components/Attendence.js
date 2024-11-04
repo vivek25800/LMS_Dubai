@@ -97,22 +97,22 @@ function Attendence() {
     }));
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" || e.key === ",") {
-      e.preventDefault();
-      if (inputValue.trim()) {
-        const updatedIds = [...employeeIds, inputValue.trim()];
-        setEmployeeIds(updatedIds);
-        setInputValue(""); // Clear the input field
+  // const handleKeyDown = (e) => {
+  //   if (e.key === "Enter" || e.key === ",") {
+  //     e.preventDefault();
+  //     if (inputValue.trim()) {
+  //       const updatedIds = [...employeeIds, inputValue.trim()];
+  //       setEmployeeIds(updatedIds);
+  //       setInputValue(""); // Clear the input field
 
-        // Update attendance state with the list of employee IDs
-        setattendence((prevAttendance) => ({
-          ...prevAttendance,
-          employee_id_atten: updatedIds.join(","), // Save IDs as a comma-separated string or however you need for the database
-        }));
-      }
-    }
-  };
+  //       // Update attendance state with the list of employee IDs
+  //       setattendence((prevAttendance) => ({
+  //         ...prevAttendance,
+  //         employee_id_atten: updatedIds.join(","), // Save IDs as a comma-separated string or however you need for the database
+  //       }));
+  //     }
+  //   }
+  // };
 
   const removeId = (indexToRemove) => {
     const updatedIds = employeeIds.filter((_, index) => index !== indexToRemove);
@@ -308,7 +308,7 @@ function Attendence() {
                 placeholder="Enter employee Ids..."
                 value={inputValue}
                 onChange={handleChange} // Handle change for both input value and attendance state
-                onKeyDown={handleKeyDown}
+                
               />
               <div style={{ marginTop: "10px" }}>
                 {employeeIds.map((id, index) => (
@@ -371,6 +371,31 @@ function Attendence() {
               </select>
             </div>
           </div>
+
+          <div className='all-users-list'>
+                <table id="employeeTable" className="table table-striped table-bordered" style={{ fontSize: '14px' }}>
+                    <thead style={{}}>
+                        <tr style={{borderTop: "none"}}>
+                            <th style={{paddingRight: "5rem"}}>Id</th>
+                            <th style={{paddingRight: "10rem"}}>Name</th>
+                            <th style={{paddingRight: "5rem"}}>Job title</th>
+                            <th style={{paddingRight: "5rem"}}>Date of join</th>
+                            <th>Delete Employee</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                       <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                       </tr>
+                    </tbody>
+
+                </table>
+            </div>
 
           <div className="upload-btn" style={{ width: "5rem" }}>
             <button

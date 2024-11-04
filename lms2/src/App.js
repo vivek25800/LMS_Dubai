@@ -9,8 +9,6 @@ import CreateNewSubject from './Components/CreateNewSubject.js';
 import LabelCourse from './Components/LabelCourse.js';
 import AllCourseList from './Components/AllCourseList.js';
 import CreateNewCourse from './Components/CreateNewCourse.js';
-import Media from './Components/Media.js';
-import Document from './Components/Document.js';
 import AllNotice from './Components/AllNotice.js';
 import AddNotice from './Components/AddNotice.js';
 import Register from './Components/Register.js';
@@ -93,8 +91,6 @@ function App() {
         <Route path='/labelCourse' element={<LabelCourse/>}></Route>
         <Route path='/AllCourseList' element={<AllCourseList/>}></Route>
         <Route path='/CreateNewCourse' element={<CreateNewCourse/>}></Route>
-        <Route path='/Media' element={<Media/>}></Route>
-        <Route path='/document' element={<Document/>}></Route>
         <Route path='/Allnotice' element={<AllNotice/>}></Route>
         <Route path='/addnotice' element={<AddNotice/>}></Route>
         <Route path='/AllEmployeList' element={<AllEmployeeList/>}></Route>
@@ -120,13 +116,13 @@ function App() {
         <Route path='/pendingtrf' element={<TRFPendingForApproval/>}></Route>
         <Route path='serviceProverRegistration' element={<ServiceProviderRegister/>}></Route>
 
-        {/* <Route path='/' element={<CourseList/>}></Route>
+        <Route path='/maincourse' element={<CourseList/>}></Route>
         <Route path='/mycareerjourney' element={<MyCareerJourney/>}></Route>
         <Route path='/myLibrary' element={<MyLibrary/>}></Route>
         <Route path='/progreesCourse' element={<InProgressCourse/>}></Route>
         <Route path='/savedCourse' element={<SavedCourse/>}></Route>
         <Route path='/learningHistory' element={<LearningHistoryCourse/>}></Route>
-        <Route path='/startCourse' element={<StartCourse/>}></Route> */}
+        <Route path='/startCourse' element={<StartCourse/>}></Route>
       </Routes>
 
       {/* <MatchTheFollowingForm/> */}

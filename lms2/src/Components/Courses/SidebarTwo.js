@@ -70,7 +70,7 @@ function SidebarTwo() {
             </div>
             <div className='dash-options'>
                 <HomeIcon/>
-                <h5><NavLink to={'/'}>Home</NavLink></h5>   
+                <h5><NavLink to={'/maincourse'}>Home</NavLink></h5>   
             </div>
             <div className='dash-options'>
                 <DescriptionIcon/>

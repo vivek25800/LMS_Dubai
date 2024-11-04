@@ -292,7 +292,7 @@ function OjtOjaIna() {
                 <h2>On Job <span style={{ fontWeight: "300" }}>Training</span></h2>
               </div>
 
-              <div className="upload-attendene" style={{ fontSize: "14px" }}>
+              {/* <div className="upload-attendene" style={{ fontSize: "14px" }}>
                 <div className="info-div-item">
                   <label>Employee ID</label>
                   <select className="employee-id" name="employee-id" id="employee-id-ojt">
@@ -338,110 +338,7 @@ function OjtOjaIna() {
                     <option value="200P2OJT">200P2OJT</option>
                   </select>
                 </div>
-
-                {/* Conditionally render based on selected OJT */}
-                {/* {selectedOJT === "100P1OJT" && (
-                  <div className='activity-data'>
-                    <div className='activity-1'>
-                      <h4>Activity 1.1</h4>
-                      <table className="table table-striped table-bordered" cellspacing="0" style={{ fontSize: "14px" }}>
-                        <thead>
-                          <tr>
-                            <td>CheckList</td>
-                            <td>Sr No.</td>
-                            <td>Description</td>
-                            <td>Trainer checkbox</td>
-                            <td>Employee checkbox</td>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td><input type='checkbox' /></td>
-                            <td>1</td>
-                            <td>This is the activity 1</td>
-                            <td><input type='checkbox' /> Trainer</td>
-                            <td><input type='checkbox' /> Employee</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div className='activity-2'>
-                      <h4>Activity 1.2</h4>
-                      <table className="table table-striped table-bordered" cellspacing="0" style={{ fontSize: "14px" }}>
-                        <thead>
-                          <tr>
-                            <td>CheckList</td>
-                            <td>Sr No.</td>
-                            <td>Description</td>
-                            <td>Trainer checkbox</td>
-                            <td>Employee checkbox</td>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td><input type='checkbox' /></td>
-                            <td>1</td>
-                            <td>This is the activity 1.2</td>
-                            <td><input type='checkbox' /> Trainer</td>
-                            <td><input type='checkbox' /> Employee</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )} */}
-
-                {/* {selectedOJT === "200P2OJT" && (
-                  <div className='activityTwo-data'>
-                    <div className='activity-1'>
-                      <h4>Activity 2.1</h4>
-                      <table className="table table-striped table-bordered" cellspacing="0" style={{ fontSize: "14px" }}>
-                        <thead>
-                          <tr>
-                            <td>CheckList</td>
-                            <td>Sr No.</td>
-                            <td>Description</td>
-                            <td>Trainer checkbox</td>
-                            <td>Employee checkbox</td>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td><input type='checkbox' /></td>
-                            <td>1</td>
-                            <td>This is the activity 2.1</td>
-                            <td><input type='checkbox' /> Trainer</td>
-                            <td><input type='checkbox' /> Employee</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                    <div className='activity-2'>
-                      <h4>Activity 2.2</h4>
-                      <table className="table table-striped table-bordered" cellspacing="0" style={{ fontSize: "14px" }}>
-                        <thead>
-                          <tr>
-                            <td>CheckList</td>
-                            <td>Sr No.</td>
-                            <td>Description</td>
-                            <td>Trainer checkbox</td>
-                            <td>Employee checkbox</td>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td><input type='checkbox' /></td>
-                            <td>1</td>
-                            <td>This is the activity 2.2</td>
-                            <td><input type='checkbox' /> Trainer</td>
-                            <td><input type='checkbox' /> Employee</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                )} */}
-              </div>
+              </div> */}
 
               <div className="upload-btn">
                 <button
@@ -491,7 +388,7 @@ function OjtOjaIna() {
           </h2>
         </div>
 
-        <div className="upload-attendene" style={{ fontSize: "14px" }}>
+        {/* <div className="upload-attendene" style={{ fontSize: "14px" }}>
           <div className="info-div-item">
             <label>Employee ID</label>
             <select className="employee-id" name="employee-id" id="employee-id-ojt">
@@ -537,7 +434,6 @@ function OjtOjaIna() {
             </select>
           </div>
 
-          {/* Conditional Rendering for Activity 1 */}
           {selectedOJA === "400P1OJT" && (
             <div className="activity-data" id="activity-data-id-two">
               <div className="activity-1">
@@ -579,7 +475,6 @@ function OjtOjaIna() {
             </div>
           )}
 
-          {/* Conditional Rendering for Activity 2 */}
           {selectedOJA === "600P2OJT" && (
             <div className="activity-data" id="activityTwo-data-id-two">
               <div className="activity-1">
@@ -620,7 +515,7 @@ function OjtOjaIna() {
               </div>
             </div>
           )}
-        </div>
+        </div> */}
         
         <div className="upload-btn">
           <button className="form-control form-control-sm" style={{ backgroundColor: "#7A1CAC", color: "#ffffff", height: "3rem", width:"5rem" }}>Upload</button>
@@ -660,7 +555,8 @@ function OjtOjaIna() {
               On Job Interview <span style={{ fontWeight: "300" }}>Based Assessment</span>
             </h2>
           </div>
-            <div className="upload-attendene" style={{ fontSize: "14px" }}>
+
+            {/* <div className="upload-attendene" style={{ fontSize: "14px" }}>
                 <div className="info-div-item">
                 <label>Employee ID</label>
                 <select
@@ -735,7 +631,7 @@ function OjtOjaIna() {
                     <p>66%</p>
                 </tfoot>
             </table>
-            </div>
+            </div> */}
 
               <div className="upload-btn">
             <button className="form-control form-control-sm" style={{ backgroundColor: "#7A1CAC", color: "#ffffff", height: "3rem", width:"5rem" }}>Upload</button>

@@ -2,15 +2,15 @@ import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
 import { base_url } from "../Utils/base_url";
+import { IconButton } from '@mui/material';
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
 function QuestionTextForm({ index, onDelete, onChange }) {
   const [question, setQuestion] = useState('');
   const [subtitle, setSubtitle] = useState('');
   const [options, setOptions] = useState([{ text: '', correct: false }]);
   const [points, setPoints] = useState(0);
-  const [mathToggle, setMathToggle] = useState(false);
   const [multipleAnswers, setMultipleAnswers] = useState(true);
-  const [required, setRequired] = useState(false);
   const [answerType, setAnswerType] = useState('short'); // 'short' or 'long'
 
   const [mainCategory, setMainCategory] = useState('');
@@ -39,9 +39,7 @@ function QuestionTextForm({ index, onDelete, onChange }) {
       subtitle,
       options,
       points,
-      mathToggle,
       multipleAnswers,
-      required,
       answerType,
     });
   };
@@ -179,6 +177,10 @@ function QuestionTextForm({ index, onDelete, onChange }) {
             placeholder="Enter your question"
             style={{ width: '100%' }}
           />
+          <IconButton color="primary" component="label">
+              <input hidden accept="image/*" type="file" />
+              <AddPhotoAlternateIcon />
+            </IconButton>
         </div>
       </div>
 
@@ -201,7 +203,7 @@ function QuestionTextForm({ index, onDelete, onChange }) {
                 type={answerType === 'short' ? 'text' : 'textarea'}
                 value={option.text}
                 onChange={(e) => handleOptionChange(idx, e.target.value)}
-                placeholder={`Enter your answer ${idx + 1}`}
+                placeholder={`Answer options ${idx + 1}`}
                 style={{ width: '100%', height: answerType === 'short' ? 'auto' : '100px' }}
               />
             </div>
@@ -271,19 +273,7 @@ function QuestionTextForm({ index, onDelete, onChange }) {
           />
         </div>
 
-        <div className="control-item">
-          <Form>
-            <Form.Check
-              type="switch"
-              id="math-switch"
-              label="Math:"
-              checked={mathToggle}
-              onChange={(e) => setMathToggle(e.target.checked)}
-            />
-          </Form>
-        </div>
-
-        <div className="control-item">
+        {/* <div className="control-item">
           <Form>
             <Form.Check
               type="switch"
@@ -293,19 +283,7 @@ function QuestionTextForm({ index, onDelete, onChange }) {
               onChange={(e) => setMultipleAnswers(e.target.checked)}
             />
           </Form>
-        </div>
-
-        <div className="control-item">
-          <Form>
-            <Form.Check
-              type="switch"
-              id="required-switch"
-              label="Required:"
-              checked={required}
-              onChange={(e) => setRequired(e.target.checked)}
-            />
-          </Form>
-        </div>
+        </div> */}
       </div>
     </div>
     </div>

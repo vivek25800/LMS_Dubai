@@ -144,7 +144,7 @@ function ConductINA() {
           <div className="info-div-item">
             <label>Select INA Title</label>
             <select onChange={handleInaSelect}>
-              <option value="">--Select OJA--</option>
+              <option value="">--Select INA--</option>
               {inaTitles.map((ina) => (
                 <option key={ina._id} value={ina._id}>
                   {ina.ina_title}
