@@ -51,6 +51,8 @@ function StartCourse() {
             border: 1px solid rgba(0,0,0,0.2);
             width: 36%;
             border-radius: 10px;
+            padding: 1.5rem;
+            height: 600px;
             }
             .overview-div{
             border-bottom: 1px solid rgba(0,0,0,0.1);
@@ -72,6 +74,23 @@ function StartCourse() {
             }
             .aboutCourse-div button:hover{
             background-color: #481066;
+            }
+            .extra-info{
+            border: 1px solid rgba(0,0,0,0.1);
+            font-size: 14px;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+            }
+            .enroll-btn{
+            margin-top: 2rem;
+            }
+            .enroll-btn button{
+            width: 100%;
+            background-color: #2E073F;
+            border-radius: 5px;
+            text-transform: uppercase;
+            height: 2.5rem;
             }
         `}</style>
 
@@ -113,11 +132,15 @@ function StartCourse() {
                       <div className='enroll-div'>
                         <h5>Your Session</h5>
 
-                        <div>
+                        <div className='extra-info'>
                             <h6>[BU] Enova - Data for Experts</h6>
                             <div>
-                                <p> <i class="fa-regular fa-calendar"></i> Apr 23, 2024 - No end Date</p>
+                                <p style={{marginBottom:"0px", fontSize:"14px", opacity:"0.7"}}> <i class="fa-regular fa-calendar"></i> Apr 23, 2024 - No end Date</p>
                             </div>
+                        </div>
+
+                        <div className='enroll-btn'>
+                            <button>Enroll</button>
                         </div>
 
                       </div>

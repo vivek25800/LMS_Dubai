@@ -59,6 +59,7 @@ import TrainingRequestForm from './Components/Training Request Form/TrainingRequ
 import ViewTrainingRequestList from './Components/Training Request Form/ViewTrainingRequestList.js';
 import TRFPendingForApproval from './Components/Training Request Form/TRFPendingForApproval.js';
 import ServiceProviderRegister from './Components/ServiceProviderRegister.js';
+import Video from './Components/Sidebar/Video.js';
 
 // import TrainingCalendar from './Components/TrainingCalendar.js';
 
@@ -124,6 +125,8 @@ function App() {
         <Route path='/learningHistory' element={<LearningHistoryCourse/>}></Route>
         <Route path='/startCourse' element={<StartCourse/>}></Route>
       </Routes>
+
+      {/* <Video/> */}
 
       {/* <MatchTheFollowingForm/> */}
 
