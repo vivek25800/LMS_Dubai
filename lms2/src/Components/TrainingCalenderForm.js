@@ -8,7 +8,7 @@ import { base_url } from "./Utils/base_url";
 
 function TrainingCalenderForm() {
 
-  const[event, setevent] = useState({training_category:"",  training_name:"", description:"",region:"",  project_title:"", 
+  const[event, setevent] = useState({training_category:"",  training_name:"", trainer_name:"", description:"",region:"",  project_title:"", 
     job_title:"", from_date:new Date(), to_date:new Date(), from_time:"", to_time:"", participents:"", venue_name:"", status:"Upcoming"})
 
   const event_details_infoget = async () => {
@@ -62,6 +62,10 @@ function TrainingCalenderForm() {
                     <option >Value5</option>
                     <option >Value6</option>
                   </select>
+              </div>
+              <div className="form-item">
+                <label>Add Trainer</label>
+                <input type='text' placeholder="Enter Trainer name" id="trainer_name" onChange={(e) => {setevent({...event, trainer_name:e.target.value})}}  />
               </div>
               <div className="form-item">
                 <label for='desription'>Description</label>
