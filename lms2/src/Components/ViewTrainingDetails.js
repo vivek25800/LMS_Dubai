@@ -46,7 +46,7 @@ function ViewTrainingDetails() {
         }
     }
 
-    const[event, setevent] = useState({training_category:"",  training_name:"", description:"",region:"",  project_title:"", 
+    const[event, setevent] = useState({training_category:"",  training_name:"", trainer_name:"", description:"",region:"",  project_title:"", 
         job_title:"", from_date:new Date(), to_date:new Date(), from_time:"", to_time:"", participents:"", venue_name:"", status:""})
     const[training,settraining]=useState([])
     const [show,setshow]=useState(false)
@@ -149,6 +149,7 @@ function ViewTrainingDetails() {
 			<th>Seq No.</th>
 			<th>Training Category</th>
 			<th>Training Name</th>
+      <th>Trainer Name</th>
 			<th>Region</th>
 			<th>Project</th>
             <th>Date (from - to)</th>
@@ -167,6 +168,7 @@ function ViewTrainingDetails() {
                 <td >{index+1}</td>
                 <td >{item.training_category}</td>
                 <td >{item.training_name}</td>
+                <td >{item.trainer_name}</td>
                 <td >{item.region}</td>
                 <td >{item.project_title}</td>
                 <td >{item.from_date} - {item.to_date}</td>
