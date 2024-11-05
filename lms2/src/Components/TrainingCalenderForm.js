@@ -65,7 +65,7 @@ function TrainingCalenderForm() {
               </div>
               <div className="form-item">
                 <label>Add Trainer</label>
-                <input type='text' placeholder="Enter Trainer name" id="trainer_name" onChange={(e) => {setevent({...event, trainer_name:e.target.value})}}  />
+                <input type='text' placeholder="Enter Trainer name" id="trainer_name" style={{width:"100%", height:"3rem", padding:"0 1rem"}} onChange={(e) => {setevent({...event, trainer_name:e.target.value})}}  />
               </div>
               <div className="form-item">
                 <label for='desription'>Description</label>
