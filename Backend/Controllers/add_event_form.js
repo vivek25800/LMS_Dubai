@@ -2,10 +2,10 @@ const add_event_modal = require("../Modal/add_event_calendar");
 
 const post_event_details = async (req, res) => {
     try {
-        const {training_category,  training_name, description, region,  project_title, job_title, from_date, to_date, from_time,
+        const {training_category,  training_name, trainer_name, description, region,  project_title, job_title, from_date, to_date, from_time,
             to_time, participents, venue_name, status } = req.body;
 
-        const add_event_data = new add_event_modal({training_category,  training_name, description, region,  project_title, job_title, from_date, to_date, from_time,
+        const add_event_data = new add_event_modal({training_category,  training_name, trainer_name, description, region,  project_title, job_title, from_date, to_date, from_time,
             to_time, participents, venue_name, status});
 
         const resp = await add_event_data.save();

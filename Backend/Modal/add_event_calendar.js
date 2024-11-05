@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const add_event_calendar = new mongoose.Schema({
     training_category:{type:String},
     training_name:{type:String},
+    trainer_name:{type:String},
     description:{type:String},
     region:{type:String},
     project_title:{type:String},
