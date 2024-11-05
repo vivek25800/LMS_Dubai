@@ -195,7 +195,7 @@ function ViewTrainingDetails() {
 
 	</tbody>
 	
-			</table>
+			      </table>
 
     <Modal show={show} onHide={handleclose} size='lg'>
       <Modal.Header closeButton>
