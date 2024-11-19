@@ -121,6 +121,13 @@ function ConductingOJA() {
         .finalscore-div button:hover{
         background-color: #7a1cacc6;
         }
+        .add-attendies{
+            border: 1px solid rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+            margin-bottom: 2rem;
+            }
         `}
       </style>
       <div className="conducting-oja">
