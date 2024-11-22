@@ -23,6 +23,19 @@ function AddNomination({selectedTraining}) {
     }
   }
 
+
+  const [employee, setemployee] = useState([]);
+  function EmployeeList(event) {
+    const selectedEmployee = JSON.parse(event.target.value);
+    setemployee([...employee,selectedEmployee]);
+    console.log(selectedEmployee); // Logs the full object
+  }
+
+  function DeleteEmployee(item) {
+    const updatedEmployees = employee.filter((item1) => item1._id !== item._id);
+    setemployee(updatedEmployees); // Update the state with the new array
+  }
+
   const [options, setOptions] = useState([]);
   const fetchOptions = async () => {
     try {
@@ -224,10 +237,10 @@ function AddNomination({selectedTraining}) {
               <tbody>
                 <tr>
                   <td>
-                    <select style={{width: "80%"}}>
+                  <select onChange={ EmployeeList }>
                       <option>Select Employee</option>
                       {options.map((item) => (
-                        <option key={item.employee_id}>
+                        <option key={item.employee_id} value={JSON.stringify(item)}>
                           {item.employee_id} - {item.employee_name}
                         </option>
                       ))}
@@ -265,20 +278,20 @@ function AddNomination({selectedTraining}) {
                 </thead>
                 <tbody>
                   {
-                  Array.isArray(options) ?
-                  options.map((employee, index) => (
+                  
+                  employee.map((item, index) => (
                     <tr key={index}>
                       <td><input type='checkbox' /> {index + 1}</td>
                       <td>Event code</td>
-                      <td>{employee.employee_name}</td>
-                      <td>{employee.employee_id}</td>
-                      <td>{employee.employee_email}</td>
-                      <td>{employee.designation}</td>
+                      <td>{item.employee_name}</td>
+                      <td>{item.employee_id}</td>
+                      <td>{item.employee_email}</td>
+                      <td>{item.designation}</td>
                       <td><input type='checkbox' /> Present <br/> <input type='checkbox' /> Absent</td>
                       <td>Mail Sent</td>
-                      <td><button onClick={() =>delete_employee(employee)}>Delete</button></td>
+                      <td><button onClick={() => DeleteEmployee(item)}>Delete</button></td>
                     </tr>
-                  )):[]}
+                  ))}
                 </tbody>
               </table>
 

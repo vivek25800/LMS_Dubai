@@ -116,6 +116,11 @@ function CreateINA() {
 
       if (response.status === 200) {
         toast.success("INA successfully created!", {autoClose: 2000});
+
+        setInaTitle("");
+        setInaCode("");
+        setInaRatingRange("");
+        setActivities([{ title: "", addContent: { Srno: [], description: [] } }]);
       } else {
         toast.error("Failed to create INA.", {autoClose: 2000});
       }
@@ -150,6 +155,7 @@ function CreateINA() {
               type="text"
               placeholder="Enter the INA title"
               id="ina_title"
+              value={inaTitle}
               onChange={(e) => setInaTitle(e.target.value)}
             />
           </div>

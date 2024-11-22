@@ -95,7 +95,12 @@ function CreateOJT() {
           );
     
           if (response.status === 200) {
-            toast.success('OJT successfully created!', {autoClose: 2000})
+            toast.success('OJT successfully created!', {autoClose: 2000});
+
+            setOjtTitle("");
+            setOjtCode("");
+            setActivities([{ title: "", addContent: { Srno: [], description: [] } }]);
+
           } else {
             toast.error('Failed to create OJT.', {autoClose: 2000});
           }
@@ -116,7 +121,7 @@ function CreateOJT() {
       <div className='create-ojt'>
         <div className="info-div-item">
           <label>OJT Title</label>
-          <input type='text' placeholder='Enter the OJT title' id='ojt_title' onChange={(e) => setOjtTitle(e.target.value)}  />
+          <input type='text' placeholder='Enter the OJT title' value={ojtTitle} id='ojt_title' onChange={(e) => setOjtTitle(e.target.value)}  />
         </div>
 
         <div className="info-div-item">

@@ -19,8 +19,11 @@
     padding-left: 3rem;
 }
 .upload-attendene{
+    border: rgba(0,0,0,0.2) solid 2px;
+    padding: 1rem 2rem;
+    margin: 2rem 3rem;
     display: grid;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: auto;
     column-gap: 1rem;
     row-gap: 1rem;
 }
@@ -41,4 +44,11 @@
 
  label{
     font-size: 14px;
+ }
+
+ .trainer-div{
+    border: rgba(0,0,0,0.2) solid 1px;
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border-radius: 8px;
  }

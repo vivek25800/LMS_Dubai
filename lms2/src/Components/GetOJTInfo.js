@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { base_url } from "./Utils/base_url";
+import { event } from 'jquery';
+import Select from "react-select";
 
-const GetOJTInfo = () => {
+const GetOJTInfo = ({ options1 }) => {
   const [ojtTitles, setOjtTitles] = useState([]); // Stores all OJT titles
   const [selectedOjt, setSelectedOjt] = useState(null); // Stores selected OJT details
   const [checkStates, setCheckStates] = useState({}); // Stores the state of checkboxes for each content item
@@ -84,11 +86,25 @@ const GetOJTInfo = () => {
 
 
 // Get Employee Id's
+  const [employee, setemployee] = useState([]);
+  function EmployeeList(event) {
+    const selectedEmployee = JSON.parse(event.target.value);
+    setemployee([...employee,selectedEmployee]);
+    console.log(selectedEmployee); // Logs the full object
+  }
+
+  function DeleteEmployee(item) {
+    const updatedEmployees = employee.filter((item1) => item1._id !== item._id);
+    setemployee(updatedEmployees); // Update the state with the new array
+  }
+  
+
   const [options, setOptions] = useState([]);
   const fetchOptions = async () => {
     try {
       const response = await axios.get(`${base_url}/employee_details_get`);
       setOptions(response.data.employee);
+      console.log(options);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -138,7 +154,7 @@ const GetOJTInfo = () => {
             .sbmt-btn button:hover{
             background-color: #7a1cacc6;
             }
-            .add-attendies{
+            .add-attendies, .all-added-employee-list{
             border: 1px solid rgba(0,0,0,0.2);
             padding: 1rem;
             border-radius: 10px;
@@ -151,6 +167,12 @@ const GetOJTInfo = () => {
             box-shadow: 3px 3px 6px rgba(0,0,0,0.2);
             padding: 1rem 2rem;
             border-radius: 10px;
+            }
+            .add-employee{
+            display: grid;
+            grid-template-columns: auto auto auto;
+            column-gap: 1rem;
+            row-gap: 1rem;
             }
             `}
         </style>
@@ -179,14 +201,14 @@ const GetOJTInfo = () => {
 
               <div className='add-attendies'>
                 <h5>Add Employee</h5>
-                <div className="upload-attendene" style={{ fontSize: "14px" }}>
+                <div className="add-employee" style={{ fontSize: "14px" }}>
                 
                 <div className="info-div-item">
                   <label>Employee ID</label>
-                  <select style={{width: "80%"}}>
+                  <select onChange={ EmployeeList }>
                       <option>Select Employee</option>
                       {options.map((item) => (
-                        <option key={item.employee_id}>
+                        <option key={item.employee_id} value={JSON.stringify(item)}>
                           {item.employee_id} - {item.employee_name}
                         </option>
                       ))}
@@ -234,6 +256,40 @@ const GetOJTInfo = () => {
                 </div> */}
                 
               </div>
+              </div>
+
+              <div className='all-added-employee-list'>
+                  <h5 style={{marginBottom:"1.5rem"}}>Employee's details list</h5>
+
+                  <div className='employee-lists'>
+                    <table id="employeeTable" className="table table-striped table-bordered" style={{ fontSize: '14px' }}>
+                      <thead>
+                        <tr>
+                          <th>Sr. No.</th>
+                          <th>Employee Name</th>
+                          <th>Employee ID</th>
+                          <th>Project</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                    {
+                      employee.map((item,index)=>
+                      (
+                        <tr>
+                          <td>{index+1}</td>
+                          <td>{item.employee_name}</td>
+                          <td>{item.employee_id}</td>
+                          <td>{item.project_name}</td>
+                          <td>
+                            <button onClick={() => DeleteEmployee(item)}>Delete</button>
+                          </td>
+                        </tr>
+                      ))
+                    }
+                      </tbody>
+                    </table>
+                  </div>
               </div>
 
               {selectedOjt.activities.map((activity, activityIndex) => (

@@ -111,6 +111,12 @@ function CreateOJA() {
 
       if (response.status === 200) {
         toast.success("OJA successfully created!", {autoClose: 2000});
+
+        setOjaTitle("");
+        setOjaCode("");
+        setOjaRatingRange("");
+        setActivities([{ title: "", addContent: { Srno: [], description: [] } }]);
+
       } else {
         toast.error("Failed to create OJA.", {autoClose: 2000});
       }
@@ -145,6 +151,7 @@ function CreateOJA() {
               type="text"
               placeholder="Enter the OJA title"
               id="oja_title"
+              value={ojaTitle}
               onChange={(e) => setOjaTitle(e.target.value)}
             />
           </div>

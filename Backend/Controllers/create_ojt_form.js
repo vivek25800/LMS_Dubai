@@ -28,6 +28,16 @@ const get_ojt_data = async (req, res) => {
     }
 }
 
+const delete_ojt_data = async (req, res) => {
+  try {
+    const _id = req.params._id;
+    const resp =await create_ojt_modal.findByIdAndDelete({_id:_id});
+    res.status(200).send({message: "Ojt data deleted successfully", create_ojt: resp});
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const get_ojts_data_byIds = async (req, res) => {
     try {
         const id = req.params._id;
@@ -100,4 +110,14 @@ const updateOJTInfo = async (req, res) => {
     }
   };
 
-module.exports = {post_create_ojt, get_ojt_data, get_ojts_data_byIds, updateOJTInfo};
+  const update_ojt_details = async (req, res) => {
+    try {
+      const id = req.params._id;
+      const resp = await create_ojt_modal.findByIdAndUpdate(id, req.body);
+      res.status(200).send({message: "OJT data successfully updated", create_ojt: resp});
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+module.exports = {post_create_ojt, get_ojt_data, delete_ojt_data, get_ojts_data_byIds, updateOJTInfo, update_ojt_details};

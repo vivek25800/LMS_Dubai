@@ -5,9 +5,9 @@ import { base_url } from "./Utils/base_url";
 
 function ConductingOJA() {
   const [ojaTitles, setOjaTitles] = useState([]); // Stores all OJA titles
-  const [selectedOja, setSelectedOja] = useState(null); // Stores selected OJA details
+  const [selectedOja, setselectedOja] = useState([]); // Stores selected OJA details
   const [finalScore, setFinalScore] = useState(null); // Stores the final overall score
-  const [ratingRange, setRatingRange] = useState([]);
+  const [ratingRange, setratingRange] = useState([]);
 
   // Fetch all OJA titles when the component mounts
   useEffect(() => {
@@ -30,26 +30,34 @@ function ConductingOJA() {
     try {
       const response = await axios.get(`${base_url}/get_oja_info_byids/${ojaId}`); 
       const selectedOjaData = response.data.create_oja;
-      setSelectedOja(selectedOjaData); // Save selected OJA details in state
+      console.log(selectedOjaData);
+      
+      setselectedOja(response.data.create_oja);
+      console.log(response.data.create_oja); // Save selected OJA details in state
       
       // Set the rating range based on the selected OJA's rating range
-      if (selectedOjaData.ratingRange === "1 -- 5") {
-        setRatingRange([1, 2, 3, 4, 5]);
-      } else if (selectedOjaData.ratingRange === "1 -- 10") {
-        setRatingRange([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+      if (selectedOjaData.rating_range_oja === "1 -- 5") {
+        setratingRange([1, 2, 3, 4, 5]);
+      } else if (selectedOjaData.rating_range_oja === "1 -- 10") {
+        setratingRange([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
       } else {
-        setRatingRange([]); // Clear the range if it's not valid
+        setratingRange([]); // Clear the range if it's not valid
       }
+    
+      
     } catch (error) {
       console.error("Error fetching OJA details:", error);
     }
   };
+  useEffect(() => {
+    console.log("Updated Rating Range:", ratingRange);
+  }, [ratingRange]);
 
   // Handle rating change for each activity description
   const handleRatingChange = (activityIndex, contentIndex, newRating) => {
     const updatedOja = { ...selectedOja };
     updatedOja.activities[activityIndex].content[contentIndex].rating = newRating || "";
-    setSelectedOja(updatedOja); // Update the selected OJA with the new rating
+    setselectedOja(updatedOja); // Update the selected OJA with the new rating
     console.log(`Rating for activity ${activityIndex + 1} is set to ${newRating}`);
   };
 
@@ -64,18 +72,18 @@ function ConductingOJA() {
 
   // Function to calculate the final overall score
   const calculateFinalScore = () => {
-    if (!selectedOja || selectedOja.activities.length === 0) return "N/A";
+    // if (!selectedOja || selectedOja.activities.length === 0) return "N/A";
 
-    const allRatings = selectedOja.activities.flatMap(activity =>
-      activity.content.map(content => content.rating)
-    ).filter(rating => rating); // Remove any undefined ratings
+    // const allRatings = selectedOja.activities.flatMap(activity =>
+    //   activity.content.map(content => content.rating)
+    // ).filter(rating => rating); // Remove any undefined ratings
 
-    if (allRatings.length === 0) return "N/A";
+    // if (allRatings.length === 0) return "N/A";
     
-    const sum = allRatings.reduce((total, rating) => total + Number(rating), 0);
-    const avg = sum / allRatings.length;
-    const percentage = (avg / ratingRange.length) * 100; // Adjust based on range
-    return `${percentage.toFixed(2)}%`;
+    // const sum = allRatings.reduce((total, rating) => total + Number(rating), 0);
+    // const avg = sum / allRatings.length;
+    // const percentage = (avg / ratingRange.length) * 100; // Adjust based on range
+    // return `${percentage.toFixed(2)}%`;
   };
 
   // Handle form submission and save data to the database
@@ -128,6 +136,19 @@ function ConductingOJA() {
             box-shadow: 3px 3px 6px rgba(0,0,0,0.2);
             margin-bottom: 2rem;
             }
+            .ojt-code-div{
+            width: fit-content;
+            border: 1px solid rgba(0,0,0,0.2);
+            box-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            }
+            .add-employee{
+            display: grid;
+            grid-template-columns: auto auto auto;
+            column-gap: 1rem;
+            row-gap: 1rem;
+            }
         `}
       </style>
       <div className="conducting-oja">
@@ -160,7 +181,7 @@ function ConductingOJA() {
               
 <div className='add-attendies'>
 <h5>Add Employee</h5>
-<div className="upload-attendene" style={{ fontSize: "14px" }}>
+<div className="add-employee" style={{ fontSize: "14px" }}>
 <div className="info-div-item">
 <label>Employee ID</label>
 <input type="text" placeholder="Enter Employee Id" />
@@ -188,8 +209,67 @@ function ConductingOJA() {
 </div>
 </div>
 </div>
+{selectedOja && selectedOja.activities ? (
+        selectedOja.activities.map((activity, activityIndex) => (
+          <div key={activityIndex} className="activity-div">
+            <div className="info-div-item">
+              <h4>Activity {activityIndex + 1}</h4>
+            </div>
 
-              {selectedOja.activities.map((activity, activityIndex) => (
+            <div className="info-div-item">
+              <label>Title</label>
+              <p>{activity.activity_oja_title}</p>
+            </div>
+
+            <div className="info-div-item">
+              <label>Content</label>
+              <table className="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Sr No.</th>
+                    <th>Description</th>
+                    <th>Rating</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {activity.content.map((content, contentIndex) => (
+                    <tr key={contentIndex}>
+                      <td>{content.srno}</td>
+                      <td>{content.description}</td>
+                      <td>
+                        <select
+                          value={content.rating || ""} // Set a default value if rating is undefined
+                          onChange={(e) =>
+                            handleRatingChange(activityIndex, contentIndex, e.target.value)
+                          }
+                        >
+                          <option value="">--Select Rating--</option>
+                          {ratingRange.map((rating) => (
+                            <option key={rating} value={rating}>
+                              {rating}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="info-div-item">
+              <label className="rating-label">Overall Score for this Activity</label>
+              <p>
+                {calculateAverageRating(activity.content.map((c) => c.rating))}
+              </p>
+            </div>
+          </div>
+        ))
+      ) : (
+        <p>Select an OJA to view activities.</p>
+      )}
+              {/* {
+              selectedOja.activities.map((activity, activityIndex) => (
                 <div key={activityIndex} className="activity-div">
                   <div className="info-div-item">
                     <h4>Activity {activityIndex + 1}</h4>
@@ -245,7 +325,7 @@ function ConductingOJA() {
                     </p>
                   </div>
                 </div>
-              ))}
+              ))} */}
 
               <div className="finalscore-div">
                 <div className="info-div-item">

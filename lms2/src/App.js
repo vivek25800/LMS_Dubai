@@ -60,6 +60,7 @@ import ViewTrainingRequestList from './Components/Training Request Form/ViewTrai
 import TRFPendingForApproval from './Components/Training Request Form/TRFPendingForApproval.js';
 import ServiceProviderRegister from './Components/ServiceProviderRegister.js';
 import Video from './Components/Sidebar/Video.js';
+import ViewOJTOJAINA from './Components/ViewOJTOJAINA.js';
 
 // import TrainingCalendar from './Components/TrainingCalendar.js';
 
@@ -116,6 +117,7 @@ function App() {
         <Route path='/viewtrainingrequest' element={<ViewTrainingRequestList/>}></Route>
         <Route path='/pendingtrf' element={<TRFPendingForApproval/>}></Route>
         <Route path='serviceProverRegistration' element={<ServiceProviderRegister/>}></Route>
+        <Route path='/viewOjtOjaIna' element={<ViewOJTOJAINA/>}></Route>
 
         <Route path='/maincourse' element={<CourseList/>}></Route>
         <Route path='/mycareerjourney' element={<MyCareerJourney/>}></Route>

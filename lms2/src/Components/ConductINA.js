@@ -5,8 +5,9 @@ import { base_url } from "./Utils/base_url";
 
 function ConductINA() {
   const [inaTitles, setInaTitles] = useState([]); // Stores all OJA titles
-  const [selectedIna, setSelectedIna] = useState(null); // Stores selected OJA details
+  const [selectedIna, setselectedIna] = useState([]); // Stores selected OJA details
   const [finalScore, setFinalScore] = useState(null); // Stores the final overall score
+  const [ratingRange, setratingRange] = useState([]);
 
   // Fetch all OJA titles when the component mounts
   useEffect(() => {
@@ -28,17 +29,31 @@ function ConductINA() {
 
     try {
       const response = await axios.get(`${base_url}/get_ina_dataById/${inaId}`); 
-      setSelectedIna(response.data.create_ina); // Save selected OJA details in state
+      console.log(response);
+      
+      setselectedIna(response.data.create_ina); // Save selected OJA details in state
+      console.log(selectedIna);
+
+      if (response.data.create_ina.rating_range === "1 -- 5") {
+        setratingRange([1, 2, 3, 4, 5]);
+      } else if (response.data.create_ina.rating_range === "1 -- 10") {
+        setratingRange([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+      } else {
+        setratingRange([]); // Clear the range if it's not valid
+      }
+      
     } catch (error) {
       console.error("Error fetching OJA details:", error);
     }
   };
 
+
+
   // Handle rating change for each activity description
   const handleRatingChange = (activityIndex, contentIndex, newRating) => {
     const updatedIna = { ...selectedIna };
     updatedIna.activities[activityIndex].content[contentIndex].rating = newRating;
-    setSelectedIna(updatedIna); // Update the selected OJA with the new rating
+    setselectedIna(updatedIna); // Update the selected OJA with the new rating
   };
 
   // Function to calculate the average rating of each activity
@@ -52,13 +67,15 @@ function ConductINA() {
 
   // Function to calculate the final overall score
   const calculateFinalScore = () => {
-    if (!selectedIna || selectedIna.activities.length === 0) return "N/A";
+    // if (!selectedIna || selectedIna.activities.length === 0) return "N/A";
 
-    const allRatings = selectedIna.activities.flatMap(activity =>
-      activity.content.map(content => content.rating)
-    ).filter(rating => rating); // Remove any undefined ratings
+    const allRatings = selectedIna?.activities
+    ? selectedIna.activities.flatMap(activity =>
+        activity.content.map(content => content.rating)
+      ).filter(rating => rating !== undefined && rating !== null)
+    : []; // Remove any undefined ratings
 
-    if (allRatings.length === 0) return "N/A";
+    // if (allRatings.length === 0) return "N/A";
     
     const sum = allRatings.reduce((total, rating) => total + Number(rating), 0);
     const avg = sum / allRatings.length;
@@ -131,6 +148,12 @@ function ConductINA() {
             padding: 1rem 2rem;
             border-radius: 10px;
             }
+            .add-employee{
+            display: grid;
+            grid-template-columns: auto auto auto;
+            column-gap: 1rem;
+            row-gap: 1rem;
+            }
         `}
       </style>
       <div className="conducting-oja">
@@ -162,7 +185,7 @@ function ConductINA() {
 
               <div className='add-attendies'>
               <h5>Add Employee</h5>
-              <div className="upload-attendene" style={{ fontSize: "14px" }}>
+              <div className="add-employee" style={{ fontSize: "14px" }}>
                 <div className="info-div-item">
                 <label>Employee ID</label>
                 <input type="text" placeholder="Enter Employee Id" />
@@ -230,7 +253,8 @@ function ConductINA() {
             </div>
             </div>
 
-              {selectedIna.activities.map((activity, activityIndex) => (
+              {selectedIna && selectedIna.activities ?
+              selectedIna.activities.map((activity, activityIndex) => (
                 <div key={activityIndex} className="activity-div">
                   <div className="info-div-item">
                     <h4>Activity {activityIndex + 1}</h4>
@@ -264,11 +288,11 @@ function ConductINA() {
                                 }
                               >
                                 <option value="">--Select Rating--</option>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
+                                {ratingRange.map((rating) => (
+                            <option key={rating} value={rating}>
+                              {rating}
+                            </option>
+                          ))}
                               </select>
                             </td>
                           </tr>
@@ -286,7 +310,9 @@ function ConductINA() {
                     </p>
                   </div>
                 </div>
-              ))}
+              )):(
+                <p>Select an OJI to view activities.</p>
+              )}
 
                 <div className="finalscore-div">
               <div className="info-div-item">

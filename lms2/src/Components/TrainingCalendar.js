@@ -173,6 +173,56 @@ const TrainingCalendar = () => {
                 .hide-view-btn:hover{
                 background-color: #7a1cacc6;
                 }
+                .training-details-list{
+                border: 1px solid rgba(0,0,0,0.2);
+                margin-top: 2rem;
+                padding: 1rem;
+                border-radius: 5px;
+                }
+                 .dt-paging-button{
+        padding: 8px 1rem;
+        border: none;
+        margin: 0 5px;
+        background-color: #ffffff;
+        // border: #7A1CAC solid 1px;
+        font-weight: 500;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+        box-shadow: inset 0 5px 10px rgba(0,0,0,.1), 0 2px 5px rgba(0,0,0,.5);
+        }
+        .dt-paging-button:hover{
+        background-color: #7A1CAC;
+        color: #ffffff;
+        }
+        #dt-length-0{
+          width: 7%;
+          }
+
+        .dt-paging-button{
+          background-color: #ffffff;
+          box-shadow: inset 0 5px 10px rgba(0,0,0,.1), 0 2px 5px rgba(0,0,0,.5);
+          color: #000;
+          margin: 0 5px;
+          width: 2.5rem;
+          transition: 0.3s all ease;
+          }
+          .dt-paging-button:hover{
+          background-color: #7A1CAC;
+          color: #ffffff;
+          }
+          .dt-search{
+          float: right;
+          margin-bottom: 14px;
+          }
+          .dt-search #dt-search-0{
+          height: 2.5rem;
+          border-radius: 5px;
+          border: none;
+          border: 2px solid #7A1CAC;
+          padding-left: 10px;
+          }
+          .dt-search #dt-search-0:focus{
+          outline: none;
                 `}
             </style>
           
@@ -254,7 +304,7 @@ const TrainingCalendar = () => {
                 </div>
 
                 <div className='training-details-list'>
-                    <h3>All Training Details list here.</h3>
+                    <h5 style={{marginBottom:"1.5rem"}}>All Training Details list here.</h5>
 
                     <div className='details-list'>
                     <table id="trainingTable" class="table table-striped table-bordered" style={{fontSize:"14px"}} >
@@ -387,22 +437,22 @@ const TrainingCalendar = () => {
               <div className="date-setion">
               <div className="form-item">
               <label for='from-date'>From</label>
-              <input type="date" name="from-date" id="from_date"   onChange={(e) => {setevent((prevprofile)=>({...prevprofile, from_date:e.target.value}))}}/> 
+              <input type="date" name="from-date" id="from_date" defaultValue={training.from_date} onChange={(e) => {setevent((prevprofile)=>({...prevprofile, from_date:e.target.value}))}}/> 
               </div>
               <div className="form-item">
               <label for='to-date'>To</label>
-              <input type="date" name="to-date" id="to_date"   onChange={(e) => {setevent((prevprofile)=>({...prevprofile, to_date:e.target.value}))}}/>
+              <input type="date" name="to-date" id="to_date" defaultValue={training.to_date} onChange={(e) => {setevent((prevprofile)=>({...prevprofile, to_date:e.target.value}))}}/>
               </div>
               </div>
 
               <div className="date-setion">
               <div className="form-item">
               <label for='from-time'>From</label>
-              <input type="time" name="from-time" id="from_time"   onChange={(e) => {setevent((prevprofile)=>({...prevprofile, from_time:e.target.value}))}}/> 
+              <input type="time" name="from-time" id="from_time" defaultValue={training.from_time} onChange={(e) => {setevent((prevprofile)=>({...prevprofile, from_time:e.target.value}))}}/> 
               </div>
               <div className="form-item">
               <label for='to-time'>To</label>
-              <input type="time" name="to-time" id="to_time"   onChange={(e) => {setevent((prevprofile)=>({...prevprofile, to_time:e.target.value}))}}/>
+              <input type="time" name="to-time" id="to_time" defaultValue={training.to_time} onChange={(e) => {setevent((prevprofile)=>({...prevprofile, to_time:e.target.value}))}}/>
               </div>
               </div>
               
@@ -412,12 +462,13 @@ const TrainingCalendar = () => {
               </div>
               <div className="form-item">
               <label for='venue'>Venue</label>
-              <input type="text" name="venue" id="venue_name" placeholder="Enter venue name" style={{width:"100%", height:"3rem", padding:"0 1rem"}}  onChange={(e) => {setevent((prevprofile)=>({...prevprofile, venue_name:e.target.value}))}}/>
+              <input type="text" name="venue" id="venue_name" placeholder="Enter venue name" defaultValue={training.venue_name} style={{width:"100%", height:"3rem", padding:"0 1rem"}}  onChange={(e) => {setevent((prevprofile)=>({...prevprofile, venue_name:e.target.value}))}}/>
               </div>
 
               <div className="form-item">
               <label for='status'>Status</label>
               <select id='status_info'  onChange={(e) => {setevent((prevprofile)=>({...prevprofile, status:e.target.value}))}}>
+                <option >{training.status_info}</option>
                 <option >Upcoming</option>
                 <option >Complete</option>
                 <option >Uncomplete</option>

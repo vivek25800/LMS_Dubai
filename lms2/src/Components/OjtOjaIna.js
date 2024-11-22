@@ -11,6 +11,7 @@ import ConductingOJA from './ConductingOJA';
 import CreateOJT from './CreateOJT';
 import CreateINA from './CreateINA';
 import ConductINA from './ConductINA';
+import ModalExample from './ModalExample';
 
 function OjtOjaIna() {
 
@@ -357,6 +358,7 @@ function OjtOjaIna() {
 
             <div className='create-ojt-form' id='create-ojt-form'>
                 <CreateOJT/>
+                {/* <ModalExample/> */}
             </div>
 
             <div className='conducting-ojt' id='conducting-ojt-form'>

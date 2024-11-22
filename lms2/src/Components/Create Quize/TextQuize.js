@@ -265,7 +265,7 @@ function TextQuize({ index, onDelete, onChange }) {
         />
       </div>
 
-      <div className="dropdowns">
+      {/* <div className="dropdowns">
           <div>
             <label>Main Category:</label>
             <select
@@ -288,7 +288,7 @@ function TextQuize({ index, onDelete, onChange }) {
               <option value="Sub Category 2">Sub Category 2</option>
             </select>
           </div>
-        </div>
+        </div> */}
 
       {/* Footer Controls */}
       <div className="footer-controls">

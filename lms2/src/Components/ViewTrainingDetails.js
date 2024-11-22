@@ -9,6 +9,8 @@ import { Dropdown } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { base_url } from "./Utils/base_url";
+import $ from 'jquery'; // Import jQuery
+import 'datatables.net'; // Import DataTables
 
 function ViewTrainingDetails() {
 
@@ -49,6 +51,7 @@ function ViewTrainingDetails() {
     const[event, setevent] = useState({training_category:"",  training_name:"", trainer_name:"", description:"",region:"",  project_title:"", 
         job_title:"", from_date:new Date(), to_date:new Date(), from_time:"", to_time:"", participents:"", venue_name:"", status:""})
     const[training,settraining]=useState([])
+    
     const [show,setshow]=useState(false)
     const handleclose=()=>
     {
@@ -60,9 +63,7 @@ function ViewTrainingDetails() {
         setevent(item)
         settraining(item)
     }
-
-   
-    
+ 
         const editevent = async () => {
             try {
                 const id=training._id
@@ -78,11 +79,40 @@ function ViewTrainingDetails() {
               console.log(error);
             }
           }
+
+          useEffect(() => {
+            if (details.length > 0) {
+              // Initialize DataTable
+              const table = $('#eventsTable').DataTable({
+                dom: '<"dt-buttons"Bf><"clear">lirtp',
+                paging: true,
+                autoWidth: true,
+                buttons: [
+                  'colvis',
+                  'copyHtml5',
+                  'csvHtml5',
+                  'excelHtml5',
+                  'pdfHtml5',
+                  'print',
+                ],
+                initComplete: function () {
+                  const footer = $('#eventsTable tfoot tr');
+                  $('#eventsTable thead').append(footer);
+                },
+              });
         
-     
-
-
-
+              // Apply search functionality
+              $('#eventsTable thead').on('keyup', 'input', function () {
+                table.column($(this).parent().index()).search(this.value).draw();
+              });
+        
+              // Cleanup on component unmount
+              return () => {
+                table.destroy(true);
+              };
+            }
+          }, [details]);
+        
   return (
     <div style={{ backgroundColor: "rgba(46, 7, 63, 0.1)", padding: "20px", height:"100vh" }}>
 
@@ -122,6 +152,51 @@ function ViewTrainingDetails() {
             text-decoration: none;
             color: #ffffff;
             }
+
+               .dt-paging-button{
+        padding: 8px 1rem;
+        border: none;
+        margin: 0 5px;
+        background-color: #ffffff;
+        // border: #7A1CAC solid 1px;
+        font-weight: 500;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+        box-shadow: inset 0 5px 10px rgba(0,0,0,.1), 0 2px 5px rgba(0,0,0,.5);
+        }
+        .dt-paging-button:hover{
+        background-color: #7A1CAC;
+        color: #ffffff;
+        }
+        #dt-length-0{
+          width: 7%;
+          }
+
+        .dt-paging-button{
+          background-color: #ffffff;
+          box-shadow: inset 0 5px 10px rgba(0,0,0,.1), 0 2px 5px rgba(0,0,0,.5);
+          color: #000;
+          margin: 0 5px;
+          width: 2.5rem;
+          transition: 0.3s all ease;
+          }
+          .dt-paging-button:hover{
+          background-color: #7A1CAC;
+          color: #ffffff;
+          }
+          .dt-search{
+          float: right;
+          margin-bottom: 14px;
+          }
+          .dt-search #dt-search-0{
+          height: 2.5rem;
+          border-radius: 5px;
+          border: none;
+          border: 2px solid #7A1CAC;
+          padding-left: 10px;
+          }
+          .dt-search #dt-search-0:focus{
+          outline: none;
             
         `}</style>
 
@@ -134,7 +209,7 @@ function ViewTrainingDetails() {
             <div className='header-div header-two'>
                 <div className='title-name'>
                     <h5>Training Details</h5>
-                    <p><a onClick={() => window.location.reload()} style={{cursor:"pointer", color:"#099ded"}}>Home</a> <i class="fa-solid fa-caret-right"></i> Add Event</p>
+                    <p><a onClick={() => window.location.reload()} style={{cursor:"pointer", color:"#099ded"}}>Home</a> <i class="fa-solid fa-caret-right"></i> Training Details</p>
                 </div>
                 <div className="category-btn">
                     <button id='add-event-btn'> <NavLink to={'/AddEvent'}>Add Event</NavLink> </button>
@@ -143,7 +218,7 @@ function ViewTrainingDetails() {
 
             <div className='all-training-details'>
 
-            <table id="example" class="table table-striped table-bordered" cellspacing="0" style={{fontSize:"14px"}} >
+            <table id="eventsTable" class="table table-striped table-bordered" cellspacing="0" style={{fontSize:"14px"}} >
 	<thead>
 		<tr>
 			<th>Seq No.</th>
@@ -250,7 +325,7 @@ function ViewTrainingDetails() {
               <div className="form-item">
                 <label for='project'>Project</label>
                 <select name="project" id="project_title"   onChange={(e) => {setevent((prevprofile)=>({...prevprofile, project_title:e.target.value}))}}>
-                    <option >Value1</option>
+                    <option >{training.project_title}</option>
                     <option >Value2</option>
                     <option >Value3</option>
                     <option >Value4</option>
@@ -261,7 +336,7 @@ function ViewTrainingDetails() {
               <div className="form-item">
                 <label for='project'>Job title</label>
                 <select name="job-title" id="job_title"   onChange={(e) => {setevent((prevprofile)=>({...prevprofile, job_title:e.target.value}))}}>
-                    <option >Value1</option>
+                    <option >{training.job_title}</option>
                     <option >Value2</option>
                     <option >Value3</option>
                     <option >Value4</option>
@@ -272,22 +347,22 @@ function ViewTrainingDetails() {
               <div className="date-setion">
               <div className="form-item">
               <label for='from-date'>From</label>
-              <input type="date" name="from-date" id="from_date"   onChange={(e) => {setevent((prevprofile)=>({...prevprofile, from_date:e.target.value}))}}/> 
+              <input type="date" name="from-date" id="from_date" defaultValue={training.from_date} onChange={(e) => {setevent((prevprofile)=>({...prevprofile, from_date:e.target.value}))}}/> 
               </div>
               <div className="form-item">
               <label for='to-date'>To</label>
-              <input type="date" name="to-date" id="to_date"   onChange={(e) => {setevent((prevprofile)=>({...prevprofile, to_date:e.target.value}))}}/>
+              <input type="date" name="to-date" id="to_date" defaultValue={training.to_date} onChange={(e) => {setevent((prevprofile)=>({...prevprofile, to_date:e.target.value}))}}/>
               </div>
               </div>
 
               <div className="date-setion">
               <div className="form-item">
               <label for='from-time'>From</label>
-              <input type="time" name="from-time" id="from_time"   onChange={(e) => {setevent((prevprofile)=>({...prevprofile, from_time:e.target.value}))}}/> 
+              <input type="time" name="from-time" id="from_time" defaultValue={training.from_time} onChange={(e) => {setevent((prevprofile)=>({...prevprofile, from_time:e.target.value}))}}/> 
               </div>
               <div className="form-item">
               <label for='to-time'>To</label>
-              <input type="time" name="to-time" id="to_time"   onChange={(e) => {setevent((prevprofile)=>({...prevprofile, to_time:e.target.value}))}}/>
+              <input type="time" name="to-time" id="to_time" defaultValue={training.to_time} onChange={(e) => {setevent((prevprofile)=>({...prevprofile, to_time:e.target.value}))}}/>
               </div>
               </div>
               
@@ -297,15 +372,16 @@ function ViewTrainingDetails() {
               </div>
               <div className="form-item">
               <label for='venue'>Venue</label>
-              <input type="text" name="venue" id="venue_name" placeholder="Enter venue name" style={{width:"100%", height:"3rem", padding:"0 1rem"}}  onChange={(e) => {setevent((prevprofile)=>({...prevprofile, venue_name:e.target.value}))}}/>
+              <input type="text" name="venue" id="venue_name" placeholder="Enter venue name" defaultValue={training.venue_name} style={{width:"100%", height:"3rem", padding:"0 1rem"}}  onChange={(e) => {setevent((prevprofile)=>({...prevprofile, venue_name:e.target.value}))}}/>
               </div>
 
               <div className="form-item">
               <label for='status'>Status</label>
               <select id='status_info'  onChange={(e) => {setevent((prevprofile)=>({...prevprofile, status:e.target.value}))}}>
-                <option >Upcoming</option>
+                <option >{training.status_info}</option>
                 <option >Complete</option>
                 <option >Uncomplete</option>
+                <option >Cancel</option>
               </select>
               </div>
 

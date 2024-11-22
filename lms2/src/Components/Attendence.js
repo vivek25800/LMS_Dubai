@@ -10,6 +10,10 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import FileUpload from "./DemoComponent/FileUpload";
 import { base_url } from "./Utils/base_url";
+import $ from "jquery";
+import "select2";
+import "select2/dist/css/select2.css"; // Optional: Include Select2 CSS
+
 
 function Attendence() {
   const [show, setShow] = useState(false);
@@ -28,7 +32,7 @@ function Attendence() {
     training_venue_atten: "",
     trainer: "",
     trainer_emp_id: "",
-    employee_id_atten: "",
+    employee_id_atten: [],
     service_provider: "",
     employee_idtwo_atten: "",
   });
@@ -123,6 +127,42 @@ function Attendence() {
     }));
   };
 
+
+  // Get training details
+  const[details, setdetails] = useState([]);
+  const get_details = async () => {
+      try {
+          const resp = await axios.get(`${base_url}/event_details_get`);      
+          setdetails(resp.data)
+      } catch (error) {
+          console.log(error);
+      }
+  }
+
+  useEffect(() => {
+    get_details();
+  }, []);
+
+
+  // Add employee to the table
+  const [employee, setemployee] = useState([]);
+  function EmployeeList(event) {
+    
+
+    const selectedEmployee = JSON.parse(event.target.value);
+    setemployee([...employee,selectedEmployee]);
+    console.log(selectedEmployee); // Logs the full object
+    setattendence({
+      ...attendence,
+      employee_id_atten:[...employee,selectedEmployee] ,
+    });
+  }
+
+  function DeleteEmployee(item) {
+    const updatedEmployees = employee.filter((item1) => item1._id !== item._id);
+    setemployee(updatedEmployees); // Update the state with the new array
+  }
+
   return (
     <div style={{ backgroundColor: "rgba(46, 7, 63, 0.1)", padding: "20px" }}>
       <Sidebar />
@@ -166,15 +206,17 @@ function Attendence() {
                   });
                 }}
               >
-                <option>Project 1</option>
-                <option>Project 2</option>
-                <option>Project 3</option>
-                <option>Project 4</option>
+               <option>-- Select Name --</option>
+                {details.map((item) => (
+                        <option key={item.training_name}>
+                          {item.training_name}
+                        </option>
+                      ))}
               </select>
             </div>
             <div className="info-div-item">
               <label>Training Type</label>
-              <input
+              {/* <input
                 type="text"
                 id="training_type_attendence"
                 onChange={(e) => {
@@ -183,11 +225,24 @@ function Attendence() {
                     training_type_attendence: e.target.value,
                   });
                 }}
-              />
+              /> */}
+              <select id="training_type_attendence" 
+                onChange={(e) => {
+                  setattendence({
+                    ...attendence,
+                    training_type_attendence: e.target.value,
+                  });
+                }}>
+                <option>-- Select Type --</option>
+                <option>Type - 1</option>
+                <option>Type - 1</option>
+                <option>Type - 1</option>
+                <option>Type - 1</option>
+              </select>
             </div>
             <div className="info-div-item">
               <label>Training Category</label>
-              <input
+              {/* <input
                 type="text"
                 id="training_category_attendence"
                 onChange={(e) => {
@@ -196,7 +251,21 @@ function Attendence() {
                     training_category_attendence: e.target.value,
                   });
                 }}
-              />
+              /> */}
+              <select id="training_category_attendence"
+                onChange={(e) => {
+                  setattendence({
+                    ...attendence,
+                    training_category_attendence: e.target.value,
+                  });
+                }}>
+                <option>-- Select Category --</option>
+                {details.map((item) => (
+                        <option key={item.training_category}>
+                          {item.training_category}
+                        </option>
+                      ))}
+              </select>
             </div>
             <div className="date-div">
               <div className="info-div-item">
@@ -268,14 +337,16 @@ function Attendence() {
                   });
                 }}
               >
-                <option>Venue 1</option>
-                <option>Venue 2</option>
-                <option>Venue 3</option>
-                <option>Venue 4</option>
-                <option>Venue 5</option>
+                <option>-- Select Venue --</option>
+                {details.map((item) => (
+                        <option key={item.venue_name}>
+                          {item.venue_name}
+                        </option>
+                      ))}
               </select>
             </div>
-
+            
+            <div>
             <div className="info-div-item">
               <label>Trainer</label>
               <select
@@ -284,13 +355,13 @@ function Attendence() {
                 id="trainer"
                 onChange={getTrainer}
               >
-                <option>-- Select --</option>
+                <option>-- Select Trainer --</option>
                 <option>If Internal</option>
                 <option>If External</option>
               </select>
             </div>
             <div
-              className="info-div-item"
+              className="info-div-item trainer-div"
               style={{ display: "none" }}
               id="employee-div"
             >
@@ -302,13 +373,20 @@ function Attendence() {
                   });
                 }} />
               <label>Employee's Id</label>
-              <input
+              <select onChange={ EmployeeList } id="employee_id_atten">
+                      <option>Select Employee</option>
+                      {data.map((item) => (
+                        <option key={item.employee_id} value={JSON.stringify(item)}>
+                          {item.employee_id} - {item.employee_name}
+                        </option>
+                      ))}
+                    </select>
+              {/* <input
                 type="text"
                 id="employee_id_atten"
                 placeholder="Enter employee Ids..."
                 value={inputValue}
-                onChange={handleChange} // Handle change for both input value and attendance state
-                
+                onChange={handleChange} // Handle change for both input value and attendance state       
               />
               <div style={{ marginTop: "10px" }}>
                 {employeeIds.map((id, index) => (
@@ -324,12 +402,46 @@ function Attendence() {
                     </span>
                   </div>
                 ))}
-              </div>
+              </div> */}
               <label>Upload bulk employee</label>
               <FileUpload/>
+
+              <div className='all-added-employee-list'>
+                  <h5 style={{marginBottom:"1.5rem"}}>Employee's details list</h5>
+
+                  <div className='employee-lists'>
+                    <table id="employeeTable" className="table table-striped table-bordered" style={{ fontSize: '14px' }}>
+                      <thead>
+                        <tr>
+                          <th>Sr. No.</th>
+                          <th>Employee Name</th>
+                          <th>Employee ID</th>
+                          <th>Date of join</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                    {
+                      employee.map((item,index)=>
+                      (
+                        <tr>
+                          <td>{index+1}</td>
+                          <td>{item.employee_name}</td>
+                          <td>{item.employee_id}</td>
+                          <td>{item.date_of_join}</td>
+                          <td>
+                            <button onClick={() => DeleteEmployee(item)}>Delete</button>
+                          </td>
+                        </tr>
+                      ))
+                    }
+                      </tbody>
+                    </table>
+                  </div>
+              </div>
             </div>
             <div
-              className="info-div-item"
+              className="info-div-item trainer-div"
               style={{ display: "none" }}
               id="service-provider"
             >
@@ -345,11 +457,13 @@ function Attendence() {
                   });
                 }}
               >
+                <option>-- Select Service Provider --</option>
                 <option>Provider 1</option>
                 <option>Provider 2</option>
                 <option>Provider 3</option>
                 <option>Provider 4</option>
               </select>
+            </div>
             </div>
 
             <div className="info-div-item" id="">
@@ -369,33 +483,8 @@ function Attendence() {
                   <option>{emp.employee_id}</option>
                 ))}
               </select>
-            </div>
+            </div>      
           </div>
-
-          <div className='all-users-list'>
-                <table id="employeeTable" className="table table-striped table-bordered" style={{ fontSize: '14px' }}>
-                    <thead style={{}}>
-                        <tr style={{borderTop: "none"}}>
-                            <th style={{paddingRight: "5rem"}}>Id</th>
-                            <th style={{paddingRight: "10rem"}}>Name</th>
-                            <th style={{paddingRight: "5rem"}}>Job title</th>
-                            <th style={{paddingRight: "5rem"}}>Date of join</th>
-                            <th>Delete Employee</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                       <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                       </tr>
-                    </tbody>
-
-                </table>
-            </div>
 
           <div className="upload-btn" style={{ width: "5rem" }}>
             <button

@@ -169,6 +169,12 @@ ul li {
                 </button>
               </div>
               <div className='dash-options'>
+              <i class="fa-solid fa-layer-group"></i>
+                <button className='dropdown-toggle-button menu-btn'> 
+                <MenuItem label="View OJT, OJA and INA" link="/viewOjtOjaIna" />
+                </button>
+              </div>
+              <div className='dash-options'>
               <Assessment/>
                 <button className='dropdown-toggle-button menu-btn'> 
                 <MenuItem label="Assessment" link="/assessment" />
