@@ -7,6 +7,7 @@ import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import { base_url } from '../Utils/base_url';
 import { NavLink } from 'react-router-dom';
+import DuplicateAssessment from './DuplicateAssessment';
 
 function CreateAssessment() {
     const [title, setTitle] = useState('');
@@ -186,6 +187,7 @@ text-decoration: none;
                             <button onClick={() => setQuestionType('mcq')}>Multiple Choice Questions</button>
                             <button onClick={() => setQuestionType('text')}>Text type questions</button>
                             <button onClick={() => setQuestionType('match')}>Match the following</button>
+                            <button onClick={() => setQuestionType('duplicate')}>Duplicate</button>
                         </div>
                     </div>
 
@@ -198,6 +200,9 @@ text-decoration: none;
                     )}
                     {selectedQuestionType === 'match' && (
                         <MatchTheFollowingForm addQuestion={addNewQuestion} />
+                    )}
+                    {selectedQuestionType === 'duplicate' && (
+                        <DuplicateAssessment addQuestion={addNewQuestion} />
                     )}
 
                     {/* Button to Add New Question */}

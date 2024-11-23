@@ -208,6 +208,7 @@ function TextQuize({ index, onDelete, onChange }) {
                 onChange={(e) => handleOptionChange(idx, e.target.value)}
                 placeholder={`Answer options ${idx + 1}`}
                 style={{ width: '100%', height: answerType === 'short' ? 'auto' : '100px' }}
+                disabled
               />
             </div>
             <button className="desc-del-btn" onClick={() => removeOption(idx)}>
@@ -292,14 +293,14 @@ function TextQuize({ index, onDelete, onChange }) {
 
       {/* Footer Controls */}
       <div className="footer-controls">
-        <div className="control-item">
+        {/* <div className="control-item">
           <label>Points:</label>
           <input
             type="number"
             value={points}
             onChange={(e) => setPoints(Number(e.target.value))}
           />
-        </div>
+        </div> */}
 
         {/* <div className="control-item">
           <Form>
@@ -323,7 +324,7 @@ function TextQuize({ index, onDelete, onChange }) {
               onChange={(e) => setMultipleAnswers(e.target.checked)}
             />
           </Form>
-        </div>
+        </div> */}
 
         <div className="control-item">
           <Form>
@@ -335,7 +336,7 @@ function TextQuize({ index, onDelete, onChange }) {
               onChange={(e) => setRequired(e.target.checked)}
             />
           </Form>
-        </div> */}
+        </div>
       </div>
     </div>
     </div>

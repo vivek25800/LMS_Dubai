@@ -60,6 +60,7 @@ const DateQuestionForm = () => {
               className="answer-input"
               style={{ width: '100%' }}
               placeholder='Answer option'
+              disabled
             />
           </div>
         </div>

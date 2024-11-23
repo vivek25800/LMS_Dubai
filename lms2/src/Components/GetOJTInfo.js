@@ -273,20 +273,20 @@ const GetOJTInfo = ({ options1 }) => {
                         </tr>
                       </thead>
                       <tbody>
-                    {
-                      employee.map((item,index)=>
-                      (
-                        <tr>
-                          <td>{index+1}</td>
-                          <td>{item.employee_name}</td>
-                          <td>{item.employee_id}</td>
-                          <td>{item.project_name}</td>
-                          <td>
-                            <button onClick={() => DeleteEmployee(item)}>Delete</button>
-                          </td>
-                        </tr>
-                      ))
-                    }
+                          {
+                            employee.map((item,index)=>
+                            (
+                              <tr>
+                                <td>{index+1}</td>
+                                <td>{item.employee_name}</td>
+                                <td>{item.employee_id}</td>
+                                <td>{item.project_name}</td>
+                                <td>
+                                  <button onClick={() => DeleteEmployee(item)}>Delete</button>
+                                </td>
+                              </tr>
+                            ))
+                          }
                       </tbody>
                     </table>
                   </div>

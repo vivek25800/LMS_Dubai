@@ -205,6 +205,7 @@ function QuestionTextForm({ index, onDelete, onChange }) {
                 onChange={(e) => handleOptionChange(idx, e.target.value)}
                 placeholder={`Answer options ${idx + 1}`}
                 style={{ width: '100%', height: answerType === 'short' ? 'auto' : '100px' }}
+                disabled
               />
             </div>
             <button className="desc-del-btn" onClick={() => removeOption(idx)}>

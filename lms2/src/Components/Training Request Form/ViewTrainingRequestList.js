@@ -1,8 +1,41 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Sidebar from '../Sidebar'
 import Header from '../Header'
+import axios from 'axios';
+import { base_url } from '../Utils/base_url';
 
 function ViewTrainingRequestList() {
+
+    const [trainingRequest, setTrainingRequest] = useState([]);
+    const fetchTrainingRequest = async () => {
+        try {
+            const resp = await axios.get(`${base_url}/get_trainingrequestdata`);
+            console.log(resp);
+            setTrainingRequest(resp.data.trainingRequest_form);
+            // const employee_data = resp.data.trainingRequest_form.
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const [employee, setemployee] = useState('');
+    const fetchTrainingById = async (_id) => {
+        try {
+            const id = _id;
+            const resp = await axios.get(`${base_url}/get_trainingByID/${id}`);
+            setemployee(resp.data.trainingRequest_form.employees_ids);
+            console.log(employee);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        fetchTrainingRequest(); 
+        fetchTrainingById();
+    }, []);
+
+
   return (
     <div>
 
@@ -65,16 +98,20 @@ function ViewTrainingRequestList() {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>12345</td>
-                                    <td>Vivek Gupta</td>
-                                    <td>Jarvis</td>
-                                    <td>Taken</td>
-                                    <td>02-07-2025</td>
-                                    <td>Yes</td>
-                                    <td>Very Excited for it.</td>
-                                </tr>
+                                {
+                                   Array.isArray(trainingRequest) ? trainingRequest.map((item, index) => (
+                                        <tr>
+                                            <td>{index+1}</td>
+                                            <td></td>
+                                            <td>{item.request_raised_by}</td>
+                                            <td>{item.training_title}</td>
+                                            <td></td>
+                                            <td>{item.target_date}</td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                   )) : []
+                                }
                             </tbody>
                         </table>
                     </div>

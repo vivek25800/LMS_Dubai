@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Sidebar from '../Sidebar';
 import Header from '../Header';
 import axios from 'axios';
@@ -9,16 +9,13 @@ function TrainingRequestForm() {
 
     const [trainingRequest, setTrainingRequest] = useState({
         request_raised_by: "", project: "", training_category: "", 
-        training_title: "", budget_code: "", target_date: "", employees_ids: []
+        training_title: "", budget_code: "", target_date: "", employees_ids: [], totalEmployee: "",
     });
 
     const saveTrainingRequestdata = async () => {
         try {
             // Include employee IDs in the trainingRequest state
-            const resp = await axios.post(`${base_url}/training_request_form`, {
-                ...trainingRequest,
-                employees_ids: employeeIds  // Use employeeIds state for employee IDs
-            });
+            const resp = await axios.post(`${base_url}/training_request_form`, trainingRequest);
             if (resp.status === 200) {
                 toast.success('Training request data are saved', { autoClose: 2000 });
                 clearForm();
@@ -32,27 +29,27 @@ function TrainingRequestForm() {
         }
     };
 
-    const [inputValue, setInputValue] = useState("");
-    const [employeeIds, setEmployeeIds] = useState([]);
+    // const [inputValue, setInputValue] = useState("");
+    // const [employeeIds, setEmployeeIds] = useState([]);
      const [showApprovalMessage, setShowApprovalMessage] = useState(false);
 
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter" || e.key === ",") {
-            e.preventDefault();
-            if (inputValue.trim()) {
-                const updatedIds = [...employeeIds, inputValue.trim()];
-                setEmployeeIds(updatedIds);
-                // setTrainingRequest({ ...trainingRequest, employees_ids: updatedIds }); // Update the state with employee IDs
-                setInputValue(""); // Clear the input field
-            }
-        }
-    };
+    // const handleKeyDown = (e) => {
+    //     if (e.key === "Enter" || e.key === ",") {
+    //         e.preventDefault();
+    //         if (inputValue.trim()) {
+    //             const updatedIds = [...employeeIds, inputValue.trim()];
+    //             setEmployeeIds(updatedIds);
+    //             // setTrainingRequest({ ...trainingRequest, employees_ids: updatedIds }); // Update the state with employee IDs
+    //             setInputValue(""); // Clear the input field
+    //         }
+    //     }
+    // };
 
-    const handleDeleteEmployee = (indexToDelete) => {
-        const updatedIds = employeeIds.filter((_, index) => index !== indexToDelete);
-        setEmployeeIds(updatedIds);
-        setTrainingRequest({ ...trainingRequest, employees_ids: updatedIds }); // Update the state after deletion
-    };
+    // const handleDeleteEmployee = (indexToDelete) => {
+    //     const updatedIds = employeeIds.filter((_, index) => index !== indexToDelete);
+    //     setEmployeeIds(updatedIds);
+    //     setTrainingRequest({ ...trainingRequest, employees_ids: updatedIds }); // Update the state after deletion
+    // };
 
      // Function to clear the form fields
      const clearForm = () => {
@@ -65,8 +62,8 @@ function TrainingRequestForm() {
             budget_code: "",
             target_date: "",
         });
-        setEmployeeIds([]); // Clear employee IDs
-        setInputValue("");  // Clear the input field for employee ID
+        // setEmployeeIds([]); // Clear employee IDs
+        // setInputValue("");  // Clear the input field for employee ID
         setShowApprovalMessage(false);
     };
 
@@ -82,6 +79,40 @@ function TrainingRequestForm() {
         }
     };
 
+
+    const [options, setOptions] = useState([]);
+    const fetchOptions = async () => {
+      try {
+        const response = await axios.get(`${base_url}/employee_details_get`);
+        setOptions(response.data.employee);
+        console.log(options);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    useEffect(() => {
+        fetchOptions();
+    }, []);
+
+    // Get Employee Id's
+    const [employee, setemployee] = useState([]);
+    function EmployeeList(event) {
+        const selectedEmployee = JSON.parse(event.target.value);
+        setemployee([...employee,selectedEmployee]);
+        console.log(selectedEmployee); // Logs the full object
+        const employee_lenght = employee.length+1;
+        setTrainingRequest({...trainingRequest, employees_ids:[...employee, selectedEmployee], totalEmployee: employee_lenght}); 
+        // setTrainingRequest({...trainingRequest, totalEmployee: employee_lenght});
+        // console.log(employee_lenght);
+    }
+
+    function DeleteEmployee(item) {
+        const updatedEmployees = employee.filter((item1) => item1._id !== item._id);
+        setemployee(updatedEmployees); // Update the state with the new array
+    }
+
+    console.log(trainingRequest.totalEmployee);
 
     return (
         <div>
@@ -117,18 +148,26 @@ function TrainingRequestForm() {
                 .create-btn:hover {
                     background-color: #2E073F;
                 }
+                    .raised-by-div{
+                    border: 2px solid rgba(0,0,0,0.2);
+                    width: 90%;
+                    margin: 2rem auto;
+                    border-radius: 10px;
+                    padding: 2rem;
+                    }
                 .employee-info-raised-by {
                     display: flex;
                     justify-content: space-between;
-                    width: 90%;
-                    margin: 2rem auto;
-                    border: 2px solid rgba(0,0,0,0.2);
-                    padding: 2rem;
-                    border-radius: 10px;
+                    // width: 90%;
+                    // margin: 2rem auto;
+                    // border: 2px solid rgba(0,0,0,0.2);
                 }
                 .employee-info-raised-by .info-div-item {
                     width: 48%;
                 }
+                    .added-employee-div{
+                    margin-top: 2rem;
+                    }
                 .add-btn-div {
                     padding-top: 1.5rem;
                 }
@@ -203,6 +242,7 @@ function TrainingRequestForm() {
 
                         <div className='create-cat-form'>
                             <div className='cat-data'>
+                                <div className='raised-by-div'>
                                 <div className='employee-info-raised-by'>
                                     <div className="info-div-item">
                                         <label>Request raised by</label>
@@ -217,15 +257,23 @@ function TrainingRequestForm() {
 
                                     <div className="info-div-item">
                                         <label>Add Employees</label>
-                                        <input
+                                        <select id='employees_ids' onChange={ EmployeeList }>
+                                            <option>-- Select Employee --</option>
+                                            {options.map((item) => (
+                                                <option key={item.employee_id} value={JSON.stringify(item)}>
+                                                    {item.employee_id} - {item.employee_name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        {/* <input
                                             type='text'
                                             id='employees_ids'
                                             placeholder='Enter Employees ID'
                                             value={inputValue}
                                             onChange={(e) => setInputValue(e.target.value)}
-                                            onKeyDown={handleKeyDown}
-                                        />
-                                        <ul className="employee-id-list">
+                                            // onKeyDown={handleKeyDown}
+                                        /> */}
+                                        {/* <ul className="employee-id-list">
                                             {employeeIds.map((id, index) => (
                                                 <li key={index}>
                                                     {id}
@@ -235,7 +283,39 @@ function TrainingRequestForm() {
                                                     </button>
                                                 </li>
                                             ))}
-                                        </ul>
+                                        </ul> */}
+                                    </div>
+                                </div>
+
+                                    <div className='added-employee-div'>
+                                        <h6>Added employee's</h6>
+
+                                        <div className='employee-list'>
+                                            <table id="employeeTable" className="table table-striped table-bordered" style={{ fontSize: '14px' }}>
+                                                <thead>
+                                                    <tr>
+                                                    <th>Sr. No.</th>
+                                                    <th>Employee Name</th>
+                                                    <th>Employee ID</th>
+                                                    <th>Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        employee.map((item, index) => (
+                                                            <tr>
+                                                                <td>{index+1}</td>
+                                                                <td>{item.employee_name}</td>
+                                                                <td>{item.employee_id}</td>
+                                                                <td>
+                                                                    <button onClick={() => DeleteEmployee(item)}>Delete</button>
+                                                                </td>
+                                                            </tr>
+                                                        ))
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
 

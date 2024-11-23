@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const trainingRequestForm = new mongoose.Schema({
     request_raised_by:{type:String},
-    employees_ids:{type:[String]},
+    employees_ids:{type:Array},
     project:{type:String},
     training_category:{type:String},
     training_title:{type:String},
