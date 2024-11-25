@@ -16,12 +16,12 @@ import "select2/dist/css/select2.css"; // Optional: Include Select2 CSS
 
 
 function Attendence() {
-  const [show, setShow] = useState(false);
+  // const [show, setShow] = useState(false);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  // const handleClose = () => setShow(false);
+  // const handleShow = () => setShow(true);
 
-  const [attendence, setattendence] = useState({
+  const initialAttendenceState = {
     training_name_attendence: "",
     training_type_attendence: "",
     training_category_attendence: "",
@@ -34,8 +34,9 @@ function Attendence() {
     trainer_emp_id: "",
     employee_id_atten: [],
     service_provider: "",
-    employee_idtwo_atten: "",
-  });
+  };
+
+  const [attendence, setattendence] = useState(initialAttendenceState);
 
   const attendence_details_infoget = async () => {
     try {
@@ -45,9 +46,7 @@ function Attendence() {
       );
       if (resp.status === 200) {
         toast.success("Attendence is marked.", { autoClose: 2000 });
-        setTimeout(() => {
-          handleShow();
-        }, 3000);
+        setattendence(initialAttendenceState); // Reset the form fields
       }
     } catch (error) {
       console.log(error);
@@ -147,8 +146,6 @@ function Attendence() {
   // Add employee to the table
   const [employee, setemployee] = useState([]);
   function EmployeeList(event) {
-    
-
     const selectedEmployee = JSON.parse(event.target.value);
     setemployee([...employee,selectedEmployee]);
     console.log(selectedEmployee); // Logs the full object
@@ -407,7 +404,7 @@ function Attendence() {
               <FileUpload/>
 
               <div className='all-added-employee-list'>
-                  <h5 style={{marginBottom:"1.5rem"}}>Employee's details list</h5>
+                  <h5 style={{marginBottom:"1.5rem"}}>All added employee's list</h5>
 
                   <div className='employee-lists'>
                     <table id="employeeTable" className="table table-striped table-bordered" style={{ fontSize: '14px' }}>
@@ -466,7 +463,7 @@ function Attendence() {
             </div>
             </div>
 
-            <div className="info-div-item" id="">
+            {/* <div className="info-div-item" id="">
               <label>Employee Id</label>
               <select
                 className="employee-id"
@@ -483,7 +480,7 @@ function Attendence() {
                   <option>{emp.employee_id}</option>
                 ))}
               </select>
-            </div>      
+            </div>       */}
           </div>
 
           <div className="upload-btn" style={{ width: "5rem" }}>
@@ -501,7 +498,7 @@ function Attendence() {
           </div>
         </div>
       </section>
-      <Modal show={show} onHide={handleClose}>
+      {/* <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Modal heading</Modal.Title>
         </Modal.Header>
@@ -514,7 +511,7 @@ function Attendence() {
             Save Changes
           </Button>
         </Modal.Footer>
-      </Modal>
+      </Modal> */}
       <ToastContainer />
     </div>
   );

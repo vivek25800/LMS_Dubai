@@ -82,6 +82,30 @@ function TrainingCalenderForm() {
     trainersdetails(); // Assuming this is a function
   }, []);
   console.log(trainers);
+
+
+  // const [event, setEvent] = useState({ from_date: "", to_date: "" });
+
+  // Function to format the date as "dd-mm-yyyy"
+  const formatDate = (dateString) => {
+    if (!dateString) return ""; // Handle empty input
+    const [year, month, day] = dateString.split("-");
+    return `${day}-${month}-${year}`;
+  };
+
+  // Function to handle the "from_date" input
+  const handleFromDateChange = (e) => {
+    const isoDate = e.target.value; // yyyy-mm-dd format from the input
+    const formattedDate = formatDate(isoDate);
+    setevent({ ...event, from_date: formattedDate });
+  };
+
+  // Function to handle the "to_date" input
+  const handleToDateChange = (e) => {
+    const isoDate = e.target.value; // yyyy-mm-dd format from the input
+    const formattedDate = formatDate(isoDate);
+    setevent({ ...event, to_date: formattedDate });
+  };
   
   
   return (
@@ -178,14 +202,33 @@ function TrainingCalenderForm() {
                   </select>
               </div>
               <div className="date-setion">
-              <div className="form-item">
+              {/* <div className="form-item">
               <label for='from-date'>From</label>
               <input type="date" name="from-date" id="from_date"  onChange={(e) => {setevent({...event, from_date:e.target.value})}} />
               </div>
               <div className="form-item">
               <label for='to-date'>To</label>
               <input type="date" name="to-date" id="to_date"  onChange={(e) => {setevent({...event, to_date:e.target.value})}} />
-              </div>
+              </div> */}
+
+                  <div className="form-item">
+                  <label htmlFor="from-date">From</label>
+                  <input
+                    type="date"
+                    name="from-date"
+                    id="from_date"
+                    onChange={handleFromDateChange}
+                  />
+                </div>
+                <div className="form-item">
+                  <label htmlFor="to-date">To</label>
+                  <input
+                    type="date"
+                    name="to-date"
+                    id="to_date"
+                    onChange={handleToDateChange}
+                  />
+                </div>      
               </div>
 
               <div className="date-setion">

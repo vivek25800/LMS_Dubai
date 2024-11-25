@@ -8,6 +8,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import { base_url } from "./Utils/base_url";
 
 function AddNomination({selectedTraining}) {
+
   useEffect(() => {
     get_details();
   }, []);

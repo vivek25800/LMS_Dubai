@@ -191,14 +191,14 @@ function QuestionTextForm({ index, onChange }) {
       </div>
 
       {/* Subtitle Input */}
-      <div className="subtitle-input">
+      {/* <div className="subtitle-input">
         <input
           type="text"
           value={subtitle}
           onChange={(e) => setSubtitle(e.target.value)}
           placeholder="Enter a subtitle (optional)"
         />
-      </div>
+      </div> */}
 
       {/* Options List */}
       <div className="options-list">

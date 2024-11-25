@@ -324,17 +324,22 @@ import { FaUpload } from 'react-icons/fa';
 import axios from 'axios';
 import { IconButton } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+import { toast } from 'react-toastify';
 
 const QuestionForm = () => {
   const [visible, setVisible] = useState(true); // State to control visibility
   const [question, setQuestion] = useState('');
   const [subtitle, setSubtitle] = useState('');
-  const [options, setOptions] = useState([{ text: '', correct: false }]);
-  const [points, setPoints] = useState(0);
+  const [options, setOptions] = useState([
+    { text: '', correct: false },
+    { text: "", correct: false },
+  ]);
+  const [points, setPoints] = useState(1);
   const [multipleAnswers, setMultipleAnswers] = useState(false);
-  const [submissionStatus, setSubmissionStatus] = useState(null);
+  // const [submissionStatus, setSubmissionStatus] = useState(null);
   const [mainCategory, setMainCategory] = useState('');
   const [subCategory, setSubCategory] = useState('');
+  const [correctAnswers, setCorrectAnswers] = useState([]); // Correct answers array
 
   const handleOptionChange = (idx, value) => {
     const newOptions = [...options];
@@ -342,11 +347,48 @@ const QuestionForm = () => {
     setOptions(newOptions);
   };
 
-  const toggleCorrect = (idx) => {
-    const newOptions = [...options];
-    newOptions[idx].correct = !newOptions[idx].correct;
-    setOptions(newOptions);
-  };
+    // Toggle correct answer
+    const toggleCorrect = (idx) => {
+      const updatedOptions = [...options];
+      const correctCount = updatedOptions.filter((opt) => opt.correct).length;
+  
+      // If "Multiple answers" is off, reset other correct options
+      if (!multipleAnswers) {
+        updatedOptions.forEach((opt, index) => (opt.correct = index === idx));
+      } else {
+        // If "Multiple answers" is on, enforce points limit
+        if (!updatedOptions[idx].correct && correctCount >= points) {
+          toast.error(`You can select up to ${points} correct answers.`, {autoClose: 2000});
+          return;
+        }
+        updatedOptions[idx].correct = !updatedOptions[idx].correct;
+      }
+  
+      setOptions(updatedOptions);
+    };
+
+      // Handle points and adjust correct answers inputs
+      const handlePointsChange = (value) => {
+        const newPoints = Math.min(Number(value), options.length);
+        setPoints(newPoints);
+    
+        // Adjust correct answers inputs
+        const updatedCorrectAnswers = [...correctAnswers];
+        while (updatedCorrectAnswers.length < newPoints) {
+          updatedCorrectAnswers.push(0); // Default value for numeric inputs
+        }
+        while (updatedCorrectAnswers.length > newPoints) {
+          updatedCorrectAnswers.pop();
+        }
+        setCorrectAnswers(updatedCorrectAnswers);
+      };
+    
+      // Update specific correct answer
+      const handleCorrectAnswerChange = (idx, value) => {
+        const updatedCorrectAnswers = [...correctAnswers];
+        updatedCorrectAnswers[idx] = Number(value); // Ensure numeric input
+        setCorrectAnswers(updatedCorrectAnswers);
+      };
 
   const addOption = () => {
     setOptions([...options, { text: '', correct: false }]);
@@ -362,6 +404,11 @@ const QuestionForm = () => {
   };
 
   if (!visible) return null; // If visible is false, do not render the component
+
+
+
+  // const [isMultipleAnswers, setIsMultipleAnswers] = useState(false); // State to track switch state
+  // const [points, setPoints] = useState(0); // State for points
 
   return (
     <div className='main-container-div'>
@@ -497,31 +544,31 @@ const QuestionForm = () => {
         </div>
 
         <div className="options-list">
-          {options.map((option, idx) => (
-            <div className="option-item" key={idx}>
+        {options.map((option, idx) => (
+          <div className="option-item" key={idx}>
+            <input
+              type="checkbox"
+              checked={option.correct}
+              onChange={() => toggleCorrect(idx)}
+            />
+            <div style={{ display: "flex", alignItems: "center" }}>
               <input
-                type="checkbox"
-                checked={option.correct}
-                onChange={() => toggleCorrect(idx)}
+                type="text"
+                value={option.text}
+                onChange={(e) => handleOptionChange(idx, e.target.value)}
+                placeholder={`Option ${idx + 1}`}
               />
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <input
-                  type="text"
-                  value={option.text}
-                  onChange={(e) => handleOptionChange(idx, e.target.value)}
-                  placeholder={`Option ${idx + 1}`}
-                />
-                <FaUpload className="upload-icon" title="Upload Image" />
-              </div>
-              <button className="desc-del-btn" onClick={() => removeOption(idx)}>
-                <i className="fa-regular fa-trash-can"></i>
-              </button>
+              <FaUpload className="upload-icon" title="Upload Image" />
             </div>
-          ))}
-          <button className="add-option-btn" onClick={addOption}>
-            <i className="fa-solid fa-plus"></i> Add Option
-          </button>
-        </div>
+            <button className="desc-del-btn" onClick={() => removeOption(idx)}>
+              <i className="fa-regular fa-trash-can"></i>
+            </button>
+          </div>
+        ))}
+        <button className="add-option-btn" onClick={addOption}>
+          <i className="fa-solid fa-plus"></i> Add Option
+        </button>
+      </div>
 
         <div className="dropdowns">
           <div>
@@ -549,34 +596,54 @@ const QuestionForm = () => {
         </div>
 
         <div className="footer-controls">
-          <div className="control-item">
-            <label>Points:</label>
-            <input
-              type="number"
-              value={points}
-              onChange={(e) => setPoints(Number(e.target.value))}
-            />
-          </div>
-          <div className="control-item">
-            <label>Correct answers:</label>
-            <input
-              type="number"
-              value={points}
-              onChange={(e) => setPoints(Number(e.target.value))}
-            />
-          </div>
-          {/* <div className="control-item">
-            <Form>
-              <Form.Check
-                type="switch"
-                id="multiple-switch"
-                label="Multiple answers:"
-                checked={multipleAnswers}
-                onChange={(e) => setMultipleAnswers(e.target.checked)}
-              />
-            </Form>
-          </div> */}
+        <div className="control-item">
+          <label>Points:</label>
+          <input
+            type="number"
+            value={points}
+            min={1}
+            max={options.length}
+            onChange={(e) => handlePointsChange(e.target.value)}
+          />
         </div>
+        <div className="control-item">
+          <Form>
+            <Form.Check
+              type="switch"
+              id="custom-switch"
+              label="Multiple answers:"
+              checked={multipleAnswers}
+              onChange={(e) => {
+                setMultipleAnswers(e.target.checked);
+                // Reset selections if switching to single answer mode
+                if (!e.target.checked) {
+                  const updatedOptions = [...options];
+                  updatedOptions.forEach((opt, index) => {
+                    opt.correct = index === updatedOptions.findIndex((opt) => opt.correct);
+                  });
+                  setOptions(updatedOptions);
+                  setCorrectAnswers([]); // Clear correct answers input
+                }
+              }}
+            />
+          </Form>
+        </div>
+
+        {/* Correct answers inputs, visible only when multipleAnswers is ON */}
+        {multipleAnswers && (
+          <div className="control-item">
+            <label>Correct Answers:</label>
+            
+              <input
+                type="number"
+                min={1}
+                max={options.length}
+                onChange={(e) => handleCorrectAnswerChange( e.target.value)}
+              />
+            
+          </div>
+        )}
+      </div>
       </div>
     </div>
   );

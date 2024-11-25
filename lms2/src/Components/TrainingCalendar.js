@@ -456,13 +456,93 @@ const TrainingCalendar = () => {
               </div>
               </div>
               
-              <div className="form-item">
+              {/* <div className="form-item">
               <label for='participents'>No of participents</label>
               <input type="text" name="participents" id="participents" placeholder="No. of participents" defaultValue={training.participents} style={{width:"100%", height:"3rem", padding:"0 1rem"}}   onChange={(e) => {setevent((prevprofile)=>({...prevprofile, participents:e.target.value}))}}/>
               </div>
               <div className="form-item">
               <label for='venue'>Venue</label>
               <input type="text" name="venue" id="venue_name" placeholder="Enter venue name" defaultValue={training.venue_name} style={{width:"100%", height:"3rem", padding:"0 1rem"}}  onChange={(e) => {setevent((prevprofile)=>({...prevprofile, venue_name:e.target.value}))}}/>
+              </div> */}
+
+<div className="form-item">
+              <label for='participents'>No of participents</label>
+              {/* <input type="text" name="participents" id="participents" placeholder="No. of participents" defaultValue={training.participents} style={{width:"100%", height:"3rem", padding:"0 1rem"}}   onChange={(e) => {setevent((prevprofile)=>({...prevprofile, participents:e.target.value}))}}/> */}
+              <select
+                  name="participents"
+                  id="participents"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setevent({
+                      ...event,
+                      participentsType: value,
+                      
+                      participents: value === "Define" ? "" : value, // Set to empty if "Define" is selected
+                    });
+                  }}
+                 
+                >
+                  <option>---Select---</option>
+                  <option>Open</option>
+                  <option>Define</option>
+                </select>
+
+                {event.participentsType === "Define" && (
+                        <input
+                          type="num"
+                          name="participents-input"
+                          id="participents-input"
+                          defaultValue={training.participents}
+                          placeholder="Enter number of participants"
+                          style={{ width: "100%", height: "3rem", padding: "0 1rem", marginTop: "0.5rem" }}
+                          // onChange={(e) => {
+                          //   setevent({
+                          //     ...event,
+                          //     participents: e.target.value, // Update the participants in the state
+                          //   });
+                          // }}
+                          onChange={(e) => {setevent((prevprofile)=>({...prevprofile, participents:e.target.value}))}}
+                        />
+                      )}
+              </div>
+              <div className="form-item">
+              <label for='venue'>Venue</label>
+              {/* <input type="text" name="venue" id="venue_name" placeholder="Enter venue name" defaultValue={training.venue_name} style={{width:"100%", height:"3rem", padding:"0 1rem"}}  onChange={(e) => {setevent((prevprofile)=>({...prevprofile, venue_name:e.target.value}))}}/> */}
+
+              <select
+                  name="venue"
+                  id="venue_name"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setevent({
+                      ...event,
+                      venuetype: value,
+                      venue_name: value === "Define" ? "" : value, // Set to empty if "Define" is selected
+                    });
+                  }}
+                >
+                  <option>---Select---</option>
+                  <option>Open</option>
+                  <option>Define</option>
+                </select>
+
+                {event.venuetype === "Define" && (
+                        <input
+                          type="text"
+                          name="venue-input"
+                          id="venue-input"
+                          defaultValue={training.venue_name}
+                          placeholder="Enter Venue"
+                          style={{ width: "100%", height: "3rem", padding: "0 1rem", marginTop: "0.5rem" }}
+                          // onChange={(e) => {
+                          //   setevent({
+                          //     ...event,
+                          //     venue_name: e.target.value, // Update the participants in the state
+                          //   });
+                          // }}
+                          onChange={(e) => {setevent((prevprofile)=>({...prevprofile, venue_name:e.target.value}))}}
+                        />
+                      )}
               </div>
 
               <div className="form-item">

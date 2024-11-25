@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { base_url } from "./Utils/base_url";
+import Select from "react-select";
 
 function ConductingOJA() {
   const [ojaTitles, setOjaTitles] = useState([]); // Stores all OJA titles
@@ -72,19 +73,32 @@ function ConductingOJA() {
 
   // Function to calculate the final overall score
   const calculateFinalScore = () => {
-    // if (!selectedOja || selectedOja.activities.length === 0) return "N/A";
-
-    // const allRatings = selectedOja.activities.flatMap(activity =>
-    //   activity.content.map(content => content.rating)
-    // ).filter(rating => rating); // Remove any undefined ratings
-
-    // if (allRatings.length === 0) return "N/A";
-    
-    // const sum = allRatings.reduce((total, rating) => total + Number(rating), 0);
-    // const avg = sum / allRatings.length;
-    // const percentage = (avg / ratingRange.length) * 100; // Adjust based on range
-    // return `${percentage.toFixed(2)}%`;
+    // Check if selectedOja or its activities are undefined/null
+    if (!selectedOja || !selectedOja.activities || selectedOja.activities.length === 0) {
+      return "N/A";
+    }
+  
+    // Safely access nested properties using flatMap and filter
+    const allRatings = selectedOja.activities.flatMap((activity) =>
+      activity.content?.map((content) => content.rating) || [] // Ensure content exists or return an empty array
+    ).filter((rating) => rating !== undefined); // Remove undefined ratings
+  
+    // Check if there are no valid ratings
+    if (allRatings.length === 0) {
+      return "N/A";
+    }
+  
+    // Safely calculate sum and average
+    const sum = allRatings.reduce((total, rating) => total + Number(rating), 0);
+    const avg = sum / allRatings.length;
+  
+    // Check if ratingRange exists and has a length, otherwise default to 1 to avoid division by zero
+    const rangeLength = ratingRange?.length || 1;
+    const percentage = (avg / rangeLength) * 100;
+  
+    return `${percentage.toFixed(2)}%`;
   };
+  
 
   // Handle form submission and save data to the database
   const handleSubmit = async () => {
@@ -97,6 +111,51 @@ function ConductingOJA() {
       toast.error('Failed to update OJA');
     }
   };
+
+
+
+  const [options, setOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedEmployees, setSelectedEmployees] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+
+    // Fetch options from the backend
+    const fetchOptions = async () => {
+      try {
+        const response = await axios.get(`${base_url}/employee_details_get`);
+        const formattedOptions = response.data.employee.map((emp) => ({
+          value: emp.employee_id,
+          label: `${emp.employee_id} - ${emp.employee_name}`,
+          details: emp, // Add full details to use later
+        }));
+        setOptions(formattedOptions);
+      } catch (error) {
+        console.error("Error fetching employee data:", error);
+      }
+    };
+  
+    useEffect(() => {
+      fetchOptions();
+    }, []);
+  
+    // Add selected employee to the table
+    const handleAddEmployee = () => {
+      if (selectedEmployees.length >= 1) {
+        setErrorMessage("You can add only one employee.");
+        return;
+      }
+  
+      if (selectedOption) {
+        setSelectedEmployees([selectedOption]); // Replace previous employee
+        setErrorMessage(""); // Clear any previous error messages
+      }
+    };
+  
+       // Remove employee from the table
+    const handleRemoveEmployee = () => {
+      setSelectedEmployees([]);
+      setErrorMessage(""); // Clear any error messages
+    };
 
   return (
     <div>
@@ -129,7 +188,7 @@ function ConductingOJA() {
         .finalscore-div button:hover{
         background-color: #7a1cacc6;
         }
-        .add-attendies{
+        .add-attendies, .selected-employee{
             border: 1px solid rgba(0,0,0,0.2);
             padding: 1rem;
             border-radius: 10px;
@@ -145,7 +204,7 @@ function ConductingOJA() {
             }
             .add-employee{
             display: grid;
-            grid-template-columns: auto auto auto;
+            grid-template-columns: auto auto;
             column-gap: 1rem;
             row-gap: 1rem;
             }
@@ -182,10 +241,24 @@ function ConductingOJA() {
 <div className='add-attendies'>
 <h5>Add Employee</h5>
 <div className="add-employee" style={{ fontSize: "14px" }}>
-<div className="info-div-item">
-<label>Employee ID</label>
-<input type="text" placeholder="Enter Employee Id" />
-</div>
+              <div className="info-div-item" style={{display:"flex", alignItems: "center", gap: "10px"}}>
+                <Select
+                  options={options}
+                  value={selectedOption}
+                  onChange={(selected) => setSelectedOption(selected)}
+                  placeholder="Search Employee"
+                  isSearchable
+                  styles={{
+                    container: (base) => ({
+                      ...base,
+                      flex: 1,
+                    }),
+                  }}
+                />
+                <button onClick={handleAddEmployee} style={{ padding: "8px 12px" }}>
+                  Add
+                </button>
+              </div>
 
 <div className="date-div">
 <div className="info-div-item">
@@ -209,6 +282,39 @@ function ConductingOJA() {
 </div>
 </div>
 </div>
+
+            {/* Display error message */}
+            {errorMessage && (
+              <p style={{ color: "red", marginTop: "10px" }}>{errorMessage}</p>
+            )}
+
+            <div className="selected-employee">
+              <h4>Selected Employees</h4>
+              <table id="employeeTable" className="table table-striped table-bordered" style={{ fontSize: '14px' }}>
+                <thead>
+                  <tr>
+                    <th>Sr. No.</th>
+                    <th>Employee Name</th>
+                    <th>Employee ID</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedEmployees.map((emp, index) => (
+                    <tr key={emp.value}>
+                      <td>{index + 1}</td>
+                      <td>{emp.details.employee_name}</td>
+                      <td>{emp.details.employee_id}</td>
+                      <td>
+                        <button onClick={() => handleRemoveEmployee(emp.value)}>
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 {selectedOja && selectedOja.activities ? (
         selectedOja.activities.map((activity, activityIndex) => (
           <div key={activityIndex} className="activity-div">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { base_url } from "./Utils/base_url";
+import Select from "react-select";
 
 function ConductINA() {
   const [inaTitles, setInaTitles] = useState([]); // Stores all OJA titles
@@ -61,25 +62,35 @@ function ConductINA() {
     if (ratings.length === 0) return "N/A";
     const sum = ratings.reduce((total, rating) => total + Number(rating), 0);
     const avg = sum / ratings.length;
-    const percentage = (avg / 5) * 100; // Assuming rating is out of 5
+    const percentage = (avg / ratingRange.length) * 100; // Assuming rating is out of 5
     return `${percentage.toFixed(2)}%`;
   };
 
   // Function to calculate the final overall score
   const calculateFinalScore = () => {
-    // if (!selectedIna || selectedIna.activities.length === 0) return "N/A";
-
-    const allRatings = selectedIna?.activities
-    ? selectedIna.activities.flatMap(activity =>
-        activity.content.map(content => content.rating)
-      ).filter(rating => rating !== undefined && rating !== null)
-    : []; // Remove any undefined ratings
-
-    // if (allRatings.length === 0) return "N/A";
-    
+    // Check if selectedOja or its activities are undefined/null
+    if (!selectedIna || !selectedIna.activities || selectedIna.activities.length === 0) {
+      return "N/A";
+    }
+  
+    // Safely access nested properties using flatMap and filter
+    const allRatings = selectedIna.activities.flatMap((activity) =>
+      activity.content?.map((content) => content.rating) || [] // Ensure content exists or return an empty array
+    ).filter((rating) => rating !== undefined); // Remove undefined ratings
+  
+    // Check if there are no valid ratings
+    if (allRatings.length === 0) {
+      return "N/A";
+    }
+  
+    // Safely calculate sum and average
     const sum = allRatings.reduce((total, rating) => total + Number(rating), 0);
     const avg = sum / allRatings.length;
-    const percentage = (avg / 5) * 100; // Assuming rating is out of 5
+  
+    // Check if ratingRange exists and has a length, otherwise default to 1 to avoid division by zero
+    const rangeLength = ratingRange?.length || 1;
+    const percentage = (avg / rangeLength) * 100;
+  
     return `${percentage.toFixed(2)}%`;
   };
 
@@ -93,6 +104,51 @@ function ConductINA() {
       console.error("Error updating INA:", error);
       toast.error('Failed to update INA');
     }
+  };
+
+
+
+  const [options, setOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedEmployees, setSelectedEmployees] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+
+    // Fetch options from the backend
+  const fetchOptions = async () => {
+    try {
+      const response = await axios.get(`${base_url}/employee_details_get`);
+      const formattedOptions = response.data.employee.map((emp) => ({
+        value: emp.employee_id,
+        label: `${emp.employee_id} - ${emp.employee_name}`,
+        details: emp, // Add full details to use later
+      }));
+      setOptions(formattedOptions);
+    } catch (error) {
+      console.error("Error fetching employee data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchOptions();
+  }, []);
+
+  // Add selected employee to the table
+  const handleAddEmployee = () => {
+    if (selectedEmployees.length >= 1) {
+      setErrorMessage("You can add only one employee.");
+      return;
+    }
+
+    if (selectedOption) {
+      setSelectedEmployees([selectedOption]); // Replace previous employee
+      setErrorMessage(""); // Clear any previous error messages
+    }
+  };
+
+     // Remove employee from the table
+  const handleRemoveEmployee = () => {
+    setSelectedEmployees([]);
+    setErrorMessage(""); // Clear any error messages
   };
 
   return (
@@ -134,7 +190,7 @@ function ConductINA() {
         .finalscore-div button:hover{
         background-color: #7a1cacc6;
         }
-        .add-attendies{
+        .add-attendies, .selected-employee{
             border: 1px solid rgba(0,0,0,0.2);
             padding: 1rem;
             border-radius: 10px;
@@ -150,7 +206,7 @@ function ConductINA() {
             }
             .add-employee{
             display: grid;
-            grid-template-columns: auto auto auto;
+            grid-template-columns: auto auto;
             column-gap: 1rem;
             row-gap: 1rem;
             }
@@ -186,71 +242,80 @@ function ConductINA() {
               <div className='add-attendies'>
               <h5>Add Employee</h5>
               <div className="add-employee" style={{ fontSize: "14px" }}>
+
+              <div className="info-div-item" style={{display:"flex", alignItems: "center", gap: "10px"}}>
+                <Select
+                  options={options}
+                  value={selectedOption}
+                  onChange={(selected) => setSelectedOption(selected)}
+                  placeholder="Search Employee"
+                  isSearchable
+                  styles={{
+                    container: (base) => ({
+                      ...base,
+                      flex: 1,
+                    }),
+                  }}
+                />
+                <button onClick={handleAddEmployee} style={{ padding: "8px 12px" }}>
+                  Add
+                </button>
+              </div>
+      
+                <div className="date-div">
                 <div className="info-div-item">
-                <label>Employee ID</label>
-                <input type="text" placeholder="Enter Employee Id" />
+                <label>Date from</label>
+                <input type="date" id="date_from_atten" />
                 </div>
                 <div className="info-div-item">
-              <label>Select INA</label>
-              <select
-                className="select-ina"
-                name="select-ina"
-                id="select-ina-item"
-              >
-                <option>100INA</option>
-                <option>200INA</option>
-                <option>300INA</option>
-                <option>400INA</option>
-              </select>
+                <label>Date to</label>
+                <input type="date" id="date_to_atten" />
+                </div>
+                </div>
+                <div className="time-div">
+                <div className="info-div-item">
+                <label>Time from</label>
+                <input type="time" id="time_from_atten" />
+                </div>
+                <div className="info-div-item">
+                <label>Time to</label>
+                <input type="time" id="time_to_atten" />
+                </div>
+                </div>
             </div>
-            <div className="info-div-item">
-            <label>Assessment Name</label>
-            <input type='text' id='assessment-name' placeholder="Enter assessment name" />
             </div>
-            {/* <table id="example" class="table table-striped table-bordered" cellspacing="0" style={{fontSize:"14px"}} >
+
+             {/* Display error message */}
+            {errorMessage && (
+              <p style={{ color: "red", marginTop: "10px" }}>{errorMessage}</p>
+            )}
+
+            <div className="selected-employee">
+              <h4>Selected Employees</h4>
+              <table id="employeeTable" className="table table-striped table-bordered" style={{ fontSize: '14px' }}>
                 <thead>
-                    <tr>
-                        <td>Sr no.</td>
-                        <td>Questions</td>
-                        <td>Rating</td>
-                    </tr>
+                  <tr>
+                    <th>Sr. No.</th>
+                    <th>Employee Name</th>
+                    <th>Employee ID</th>
+                    <th>Action</th>
+                  </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>What is Quantum Mechanics</td>
-                        <td>
-                          <select>
-                            <option>Select</option>
-                            <option> 1 </option>
-                            <option> 2 </option>
-                            <option> 3 </option>
-                            <option> 4 </option>
-                            <option> 5 </option>
-                          </select>
-                        </td>
+                  {selectedEmployees.map((emp, index) => (
+                    <tr key={emp.value}>
+                      <td>{index + 1}</td>
+                      <td>{emp.details.employee_name}</td>
+                      <td>{emp.details.employee_id}</td>
+                      <td>
+                        <button onClick={() => handleRemoveEmployee(emp.value)}>
+                          Remove
+                        </button>
+                      </td>
                     </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>What is Motion of Inertia</td>
-                        <td>
-                          <select>
-                            <option>Select</option>
-                            <option> 1 </option>
-                            <option> 2 </option>
-                            <option> 3 </option>
-                            <option> 4 </option>
-                            <option> 5 </option>
-                          </select>
-                        </td>
-                    </tr>
+                  ))}
                 </tbody>
-                <tfoot>
-                    <h6>Score Avg</h6>
-                    <p>66%</p>
-                </tfoot>
-            </table> */}
-            </div>
+              </table>
             </div>
 
               {selectedIna && selectedIna.activities ?
