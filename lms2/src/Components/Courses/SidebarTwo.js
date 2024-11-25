@@ -76,6 +76,10 @@ function SidebarTwo() {
                 <DescriptionIcon/>
                 <h5><NavLink to={'/mycareerjourney'}>My Career Journey</NavLink></h5>   
             </div>
+            <div className='dash-options'>
+                <DescriptionIcon/>
+                <h5><NavLink to={'/curriculum'}>Course Curriculum</NavLink></h5>   
+            </div>
 
             <div className='learnOptions-div'>
                 <p>Learn</p>

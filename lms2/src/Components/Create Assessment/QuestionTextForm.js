@@ -5,7 +5,8 @@ import { base_url } from "../Utils/base_url";
 import { IconButton } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
-function QuestionTextForm({ index, onDelete, onChange }) {
+function QuestionTextForm({ index, onChange }) {
+  const [visible, setVisible] = useState(true);
   const [question, setQuestion] = useState('');
   const [subtitle, setSubtitle] = useState('');
   const [options, setOptions] = useState([{ text: '', correct: false }]);
@@ -43,6 +44,13 @@ function QuestionTextForm({ index, onDelete, onChange }) {
       answerType,
     });
   };
+
+  const handleDelete = () => {
+    setVisible(false); // Set visible to false to hide the component
+  };
+
+  if (!visible) return null; // If visible is false, do not render the component
+
 
   return (
     <div className='main-container-div'>
@@ -157,12 +165,10 @@ function QuestionTextForm({ index, onDelete, onChange }) {
           alignItems: 'center',
           opacity: '0.7',
         }}
-        onClick={() => onDelete(index)}
+        onClick={handleDelete}
       >
         <i className="fa-solid fa-trash-can"></i>
       </button>
-
-      <h5>Question No. {index + 1}</h5>
 
       {/* Question Input */}
       <div className="question-input">
@@ -291,67 +297,69 @@ function QuestionTextForm({ index, onDelete, onChange }) {
   );
 }
 
-const AddQuestionContainer = () => {
-  const [questions, setQuestions] = useState([]);
+export default QuestionTextForm;
 
-  const addNewQuestion = () => {
-    setQuestions([...questions, {}]);
-  };
+// const AddQuestionContainer = () => {
+//   const [questions, setQuestions] = useState([]);
 
-  const deleteQuestion = (index) => {
-    const newQuestions = questions.filter((_, i) => i !== index);
-    setQuestions(newQuestions);
-  };
+//   const addNewQuestion = () => {
+//     setQuestions([...questions, {}]);
+//   };
 
-  const handleQuestionChange = (index, questionData) => {
-    const newQuestions = [...questions];
-    newQuestions[index] = questionData;
-    setQuestions(newQuestions);
-  };
+//   const deleteQuestion = (index) => {
+//     const newQuestions = questions.filter((_, i) => i !== index);
+//     setQuestions(newQuestions);
+//   };
 
-  const submitQuestions = async () => {
-    try {
-      const response = await axios.post(`${base_url}/add_textquestion`, { questions });
-      console.log('Questions submitted:', response.data);
-      alert('Questions saved successfully!');
-      setQuestions([]); // Clear form after submission
-    } catch (error) {
-      console.error('Error submitting questions:', error);
-      alert('Failed to save questions.');
-    }
-  };
+//   const handleQuestionChange = (index, questionData) => {
+//     const newQuestions = [...questions];
+//     newQuestions[index] = questionData;
+//     setQuestions(newQuestions);
+//   };
 
-  return (
-    <div>
-      <style>
-              {`
-              .btn-div button{
-              background-color: #7A1CAC;
-              }
-              .btn-div button:hover{
-              background-color: #2E073F;
-              }
-              `}
-          </style>
-      {questions.map((_, index) => (
-        <QuestionTextForm
-          key={index}
-          index={index}
-          onDelete={deleteQuestion}
-          onChange={handleQuestionChange}
-        />
-      ))}
+//   const submitQuestions = async () => {
+//     try {
+//       const response = await axios.post(`${base_url}/add_textquestion`, { questions });
+//       console.log('Questions submitted:', response.data);
+//       alert('Questions saved successfully!');
+//       setQuestions([]); // Clear form after submission
+//     } catch (error) {
+//       console.error('Error submitting questions:', error);
+//       alert('Failed to save questions.');
+//     }
+//   };
 
-      <div className="info-div-item btn-div">
-        <button id="add-newQues-btn" onClick={addNewQuestion}>
-          <i className="fa-solid fa-plus"></i> Add new question
-        </button>
-        <button id="submit-questions-btn" onClick={submitQuestions}>
-          Submit Questions
-        </button>
-      </div>
-    </div>
-  );
-};
+//   return (
+//     <div>
+//       <style>
+//               {`
+//               .btn-div button{
+//               background-color: #7A1CAC;
+//               }
+//               .btn-div button:hover{
+//               background-color: #2E073F;
+//               }
+//               `}
+//           </style>
+//       {questions.map((_, index) => (
+//         <QuestionTextForm
+//           key={index}
+//           index={index}
+//           onDelete={deleteQuestion}
+//           onChange={handleQuestionChange}
+//         />
+//       ))}
 
-export default AddQuestionContainer;
+//       <div className="info-div-item btn-div">
+//         <button id="add-newQues-btn" onClick={addNewQuestion}>
+//           <i className="fa-solid fa-plus"></i> Add new question
+//         </button>
+//         <button id="submit-questions-btn" onClick={submitQuestions}>
+//           Submit Questions
+//         </button>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default AddQuestionContainer;

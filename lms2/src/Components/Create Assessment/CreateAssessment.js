@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import QuestionForm from './QuestionForm';
-import QuestionFormTwo from './QuestionTextForm';
+import QuestionTextForm from './QuestionTextForm';
 import { toast, ToastContainer } from 'react-toastify';
 import MatchTheFollowingForm from './MatchTheFollowingForm';
 import Button from 'react-bootstrap/Button';
@@ -57,98 +57,108 @@ function CreateAssessment() {
     return (
         <div>
             <style>
-{`
- body{
-background-color: rgba(46, 7, 63, 0.2);
-padding: 1.5rem;
-}
-.header-section{
-height: 5rem;
-width: 100%;
-border-radius: 10px;
-background-color: #ffffff;
-}
- .container{
-border: 2px solid rgba(0,0,0,0.2);
-border-radius: 10px;
-padding: 1.5rem;
-}
-.section-module{
-border-top: 5px solid #7A1CAC;
-width: 70%;
-margin: 0 auto;
-margin-top: 1.5rem;
-border-radius: 10px;
-background-color: #ffffff;
-padding: 3rem 6rem;
-box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
-}
-.section-module h4{
-margin-bottom: 1.5rem;
-}
-.container{
-margin: 0px;
-width: 100%;
-}
-  .assessment-form-items{
-margin: 0 auto;
-}
-.info-div-item{
-margin: 1rem 0;
-}
-textarea{
-width: 100%;
-height: 6rem;
-padding: 10px;
-}
-.add-question-div{
-margin: 2rem auto 0 auto;
-border: 2px solid rgba(0,0,0,0.2);
-padding: 1.5rem;
-border-radius: 10px;
-margin-bottom: 2rem;
-}
-.questions-type-options{
-display: flex;
-justify-content: space-between;
-margin-top: 1rem;
-}
-.questions-type-options.show {
-display: flex;  /* Add this to toggle visibility */
-}
-.questions-type-options button{
-background-color: #7A1CAC;
-}
-.questions-type-options button:hover{
-background-color: #2E073F;
-}
-.added-question{
-margin-top: 2rem;
-}
-.added-btn{
-width: 12rem;
-background-color: #2E073F;
-border: none;
-color: #ffffff;
-height: 2.5rem;
-}
-#questions-type-id{
-display: none;
-}
-.add-different-section{
-border-top: 2px solid rgba(0,0,0,0.4);
-padding: 10px 0;
-margin-top: 1.5rem;
-}
-.add-different-section label a{
-color:#7A1CAC;
-cursor: pointer;
-float: right;
-font-size: 1rem;
-text-decoration: none;
-}
-`}
-</style>
+                {`
+                body{
+                background-color: rgba(46, 7, 63, 0.2);
+                padding: 1.5rem;
+                }
+                .header-section{
+                height: 5rem;
+                width: 100%;
+                border-radius: 10px;
+                background-color: #ffffff;
+                }
+                .container{
+                border: 2px solid rgba(0,0,0,0.2);
+                border-radius: 10px;
+                padding: 1.5rem;
+                }
+                .section-module{
+                border-top: 5px solid #7A1CAC;
+                width: 70%;
+                margin: 0 auto;
+                margin-top: 1.5rem;
+                border-radius: 10px;
+                background-color: #ffffff;
+                padding: 3rem 6rem;
+                box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+                }
+                .section-module h4{
+                margin-bottom: 1.5rem;
+                }
+                .container{
+                margin: 0px;
+                width: 100%;
+                }
+                .assessment-form-items{
+                margin: 0 auto;
+                }
+                .info-div-item{
+                margin: 1rem 0;
+                }
+                textarea{
+                width: 100%;
+                height: 6rem;
+                padding: 10px;
+                }
+                .add-question-div{
+                margin: 2rem auto 0 auto;
+                border: 2px solid rgba(0,0,0,0.2);
+                padding: 1.5rem;
+                border-radius: 10px;
+                margin-bottom: 2rem;
+                }
+                .questions-type-options{
+                display: flex;
+                justify-content: space-between;
+                margin-top: 1rem;
+                }
+                .questions-type-options.show {
+                display: flex;  /* Add this to toggle visibility */
+                }
+                .questions-type-options button{
+                background-color: #7A1CAC;
+                }
+                .questions-type-options button:hover{
+                background-color: #2E073F;
+                }
+                .added-question{
+                margin-top: 2rem;
+                }
+                .added-btn{
+                width: 12rem;
+                background-color: #2E073F;
+                border: none;
+                color: #ffffff;
+                height: 2.5rem;
+                }
+                #questions-type-id{
+                display: none;
+                }
+                .add-different-section{
+                border-top: 2px solid rgba(0,0,0,0.4);
+                padding: 10px 0;
+                margin-top: 1.5rem;
+                }
+                .add-different-section label a{
+                color:#7A1CAC;
+                cursor: pointer;
+                float: right;
+                font-size: 1rem;
+                text-decoration: none;
+                }
+                .add-new-questions-btn{
+                width: 13rem;
+                height: 2rem;
+                background-color: #7A1CAC;
+                border: none;
+                margin-bottom: 1.5rem;
+                }
+                .add-new-questions-btn:hover{
+                background-color: #2E073F;
+                }
+                `}
+                </style>
 
             <div className='header-section'></div>
 
@@ -196,7 +206,7 @@ text-decoration: none;
                         <QuestionForm addQuestion={addNewQuestion} />
                     )}
                     {selectedQuestionType === 'text' && (
-                        <QuestionFormTwo addQuestion={addNewQuestion} />
+                        <QuestionTextForm addQuestion={addNewQuestion} />
                     )}
                     {selectedQuestionType === 'match' && (
                         <MatchTheFollowingForm addQuestion={addNewQuestion} />
@@ -206,7 +216,7 @@ text-decoration: none;
                     )}
 
                     {/* Button to Add New Question */}
-                    <Button variant="primary" onClick={chooseQuestionType}>Add New Question</Button>
+                    <Button variant="primary" className='add-new-questions-btn' onClick={chooseQuestionType}>Add New Question</Button>
 
                     {/* Submit button to save assessment */}
                     <Button variant="success" onClick={handleSubmit}>Submit Assessment</Button>

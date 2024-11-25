@@ -85,7 +85,7 @@ function ViewOJTOJAINA() {
            const id = ojtInfo._id;
            const resp = await axios.put(`${base_url}/ojt_details_updated/${id}`, data); 
             if(resp.status == 200){
-                toast.success("OJT data successfully updated", {autoClose: "2000"});
+                toast.success("OJT data successfully updated", {autoClose: "3000"});
                 setTimeout(() => {
                     window.location.reload()
                 }, 1000);
@@ -122,7 +122,7 @@ function ViewOJTOJAINA() {
            const id = _id;
            const resp = await axios.delete(`${base_url}/oja_data_delete/${id}`);
            setOjaData(resp.data.create_oja);
-           toast.success("OJA delete successfully", {autoClose:"2000"});
+           toast.success("OJA delete successfully", {autoClose:"3000"});
            setTimeout(() => {
             window.location.reload();
            }, 500);
@@ -130,6 +130,12 @@ function ViewOJTOJAINA() {
             console.log(error);
         }
     }
+
+    const [show2, setshow2] = useState(false);
+    const handleshow2 = () => {
+        setshow2(true);
+    }
+    const handleclose2 = () => { setshow2(false) }
 
 
     // INA Integration Code
@@ -149,7 +155,7 @@ function ViewOJTOJAINA() {
            const id = _id;
            const resp = await axios.delete(`${base_url}/ina_data_delete/${id}`);
            setInaData(resp.data.create_ina);
-           toast.success("INA delete successfully", {autoClose:"2000"});
+           toast.success("INA delete successfully", {autoClose:"3000"});
            setTimeout(() => {
             window.location.reload();
            }, 500);
@@ -157,6 +163,12 @@ function ViewOJTOJAINA() {
             console.log(error);
         }
     }
+
+    const [show3, setshow3] = useState(false);
+    const handleshow3 = () => {
+        setshow3(true);
+    }
+    const handleclose3 = () => { setshow3(false) }
 
     function ViewOJT() {
         document.getElementById('ojt-lists').style.display = 'block';
@@ -176,8 +188,7 @@ function ViewOJTOJAINA() {
         document.getElementById('ina-lists').style.display = 'block';
     }
     
-console.log(ojtData.activities
-    );
+    console.log(ojtData.activities);
  
 
   return (
@@ -204,6 +215,19 @@ console.log(ojtData.activities
                 }
                 #ojt-lists, #oja-lists, #ina-lists{
                 display: none;
+                }
+                .ojt_details{
+                // border: 1px solid rgba(0,0,0,0.2);
+                padding: 1rem 1.5rem;
+                border-radius: 5px;
+                }
+                .ojt_details .info-div-item{
+                margin-bottom: 1rem;
+                }
+                .activities-div{
+                border: 1px solid rgba(0,0,0,0.2);
+                padding: 1rem;
+                border-radius: 5px;
                 }
             `}
         </style>
@@ -305,13 +329,10 @@ console.log(ojtData.activities
                                     <label>Title</label>
                                     <input
                                     type="text"
-                                    placeholder="Enter activity title"
                                     id='activity_ojt_title'
-                                    value={ojtData.activities
-                                        
+                                    value={ojtData.activities    
                                     }
-                                   
-                                    />
+                                />
                                 </div>
 
                                 <div className="info-div-item" style={{ display: 'flex', justifyContent: 'space-between' }} >
@@ -392,7 +413,7 @@ console.log(ojtData.activities
                                             </Dropdown.Toggle>
 
                                             <Dropdown.Menu>
-                                            <Dropdown.Item >Edit</Dropdown.Item>
+                                            <Dropdown.Item onClick={ handleshow2 }>Edit</Dropdown.Item>
                                                 <Dropdown.Item onClick={() => {deleteOjaData(item._id)}}>Delete</Dropdown.Item>
                                             </Dropdown.Menu>
                                         </Dropdown>
@@ -403,6 +424,89 @@ console.log(ojtData.activities
                         </tbody>
                     </table>
                 </div>
+
+                <Modal show={show2} onHide={handleclose2} size='lg'>
+                    <Modal.Header closeButton>
+                        <Modal.Title id="contained-modal-title-vcenter">
+                        Edit OJA Details
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+
+                        <div className='ojt_details'>
+                            <div className="info-div-item">
+                                <label>OJA Title</label>
+                                <input type='text' id=''  />
+                            </div>
+
+                            <div className="info-div-item">
+                                <label>OJA Code</label>
+                                <input type='text' id="" />
+                            </div>
+
+                            <div className="info-div-item">
+                                <label>Selected rating range </label>
+                                <input type='text' id="" />
+                            </div>
+
+                            <div className='activities-div'>
+                                <div className="info-div-item">
+                                    <h4>Activity { 1}</h4> {/* Adding Activity title */}
+                                </div>
+                                <div className="info-div-item">
+                                    <label>Title</label>
+                                    <input
+                                    type="text"
+                                    id='activity_ojt_title'
+                                />
+                                </div>
+
+                                <div className="info-div-item" style={{ display: 'flex', justifyContent: 'space-between' }} >
+                                  <div className="add-content-div" style={{ width: '86%' }}>
+                                   <label>Content</label>
+
+                                   <table className="table table-striped table-bordered" cellspacing="0">
+                                        <thead>
+                                        <tr>
+                                            <th>Sr no.</th>
+                                            <th>Description</th>
+                                            <th style={{ textAlign: 'center' }}>Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                            <td></td>
+                                            <td>
+                                                <input
+                                                className="desc-input"
+                                                placeholder="Enter description"
+                                                style={{
+                                                    border: 'none',
+                                                    backgroundColor: 'transparent',
+                                                }}
+                                                />
+                                            </td>
+                                            <td style={{ textAlign: 'center' }}>
+                                                <button className="desc-del-btn" >
+                                                <i className="fa-regular fa-trash-can"></i>
+                                                </button>
+                                            </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                                <div className='update-btn'>
+                                    <button>Update</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant='secondary' onClick={handleclose2}>Close</Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
 
             <div className='view-Ina-lists' id='ina-lists'>
@@ -434,7 +538,7 @@ console.log(ojtData.activities
                                             </Dropdown.Toggle>
 
                                             <Dropdown.Menu>
-                                            <Dropdown.Item >Edit</Dropdown.Item>
+                                            <Dropdown.Item onClick={ handleshow3 }>Edit</Dropdown.Item>
                                                 <Dropdown.Item onClick={() => {deleteINAData(item._id)}}>Delete</Dropdown.Item>
                                             </Dropdown.Menu>
                                         </Dropdown>
@@ -445,6 +549,89 @@ console.log(ojtData.activities
                         </tbody>
                     </table>
                 </div>
+
+                <Modal show={show3} onHide={handleclose3} size='lg'>
+                    <Modal.Header closeButton>
+                        <Modal.Title id="contained-modal-title-vcenter">
+                        Edit INA Details
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+
+                        <div className='ojt_details'>
+                            <div className="info-div-item">
+                                <label>INA Title</label>
+                                <input type='text' id=''  />
+                            </div>
+
+                            <div className="info-div-item">
+                                <label>INA Code</label>
+                                <input type='text' id="" />
+                            </div>
+
+                            <div className="info-div-item">
+                                <label>Selected rating range </label>
+                                <input type='text' id="" />
+                            </div>
+
+                            <div className='activities-div'>
+                                <div className="info-div-item">
+                                    <h4>Activity { 1}</h4> {/* Adding Activity title */}
+                                </div>
+                                <div className="info-div-item">
+                                    <label>Title</label>
+                                    <input
+                                    type="text"
+                                    id='activity_ojt_title'
+                                />
+                                </div>
+
+                                <div className="info-div-item" style={{ display: 'flex', justifyContent: 'space-between' }} >
+                                  <div className="add-content-div" style={{ width: '86%' }}>
+                                   <label>Content</label>
+
+                                   <table className="table table-striped table-bordered" cellspacing="0">
+                                        <thead>
+                                        <tr>
+                                            <th>Sr no.</th>
+                                            <th>Description</th>
+                                            <th style={{ textAlign: 'center' }}>Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                            <td></td>
+                                            <td>
+                                                <input
+                                                className="desc-input"
+                                                placeholder="Enter description"
+                                                style={{
+                                                    border: 'none',
+                                                    backgroundColor: 'transparent',
+                                                }}
+                                                />
+                                            </td>
+                                            <td style={{ textAlign: 'center' }}>
+                                                <button className="desc-del-btn" >
+                                                <i className="fa-regular fa-trash-can"></i>
+                                                </button>
+                                            </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                  </div>
+                                </div>
+                                <div className='update-btn'>
+                                    <button>Update</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant='secondary' onClick={handleclose3}>Close</Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         </section>
       

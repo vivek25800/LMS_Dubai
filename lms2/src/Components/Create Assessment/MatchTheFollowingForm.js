@@ -10,6 +10,7 @@ const MatchTheFollowingForm = ({index, onDelete}) => {
   ]);
   const [mainCategory, setMainCategory] = useState('');
   const [subCategory, setSubCategory] = useState('');
+  const [visible, setVisible] = useState(true);
 
   const handleQuestionChange = (index, value) => {
     const newQuestions = [...questions];
@@ -37,6 +38,12 @@ const MatchTheFollowingForm = ({index, onDelete}) => {
     const newQuestions = questions.filter((_, i) => i !== index);
     setQuestions(newQuestions);
   };
+
+  const handleDelete = () => {
+    setVisible(false); // Set visible to false to hide the component
+  };
+
+  if (!visible) return null; // If visible is false, do not render the component
 
   return (
     <div style={{ maxWidth: '100%', margin: '2rem auto' }}>
@@ -128,12 +135,10 @@ const MatchTheFollowingForm = ({index, onDelete}) => {
           alignItems: 'center',
           opacity: '0.7',
         }}
-        onClick={() => onDelete(index)}
+        onClick={handleDelete}
       >
         <i className="fa-solid fa-trash-can"></i>
       </button>
-
-      <h5>Question No. {index + 1}</h5>
 
         {questions.map((q, index) => (
           <div className="question-item" key={index}>
@@ -191,44 +196,44 @@ const MatchTheFollowingForm = ({index, onDelete}) => {
   );
 };
 
-const AddQuestionContainer = () => {
-    const [questions, setQuestions] = useState([]);
-  
-    const addNewQuestion = () => {
-      setQuestions([...questions, {}]);
-    };
-  
-    const deleteQuestion = (index) => {
-      const newQuestions = questions.filter((_, i) => i !== index);
-      setQuestions(newQuestions);
-    };
-  
-    return (
-      <div>
-          <style>
-              {`
-              .btn-div button{
-              background-color: #7A1CAC;
-              }
-              .btn-div button:hover{
-              background-color: #2E073F;
-              }
-              `}
-          </style>
-        {questions.map((_, index) => (
-          <MatchTheFollowingForm key={index} index={index} onDelete={deleteQuestion} />
-        ))}
-  
-        <div className="info-div-item btn-div">
-          <button id="add-newQues-btn" onClick={addNewQuestion}>
-            <i className="fa-solid fa-plus"></i> Add new question
-          </button>
-        </div>
-      </div>
-    );
-  };
+export default MatchTheFollowingForm;
 
-
-  export default AddQuestionContainer;
+// const AddQuestionContainer = () => {
+//     const [questions, setQuestions] = useState([]);
+  
+//     const addNewQuestion = () => {
+//       setQuestions([...questions, {}]);
+//     };
+  
+//     const deleteQuestion = (index) => {
+//       const newQuestions = questions.filter((_, i) => i !== index);
+//       setQuestions(newQuestions);
+//     };
+  
+//     return (
+//       <div>
+//           <style>
+//               {`
+//               .btn-div button{
+//               background-color: #7A1CAC;
+//               }
+//               .btn-div button:hover{
+//               background-color: #2E073F;
+//               }
+//               `}
+//           </style>
+//         {questions.map((_, index) => (
+//           <MatchTheFollowingForm key={index} index={index} onDelete={deleteQuestion} />
+//         ))}
+  
+//         <div className="info-div-item btn-div">
+//           <button id="add-newQues-btn" onClick={addNewQuestion}>
+//             <i className="fa-solid fa-plus"></i> Add new question
+//           </button>
+//         </div>
+//       </div>
+//     );
+//   };
+// export default AddQuestionContainer;
 
 // export default MatchTheFollowingForm;

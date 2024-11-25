@@ -61,6 +61,7 @@ import TRFPendingForApproval from './Components/Training Request Form/TRFPending
 import ServiceProviderRegister from './Components/ServiceProviderRegister.js';
 import Video from './Components/Sidebar/Video.js';
 import ViewOJTOJAINA from './Components/ViewOJTOJAINA.js';
+import Curriculum from './Components/Courses/Curriculum.js';
 
 // import TrainingCalendar from './Components/TrainingCalendar.js';
 
@@ -126,6 +127,7 @@ function App() {
         <Route path='/savedCourse' element={<SavedCourse/>}></Route>
         <Route path='/learningHistory' element={<LearningHistoryCourse/>}></Route>
         <Route path='/startCourse' element={<StartCourse/>}></Route>
+        <Route path='/curriculum' element={<Curriculum/>}></Route>
       </Routes>
 
       {/* <Video/> */}
