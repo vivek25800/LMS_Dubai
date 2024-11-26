@@ -28,13 +28,14 @@ function ViewOJTOJAINA() {
         }
     }
     
-    const getOjtById = async (item) => {
+    const [selectedOjt, setSelectedOjt] = useState([]); // Stores selected OJT details
+    const getOjtById = async (e) => {
+        const ojtId = e.target.value; // Get selected OJT ID
         try {
-           const id = item._id;
-           const resp = await axios.get(`${base_url}/get_ojts_byid/${id}`);
-           setOjtData(resp.data.create_ojt);
-           setOjt(resp.data.create_ojt);
-           setactivities(resp.data.create_ojt.activities)
+           const resp = await axios.get(`${base_url}/get_ojts_byid/${ojtId}`);
+           setSelectedOjt(resp.data.create_ojt);
+        //    setOjt(resp.data.create_ojt);
+        //    setactivities(resp.data.create_ojt.activities)
            
            
         } catch (error) {
@@ -100,7 +101,7 @@ function ViewOJTOJAINA() {
         setShow(true) 
         setOjt(item);
         setOjtInfo(item);
-        getOjtById(item);
+        getOjtById();
     }
     const handleclose = () => { setShow(false) }
 
@@ -307,7 +308,7 @@ function ViewOJTOJAINA() {
                         <div className='ojt_details'>
                             <div className="info-div-item">
                                 <label>OJT Title</label>
-                                <input type='text' placeholder='Enter the OJT title' id='ojt_title' defaultValue={ojtInfo.ojt_title} onChange={(e) => {setOjt((prevInfo) => ({...prevInfo, ojt_title:e.target.value}))}} />
+                                <input type='text' placeholder='Enter the OJT title' id='ojt_title' defaultValue={selectedOjt.ojt_title} />
                             </div>
 
                             <div className="info-div-item">
@@ -316,8 +317,6 @@ function ViewOJTOJAINA() {
                                 type='text'
                                 placeholder='OJT code'
                                 id="ojt_code"
-                                defaultValue={ojtInfo.ojt_code}
-                                onChange={(e) => {setOjt((prevInfo) => ({...prevInfo, ojt_code:e.target.value}))}}
                             />
                             </div>
 
@@ -371,7 +370,7 @@ function ViewOJTOJAINA() {
                                   </div>
                                 </div>
                                 <div className='update-btn'>
-                                    <button onClick={editOjtDetails}>Update</button>
+                                    <button >Update</button>
                                 </div>
                             </div>
                         </div>

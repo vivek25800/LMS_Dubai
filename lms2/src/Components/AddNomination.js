@@ -25,6 +25,27 @@ function AddNomination({selectedTraining}) {
   }
 
 
+    // Helper function to calculate date range
+    const calculateDateRange = (from, to) => {
+      const startDate = new Date(from);
+      const endDate = new Date(to);
+      const dates = [];
+  
+      while (startDate <= endDate) {
+        dates.push(new Date(startDate).toLocaleDateString()); // Format date
+        startDate.setDate(startDate.getDate() + 1);
+      }
+      return dates;
+    };
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+      return new Intl.DateTimeFormat('en-GB', options).format(date);
+    }
+    
+
+
   const [employee, setemployee] = useState([]);
   function EmployeeList(event) {
     const selectedEmployee = JSON.parse(event.target.value);
@@ -249,7 +270,7 @@ function AddNomination({selectedTraining}) {
                   </td>
                   <td>{selectedTraining?.training_name}</td>
                   {/* <td>{new Date(selectedTraining?.from_date).toLocaleString()} - {new Date(selectedTraining?.to_date).toLocaleString()}</td> */}
-                  <td>{selectedTraining?.from_date} - {selectedTraining?.to_date}</td>
+                  <td>{formatDate(selectedTraining?.from_date)} - {formatDate(selectedTraining?.to_date)}</td>
                   <td>{selectedTraining?.from_time} - {selectedTraining?.to_time}</td>
                 </tr>
               </tbody>
@@ -278,22 +299,39 @@ function AddNomination({selectedTraining}) {
                   </tr>
                 </thead>
                 <tbody>
-                  {
-                  
-                  employee.map((item, index) => (
-                    <tr key={index}>
-                      <td><input type='checkbox' /> {index + 1}</td>
-                      <td>Event code</td>
-                      <td>{item.employee_name}</td>
-                      <td>{item.employee_id}</td>
-                      <td>{item.employee_email}</td>
-                      <td>{item.designation}</td>
-                      <td><input type='checkbox' /> Present <br/> <input type='checkbox' /> Absent</td>
-                      <td>Mail Sent</td>
-                      <td><button onClick={() => DeleteEmployee(item)}>Delete</button></td>
-                    </tr>
-                  ))}
-                </tbody>
+  {employee.map((item, index) => (
+    <tr key={index}>
+      <td>
+        <input type="checkbox" /> {index + 1}
+      </td>
+      <td>Event code</td>
+      <td>{item.employee_name}</td>
+      <td>{item.employee_id}</td>
+      <td>{item.employee_email}</td>
+      <td>{item.designation}</td>
+      <td>
+        {Array.from(
+          { length: Math.ceil((new Date(selectedTraining?.to_date) - new Date(selectedTraining?.from_date)) / (1000 * 60 * 60 * 24)) + 1 },
+          (_, i) => {
+            const currentDate = new Date(selectedTraining?.from_date);
+            currentDate.setDate(currentDate.getDate() + i);
+            return (
+              <div key={i}>
+                <input type="checkbox" />
+                {formatDate(currentDate)}
+              </div>
+            );
+          }
+        )}
+      </td>
+      <td>Mail Sent</td>
+      <td>
+        <button onClick={() => DeleteEmployee(item)}>Remove</button>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
               </table>
 
               <div className='send-mail-div'>

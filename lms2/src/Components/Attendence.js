@@ -13,6 +13,7 @@ import { base_url } from "./Utils/base_url";
 import $ from "jquery";
 import "select2";
 import "select2/dist/css/select2.css"; // Optional: Include Select2 CSS
+import Select from "react-select";
 
 
 function Attendence() {
@@ -47,27 +48,28 @@ function Attendence() {
       if (resp.status === 200) {
         toast.success("Attendence is marked.", { autoClose: 2000 });
         setattendence(initialAttendenceState); // Reset the form fields
+        setSelectedEmployees([]);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    get_emp_data();
-  }, []);
+  // useEffect(() => {
+  //   get_emp_data();
+  // }, []);
 
-  const [data, setdata] = useState([]);
-  const get_emp_data = async () => {
-    try {
-      const resp = await axios.get(
-        `${base_url}/employee_details_get`
-      );
-      setdata(resp.data.employee);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const [data, setdata] = useState([]);
+  // const get_emp_data = async () => {
+  //   try {
+  //     const resp = await axios.get(
+  //       `${base_url}/employee_details_get`
+  //     );
+  //     setdata(resp.data.employee);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   function getTrainer() {
     const trainerId = document.getElementById("trainer").value;
@@ -88,43 +90,43 @@ function Attendence() {
   // }
 
 
-  const [inputValue, setInputValue] = useState("");
-  const [employeeIds, setEmployeeIds] = useState([]);
+  // const [inputValue, setInputValue] = useState("");
+  // const [employeeIds, setEmployeeIds] = useState([]);
 
-  const handleChange = (e) => {
-    setInputValue(e.target.value); // Keep track of the current input value
-    // Also update your attendance state with the current value
-    setattendence((prevAttendance) => ({
-      ...prevAttendance,
-      employee_id_atten: e.target.value,
-    }));
-  };
-
-  // const handleKeyDown = (e) => {
-  //   if (e.key === "Enter" || e.key === ",") {
-  //     e.preventDefault();
-  //     if (inputValue.trim()) {
-  //       const updatedIds = [...employeeIds, inputValue.trim()];
-  //       setEmployeeIds(updatedIds);
-  //       setInputValue(""); // Clear the input field
-
-  //       // Update attendance state with the list of employee IDs
-  //       setattendence((prevAttendance) => ({
-  //         ...prevAttendance,
-  //         employee_id_atten: updatedIds.join(","), // Save IDs as a comma-separated string or however you need for the database
-  //       }));
-  //     }
-  //   }
+  // const handleChange = (e) => {
+  //   setInputValue(e.target.value); // Keep track of the current input value
+  //   // Also update your attendance state with the current value
+  //   setattendence((prevAttendance) => ({
+  //     ...prevAttendance,
+  //     employee_id_atten: e.target.value,
+  //   }));
   // };
 
-  const removeId = (indexToRemove) => {
-    const updatedIds = employeeIds.filter((_, index) => index !== indexToRemove);
-    setEmployeeIds(updatedIds);
-    setattendence((prevAttendance) => ({
-      ...prevAttendance,
-      employee_id_atten: updatedIds.join(","), // Update the state after removing
-    }));
-  };
+  // // const handleKeyDown = (e) => {
+  // //   if (e.key === "Enter" || e.key === ",") {
+  // //     e.preventDefault();
+  // //     if (inputValue.trim()) {
+  // //       const updatedIds = [...employeeIds, inputValue.trim()];
+  // //       setEmployeeIds(updatedIds);
+  // //       setInputValue(""); // Clear the input field
+
+  // //       // Update attendance state with the list of employee IDs
+  // //       setattendence((prevAttendance) => ({
+  // //         ...prevAttendance,
+  // //         employee_id_atten: updatedIds.join(","), // Save IDs as a comma-separated string or however you need for the database
+  // //       }));
+  // //     }
+  // //   }
+  // // };
+
+  // const removeId = (indexToRemove) => {
+  //   const updatedIds = employeeIds.filter((_, index) => index !== indexToRemove);
+  //   setEmployeeIds(updatedIds);
+  //   setattendence((prevAttendance) => ({
+  //     ...prevAttendance,
+  //     employee_id_atten: updatedIds.join(","), // Update the state after removing
+  //   }));
+  // };
 
 
   // Get training details
@@ -143,22 +145,67 @@ function Attendence() {
   }, []);
 
 
-  // Add employee to the table
-  const [employee, setemployee] = useState([]);
-  function EmployeeList(event) {
-    const selectedEmployee = JSON.parse(event.target.value);
-    setemployee([...employee,selectedEmployee]);
-    console.log(selectedEmployee); // Logs the full object
-    setattendence({
-      ...attendence,
-      employee_id_atten:[...employee,selectedEmployee] ,
-    });
-  }
+  // // Add employee to the table
+  // const [employee, setemployee] = useState([]);
+  // function EmployeeList(event) {
+  //   const selectedEmployee = JSON.parse(event.target.value);
+  //   setemployee([...employee,selectedEmployee]);
+  //   console.log(selectedEmployee); // Logs the full object
+  //   setattendence({
+  //     ...attendence,
+  //     employee_id_atten:[...employee,selectedEmployee] ,
+  //   });
+  // }
 
-  function DeleteEmployee(item) {
-    const updatedEmployees = employee.filter((item1) => item1._id !== item._id);
-    setemployee(updatedEmployees); // Update the state with the new array
-  }
+  // function DeleteEmployee(item) {
+  //   const updatedEmployees = employee.filter((item1) => item1._id !== item._id);
+  //   setemployee(updatedEmployees); // Update the state with the new array
+  // }
+
+
+  const [options, setOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedEmployees, setSelectedEmployees] = useState([]);
+
+  // Fetch options from the backend
+  const fetchOptions = async () => {
+    try {
+      const response = await axios.get(`${base_url}/employee_details_get`);
+      const formattedOptions = response.data.employee.map((emp) => ({
+        value: emp.employee_id,
+        label: `${emp.employee_id} - ${emp.employee_name}`,
+        details: emp, // Add full details to use later
+      }));
+      setOptions(formattedOptions);
+    } catch (error) {
+      console.error("Error fetching employee data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchOptions();
+  }, []);
+
+  // Add selected employee to the table
+  const handleAddEmployee = (event) => {
+    if (selectedOption) {
+      const employeeExists = selectedEmployees.some(
+        (emp) => emp.value === selectedOption.value
+      );
+      if (!employeeExists) {
+        setSelectedEmployees([...selectedEmployees, selectedOption]);
+        setattendence({
+              ...attendence,
+              employee_id_atten:[...selectedEmployees,selectedOption] ,
+            });
+      }
+    }
+  };
+
+  // Remove employee from the table
+  const handleRemoveEmployee = (id) => {
+    setSelectedEmployees(selectedEmployees.filter((emp) => emp.value !== id));
+  };
 
   return (
     <div style={{ backgroundColor: "rgba(46, 7, 63, 0.1)", padding: "20px" }}>
@@ -370,14 +417,33 @@ function Attendence() {
                   });
                 }} />
               <label>Employee's Id</label>
-              <select onChange={ EmployeeList } id="employee_id_atten">
+                    {/* <select onChange={ EmployeeList } id="employee_id_atten">
                       <option>Select Employee</option>
                       {data.map((item) => (
                         <option key={item.employee_id} value={JSON.stringify(item)}>
                           {item.employee_id} - {item.employee_name}
                         </option>
                       ))}
-                    </select>
+                    </select> */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      <Select
+                        options={options}
+                        value={selectedOption}
+                        id="employee_id_atten"
+                        onChange={(selected) => setSelectedOption(selected)}
+                        placeholder="Search Employee"
+                        isSearchable
+                        styles={{
+                          container: (base) => ({
+                            ...base,
+                            flex: 1,
+                          }),
+                        }}
+                      />
+                      <button onClick={handleAddEmployee} style={{ padding: "8px 12px" }}>
+                        Add
+                      </button>
+                    </div>
               {/* <input
                 type="text"
                 id="employee_id_atten"
@@ -418,21 +484,20 @@ function Attendence() {
                         </tr>
                       </thead>
                       <tbody>
-                    {
-                      employee.map((item,index)=>
-                      (
-                        <tr>
-                          <td>{index+1}</td>
-                          <td>{item.employee_name}</td>
-                          <td>{item.employee_id}</td>
-                          <td>{item.date_of_join}</td>
-                          <td>
-                            <button onClick={() => DeleteEmployee(item)}>Delete</button>
-                          </td>
-                        </tr>
-                      ))
-                    }
-                      </tbody>
+                    {selectedEmployees.map((emp, index) => (
+                      <tr key={emp.value}>
+                        <td>{index + 1}</td>
+                        <td>{emp.details.employee_name}</td>
+                        <td>{emp.details.employee_id}</td>
+                        <td>{emp.details.date_of_join}</td>
+                        <td>
+                          <button onClick={() => handleRemoveEmployee(emp.value)}>
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
                     </table>
                   </div>
               </div>

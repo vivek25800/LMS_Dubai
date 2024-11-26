@@ -94,18 +94,18 @@ function TrainingCalenderForm() {
   };
 
   // Function to handle the "from_date" input
-  const handleFromDateChange = (e) => {
-    const isoDate = e.target.value; // yyyy-mm-dd format from the input
-    const formattedDate = formatDate(isoDate);
-    setevent({ ...event, from_date: formattedDate });
-  };
+  // const handleFromDateChange = (e) => {
+  //   const isoDate = e.target.value; // yyyy-mm-dd format from the input
+  //   const formattedDate = formatDate(isoDate);
+  //   setevent({ ...event, from_date: formattedDate });
+  // };
 
-  // Function to handle the "to_date" input
-  const handleToDateChange = (e) => {
-    const isoDate = e.target.value; // yyyy-mm-dd format from the input
-    const formattedDate = formatDate(isoDate);
-    setevent({ ...event, to_date: formattedDate });
-  };
+  // // Function to handle the "to_date" input
+  // const handleToDateChange = (e) => {
+  //   const isoDate = e.target.value; // yyyy-mm-dd format from the input
+  //   const formattedDate = formatDate(isoDate);
+  //   setevent({ ...event, to_date: formattedDate });
+  // };
   
   
   return (
@@ -202,16 +202,16 @@ function TrainingCalenderForm() {
                   </select>
               </div>
               <div className="date-setion">
-              {/* <div className="form-item">
+              <div className="form-item">
               <label for='from-date'>From</label>
               <input type="date" name="from-date" id="from_date"  onChange={(e) => {setevent({...event, from_date:e.target.value})}} />
               </div>
               <div className="form-item">
               <label for='to-date'>To</label>
               <input type="date" name="to-date" id="to_date"  onChange={(e) => {setevent({...event, to_date:e.target.value})}} />
-              </div> */}
+              </div>
 
-                  <div className="form-item">
+                  {/* <div className="form-item">
                   <label htmlFor="from-date">From</label>
                   <input
                     type="date"
@@ -228,7 +228,7 @@ function TrainingCalenderForm() {
                     id="to_date"
                     onChange={handleToDateChange}
                   />
-                </div>      
+                </div>       */}
               </div>
 
               <div className="date-setion">

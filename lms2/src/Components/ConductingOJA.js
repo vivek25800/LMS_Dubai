@@ -344,7 +344,7 @@ function ConductingOJA() {
                       <td>{content.description}</td>
                       <td>
                         <select
-                          value={content.rating || ""} // Set a default value if rating is undefined
+                         
                           onChange={(e) =>
                             handleRatingChange(activityIndex, contentIndex, e.target.value)
                           }
@@ -352,6 +352,7 @@ function ConductingOJA() {
                           <option value="">--Select Rating--</option>
                           {ratingRange.map((rating) => (
                             <option key={rating} value={rating}>
+                              
                               {rating}
                             </option>
                           ))}

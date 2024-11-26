@@ -534,14 +534,14 @@ const QuestionForm = () => {
             </div>
         </div>
 
-        <div className="subtitle-input">
+        {/* <div className="subtitle-input">
           <input
             type="text"
             value={subtitle}
             onChange={(e) => setSubtitle(e.target.value)}
             placeholder="Enter a subtitle (optional)"
           />
-        </div>
+        </div> */}
 
         <div className="options-list">
         {options.map((option, idx) => (
