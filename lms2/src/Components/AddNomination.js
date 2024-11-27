@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { toast, ToastContainer } from 'react-toastify';
 import { base_url } from "./Utils/base_url";
+import Select from "react-select";
 
 function AddNomination({selectedTraining}) {
 
@@ -58,15 +59,15 @@ function AddNomination({selectedTraining}) {
     setemployee(updatedEmployees); // Update the state with the new array
   }
 
-  const [options, setOptions] = useState([]);
-  const fetchOptions = async () => {
-    try {
-      const response = await axios.get(`${base_url}/employee_details_get`, );
-      setOptions(response.data.employee);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  // const [options, setOptions] = useState([]);
+  // const fetchOptions = async () => {
+  //   try {
+  //     const response = await axios.get(`${base_url}/employee_details_get`, );
+  //     setOptions(response.data.employee);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
 
   const delete_employee = async (employee) => {
     try {
@@ -129,6 +130,48 @@ function AddNomination({selectedTraining}) {
       };
     }
   }, [show]); // Re-run the effect when the modal is shown
+
+
+
+  const [options, setOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedEmployees, setSelectedEmployees] = useState([]);
+
+    // Fetch options from the backend
+    const fetchOptions = async () => {
+      try {
+        const response = await axios.get(`${base_url}/employee_details_get`);
+        const formattedOptions = response.data.employee.map((emp) => ({
+          value: emp.employee_id,
+          label: `${emp.employee_id} - ${emp.employee_name}`,
+          details: emp, // Add full details to use later
+        }));
+        setOptions(formattedOptions);
+      } catch (error) {
+        console.error("Error fetching employee data:", error);
+      }
+    };
+  
+    useEffect(() => {
+      fetchOptions();
+    }, []);
+
+          // Add selected employee to the list
+          const handleAddEmployee = () => {
+            if (selectedOption) {
+              const employeeExists = selectedEmployees.some(
+                (emp) => emp.value === selectedOption.value
+              );
+              if (!employeeExists) {
+                setSelectedEmployees([...selectedEmployees, selectedOption]);
+              }
+            }
+          };
+    
+          // Remove employee from the list
+          const handleRemoveEmployee = (id) => {
+            setSelectedEmployees(selectedEmployees.filter((emp) => emp.value !== id));
+          };
 
   return (
     <div>
@@ -259,14 +302,24 @@ function AddNomination({selectedTraining}) {
               <tbody>
                 <tr>
                   <td>
-                  <select onChange={ EmployeeList }>
-                      <option>Select Employee</option>
-                      {options.map((item) => (
-                        <option key={item.employee_id} value={JSON.stringify(item)}>
-                          {item.employee_id} - {item.employee_name}
-                        </option>
-                      ))}
-                    </select>
+                  <div className="info-div-item" style={{display:"flex", alignItems: "center", gap: "10px"}}>
+                    <Select
+                      options={options}
+                      value={selectedOption}
+                      onChange={(selected) => setSelectedOption(selected)}
+                      placeholder="Search Employee"
+                      isSearchable
+                      styles={{
+                        container: (base) => ({
+                          ...base,
+                          flex: 1,
+                        }),
+                      }}
+                    />
+                    <button onClick={handleAddEmployee} style={{ backgroundColor: '#7A1CAC', color: '#fff', border: 'none' }}>
+                      Add
+                    </button>
+                  </div>
                   </td>
                   <td>{selectedTraining?.training_name}</td>
                   {/* <td>{new Date(selectedTraining?.from_date).toLocaleString()} - {new Date(selectedTraining?.to_date).toLocaleString()}</td> */}
@@ -284,55 +337,76 @@ function AddNomination({selectedTraining}) {
           <div className='nominee-data'>
               <h5 style={{marginBottom:"2rem"}}>Student's and Employee's data</h5>
 
-              <table id="employeeTable" className="table table-striped table-bordered" style={{ fontSize: '14px' }}>
-                <thead>
-                  <tr>
-                    <th><input type='checkbox' /> Select All</th>
-                    <th>Event code</th>
-                    <th>Employee name</th>
-                    <th>Emp id</th>
-                    <th>Emp email</th>
-                    <th>Designation</th>
-                    <th>Attendence</th>
-                    <th>Mail sent</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-  {employee.map((item, index) => (
-    <tr key={index}>
-      <td>
-        <input type="checkbox" /> {index + 1}
-      </td>
-      <td>Event code</td>
-      <td>{item.employee_name}</td>
-      <td>{item.employee_id}</td>
-      <td>{item.employee_email}</td>
-      <td>{item.designation}</td>
-      <td>
-        {Array.from(
-          { length: Math.ceil((new Date(selectedTraining?.to_date) - new Date(selectedTraining?.from_date)) / (1000 * 60 * 60 * 24)) + 1 },
-          (_, i) => {
-            const currentDate = new Date(selectedTraining?.from_date);
-            currentDate.setDate(currentDate.getDate() + i);
-            return (
-              <div key={i}>
-                <input type="checkbox" />
-                {formatDate(currentDate)}
+              <div style={{ overflowX: 'auto', maxWidth: '100%' }}>
+                <table
+                  id="employeeTable"
+                  className="table table-striped table-bordered"
+                  style={{ fontSize: '14px', width: '100%' }}
+                >
+                  <thead>
+                    <tr>
+                      <th>
+                        <input type="checkbox" /> Select All
+                      </th>
+                      <th>Event code</th>
+                      <th>Employee name</th>
+                      <th>Emp id</th>
+                      <th>Emp email</th>
+                      <th>Designation</th>
+                      <th>Attendance</th>
+                      <th>Mail sent</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedEmployees.map((emp, index) => (
+                      <tr key={emp.value}>
+                        <td>
+                          <input type="checkbox" />
+                          {index + 1}
+                        </td>
+                        <td>Event code</td>
+                        <td>{emp.details.employee_name}</td>
+                        <td>{emp.details.employee_id}</td>
+                        <td>{emp.details.employee_email}</td>
+                        <td>{emp.details.designation}</td>
+                        <td>
+                          {Array.from(
+                            {
+                              length:
+                                Math.ceil(
+                                  (new Date(selectedTraining?.to_date) -
+                                    new Date(selectedTraining?.from_date)) /
+                                    (1000 * 60 * 60 * 24)
+                                ) + 1,
+                            },
+                            (_, i) => {
+                              const currentDate = new Date(selectedTraining?.from_date);
+                              currentDate.setDate(currentDate.getDate() + i);
+                              return (
+                                <div key={i}>
+                                  <input type="checkbox" />
+                                  {formatDate(currentDate)}
+                                </div>
+                              );
+                            }
+                          )}
+                        </td>
+                        <td>Mail Sent</td>
+                        <td>
+                          <button
+                            // style={{ backgroundColor: '#7A1CAC', color: '#fff', border: 'none' }}
+                            onClick={() => handleRemoveEmployee(emp.value)}
+                          >
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            );
-          }
-        )}
-      </td>
-      <td>Mail Sent</td>
-      <td>
-        <button onClick={() => DeleteEmployee(item)}>Remove</button>
-      </td>
-    </tr>
-  ))}
-</tbody>
 
-              </table>
 
               <div className='send-mail-div'>
                 <input type='text' />

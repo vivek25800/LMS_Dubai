@@ -69,7 +69,7 @@ function ViewTrainingDetails() {
                 const id=training._id
               const resp = await axios.put(`${base_url}/event_details_updated/${id}`, event);
               if(resp.status === 200){
-                toast.success("Event details edit successfuly");
+                toast.success("Event details edit successfuly", {autoClose: 2000});
                 setTimeout(() => {
                     window.location.reload()
                 }, 1000);
@@ -244,7 +244,7 @@ function ViewTrainingDetails() {
                 <td >{item.training_category}</td>
                 <td >{item.training_name}</td>
                 <td >{item.trainer_name}</td>
-                <td >{item.region}</td>
+                <td >{item.region} </td>
                 <td >{item.project_title}</td>
                 <td >{item.from_date} - {item.to_date}</td>
                 <td >{item.from_time} - {item.to_time}</td>
@@ -312,19 +312,37 @@ function ViewTrainingDetails() {
               </div>
               <div className="form-item">
               <label for='region'>Region</label>
-              <select name="region" id="region"  onChange={(e) => {setevent((prevprofile)=>({...prevprofile, region:e.target.value}))}}>
+              <select 
+                name="region" 
+                id="region"  
+                // onChange={(e) => {setevent((prevprofile)=>({...prevprofile, region:e.target.value}))}}
+                onChange={(e) => {
+                  const selectedValue = e.target.value;
+                  if (selectedValue === "All") {
+                    setevent({
+                      ...event,
+                      region: ["UAE", "Oman", "KSA", "Qatar", "Bahrain"], // Store all countries
+                    });
+                  } else {
+                    setevent({
+                      ...event,
+                      region: [selectedValue], // Store individual country
+                    });
+                  }
+                }}
+              >
                     <option >{training.region}</option> 
-                    <option >UAE</option>
-                    <option >Oman</option>
-                    <option >KSA</option>
-                    <option >Qatar</option>
-                    <option >Bahrain</option>
-                    <option >All</option>
+                    <option value="UAE">UAE</option>
+                    <option value="Oman">Oman</option>
+                    <option value="KSA">KSA</option>
+                    <option value="Qatar">Qatar</option>
+                    <option value="Bahrain">Bahrain</option>
+                    <option value="All">All</option>
                   </select>
               </div>
               <div className="form-item">
                 <label for='project'>Project</label>
-                <select name="project" id="project_title"   onChange={(e) => {setevent((prevprofile)=>({...prevprofile, project_title:e.target.value}))}}>
+                <select name="project" id="project_title" onChange={(e) => {setevent((prevprofile)=>({...prevprofile, project_title:e.target.value}))}}>
                     <option >{training.project_title}</option>
                     <option >Value2</option>
                     <option >Value3</option>
@@ -335,13 +353,32 @@ function ViewTrainingDetails() {
               </div>
               <div className="form-item">
                 <label for='project'>Job title</label>
-                <select name="job-title" id="job_title"   onChange={(e) => {setevent((prevprofile)=>({...prevprofile, job_title:e.target.value}))}}>
+                <select 
+                  name="job-title" 
+                  id="job_title" 
+                  // onChange={(e) => {setevent((prevprofile)=>({...prevprofile, job_title:e.target.value}))}}
+                  onChange={(e) => {
+                    const selectedValue = e.target.value;
+                    if (selectedValue === "All") {
+                      setevent({
+                        ...event,
+                        job_title: ["Job Title-1", "Job Title-2", "Job Title-3", "Job Title-4", "Job Title-5"], // Store all countries
+                      });
+                    } else {
+                      setevent({
+                        ...event,
+                        job_title: [selectedValue], // Store individual country
+                      });
+                    }
+                  }}
+                >
                     <option >{training.job_title}</option>
-                    <option >Value2</option>
-                    <option >Value3</option>
-                    <option >Value4</option>
-                    <option >Value5</option>
-                    <option >Value6</option>
+                    <option value="Job Title-1">Job title - 1</option>
+                    <option value="Job Title-2">Job title - 2</option>
+                    <option value="Job Title-3">Job title - 3</option>
+                    <option value="Job Title-4">Job title - 4</option>
+                    <option value="Job Title-5">Job title - 5</option>
+                    <option value="All">All</option>
                   </select>
               </div>
               <div className="date-setion">

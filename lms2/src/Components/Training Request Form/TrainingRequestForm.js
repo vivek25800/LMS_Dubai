@@ -4,6 +4,7 @@ import Header from '../Header';
 import axios from 'axios';
 import { base_url } from '../Utils/base_url';
 import { toast } from 'react-toastify';
+import Select from "react-select";
 
 function TrainingRequestForm() {
 
@@ -19,6 +20,7 @@ function TrainingRequestForm() {
             if (resp.status === 200) {
                 toast.success('Training request data are saved', { autoClose: 2000 });
                 clearForm();
+                setSelectedEmployees([]);
                 // setTrainingRequest({
                 //     request_raised_by: "", project: "", training_category: "", 
                 //     training_title: "", budget_code: "", target_date: "", employees_ids: []
@@ -80,16 +82,16 @@ function TrainingRequestForm() {
     };
 
 
-    const [options, setOptions] = useState([]);
-    const fetchOptions = async () => {
-      try {
-        const response = await axios.get(`${base_url}/employee_details_get`);
-        setOptions(response.data.employee);
-        console.log(options);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+    // const [options, setOptions] = useState([]);
+    // const fetchOptions = async () => {
+    //   try {
+    //     const response = await axios.get(`${base_url}/employee_details_get`);
+    //     setOptions(response.data.employee);
+    //     console.log(options);
+    //   } catch (error) {
+    //     console.error("Error fetching data:", error);
+    //   }
+    // };
 
     useEffect(() => {
         fetchOptions();
@@ -113,6 +115,51 @@ function TrainingRequestForm() {
     }
 
     console.log(trainingRequest.totalEmployee);
+
+    const [options, setOptions] = useState([]);
+    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedEmployees, setSelectedEmployees] = useState([]);
+  
+      // Fetch options from the backend
+      const fetchOptions = async () => {
+        try {
+          const response = await axios.get(`${base_url}/employee_details_get`);
+          const formattedOptions = response.data.employee.map((emp) => ({
+            value: emp.employee_id,
+            label: `${emp.employee_id} - ${emp.employee_name}`,
+            details: emp, // Add full details to use later
+          }));
+          setOptions(formattedOptions);
+        } catch (error) {
+          console.error("Error fetching employee data:", error);
+        }
+      };
+    
+      useEffect(() => {
+        fetchOptions();
+      }, []);
+
+            // Add selected employee to the list
+            const handleAddEmployee = (event) => {
+                if (selectedOption) {
+                  const employeeExists = selectedEmployees.some(
+                    (emp) => emp.value === selectedOption.value
+                  );
+                  if (!employeeExists) {
+                    setSelectedEmployees([...selectedEmployees, selectedOption]);
+                    setTrainingRequest({
+                          ...trainingRequest,
+                          employees_ids:[...selectedEmployees,selectedOption] ,
+                        });
+                  }
+                }
+              };
+        
+              // Remove employee from the list
+              const handleRemoveEmployee = (id) => {
+                setSelectedEmployees(selectedEmployees.filter((emp) => emp.value !== id));
+              };
+
 
     return (
         <div>
@@ -257,14 +304,25 @@ function TrainingRequestForm() {
 
                                     <div className="info-div-item">
                                         <label>Add Employees</label>
-                                        <select id='employees_ids' onChange={ EmployeeList }>
-                                            <option>-- Select Employee --</option>
-                                            {options.map((item) => (
-                                                <option key={item.employee_id} value={JSON.stringify(item)}>
-                                                    {item.employee_id} - {item.employee_name}
-                                                </option>
-                                            ))}
-                                        </select>
+                                         <div className="info-div-item" style={{display:"flex", alignItems: "center", gap: "10px"}}>
+                                                <Select
+                                                options={options}
+                                                value={selectedOption}
+                                                id='employees_ids'
+                                                onChange={(selected) => setSelectedOption(selected)}
+                                                placeholder="Search Employee"
+                                                isSearchable
+                                                styles={{
+                                                    container: (base) => ({
+                                                    ...base,
+                                                    flex: 1,
+                                                    }),
+                                                }}
+                                                />
+                                                <button onClick={handleAddEmployee} style={{ padding: "8px 12px" }}>
+                                                Add
+                                                </button>
+                                            </div>
                                         {/* <input
                                             type='text'
                                             id='employees_ids'
@@ -301,18 +359,18 @@ function TrainingRequestForm() {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {
-                                                        employee.map((item, index) => (
-                                                            <tr>
-                                                                <td>{index+1}</td>
-                                                                <td>{item.employee_name}</td>
-                                                                <td>{item.employee_id}</td>
-                                                                <td>
-                                                                    <button onClick={() => DeleteEmployee(item)}>Delete</button>
-                                                                </td>
-                                                            </tr>
-                                                        ))
-                                                    }
+                                                    {selectedEmployees.map((emp, index) => (
+                                                    <tr key={emp.value}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{emp.details.employee_name}</td>
+                                                        <td>{emp.details.employee_id}</td>
+                                                        <td>
+                                                        <button onClick={() => handleRemoveEmployee(emp.value)}>
+                                                            Remove
+                                                        </button>
+                                                        </td>
+                                                    </tr>
+                                                    ))}
                                                 </tbody>
                                             </table>
                                         </div>

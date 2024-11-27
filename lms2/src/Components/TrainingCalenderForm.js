@@ -11,16 +11,16 @@ import { useNavigate } from "react-router-dom";
 
 function TrainingCalenderForm() {
 
- const navigate=useNavigate()
+ const navigate=useNavigate();
 
-  const[event, setevent] = useState({training_category:"",  training_name:"", trainer_name:"", description:"",region:"",  project_title:"", 
-    job_title:"", from_date:new Date(), to_date:new Date(), from_time:"", to_time:"", participents:"", venue_name:"", status:"Upcoming"})
+  const[event, setevent] = useState({training_category:"",  training_name:"", trainer_name:"", description:"",region:[""],  project_title:"", 
+    job_title:[""], from_date:new Date(), to_date:new Date(), from_time:"", to_time:"", participents:"", venue_name:"", status:"Upcoming"})
 
   const event_details_infoget = async () => {
     try {
       const resp = await axios.post(`${base_url}/add_events_data`, event);
       if(resp.status === 200){
-        toast.success("Event details saved successfuly");
+        toast.success("Event details saved successfuly", { autoClose: 2000});
       }
     } catch (error) {
       console.log(error);
@@ -130,7 +130,8 @@ function TrainingCalenderForm() {
           <div className="form-section">
           <div className="form-item">
                 <label>Training Category</label>
-                <select name="training-category" id="training_category" onChange={(e) => {setevent({...event, training_category:e.target.value})}}>
+                <select name="training-category" id="training_category" onChange={(e) => {setevent({...event, training_category:e.target.value})}} >
+                  <option>-- Select Training Category --</option>
                   <option >Value1</option>
                   <option >Value2</option>
                   <option>Value3</option>
@@ -141,7 +142,8 @@ function TrainingCalenderForm() {
               </div>
               <div className="form-item">
                   <label>Training Name</label>
-                  <select name="training-name" id="training_name" onChange={(e) => {setevent({...event, training_name:e.target.value})}}>
+                  <select name="training-name" id="training_name" onChange={(e) => {setevent({...event, training_name:e.target.value})}} >
+                    <option>-- Select Training Name --</option>
                     <option >Value1</option>
                     <option >Value2</option>
                     <option >Value3</option>
@@ -168,7 +170,7 @@ function TrainingCalenderForm() {
                 <label for='desription'>Description</label>
                 <textarea name="description" id="description"  onChange={(e) => {setevent({...event, description:e.target.value})}}></textarea>
               </div>
-              <div className="form-item">
+              {/* <div className="form-item">
               <label for='region'>Region</label>
               <select name="region" id="region"  onChange={(e) => {setevent({...event, region:e.target.value})}}>
                     <option >UAE</option>
@@ -178,10 +180,44 @@ function TrainingCalenderForm() {
                     <option >Bahrain</option>
                     <option >All</option>
                   </select>
+              </div> */}
+              <div className="form-item">
+                <label htmlFor="region">Region</label>
+                <select
+                  name="region"
+                  id="region"
+                  onChange={(e) => {
+                    const selectedValue = e.target.value;
+                    if (selectedValue === "selectRegion") {
+                      toast.error("Please select a correct region", { autoClose: 2000 });
+                      return; // Prevent updating the state
+                    } else if (selectedValue === "All") {
+                      setevent({
+                        ...event,
+                        region: ["UAE", "Oman", "KSA", "Qatar", "Bahrain"], // Store all countries
+                      });
+                    } else {
+                      setevent({
+                        ...event,
+                        region: [selectedValue], // Store individual country
+                      });
+                    }
+                  }}
+                >
+                  <option value="selectRegion">-- Select Region --</option>
+                  <option value="UAE">UAE</option>
+                  <option value="Oman">Oman</option>
+                  <option value="KSA">KSA</option>
+                  <option value="Qatar">Qatar</option>
+                  <option value="Bahrain">Bahrain</option>
+                  <option value="All">All</option>
+                </select>
               </div>
+
               <div className="form-item">
                 <label for='project'>Project</label>
                 <select name="project" id="project_title"  onChange={(e) => {setevent({...event, project_title:e.target.value})}}>
+                    <option>-- Select Project --</option>
                     <option >Value1</option>
                     <option >Value2</option>
                     <option >Value3</option>
@@ -192,13 +228,36 @@ function TrainingCalenderForm() {
               </div>
               <div className="form-item">
                 <label for='project'>Job title</label>
-                <select name="job-title" id="job_title"  onChange={(e) => {setevent({...event, job_title:e.target.value})}}>
-                    <option >Value1</option>
-                    <option >Value2</option>
-                    <option >Value3</option>
-                    <option >Value4</option>
-                    <option >Value5</option>
-                    <option >Value6</option>
+                <select 
+                  name="job-title" 
+                  id="job_title"  
+                  // onChange={(e) => {setevent({...event, job_title:e.target.value})}}
+                  onChange={(e) => {
+                    const selectedValue = e.target.value;
+                    if (selectedValue === "selectJobTitle") {
+                      toast.error("Please select a correct Job title", { autoClose: 2000 });
+                      return; // Prevent updating the state
+                    } else if (selectedValue === "All") {
+                      setevent({
+                        ...event,
+                        job_title: ["Job Title-1", "Job Title-2", "Job Title-3", "Job Title-4", "Job Title-5"], // Store all countries
+                      });
+                    } else {
+                      setevent({
+                        ...event,
+                        job_title: [selectedValue], // Store individual country
+                      });
+                    }
+                  }}
+                >
+
+                    <option value="selectJobTitle">-- Select Job title --</option>
+                    <option value="Job Title-1">Job title - 1</option>
+                    <option value="Job Title-2">Job title - 2</option>
+                    <option value="Job Title-3">Job title - 3</option>
+                    <option value="Job Title-4">Job title - 4</option>
+                    <option value="Job Title-5">Job title - 5</option>
+                    <option value="All">All</option>
                   </select>
               </div>
               <div className="date-setion">

@@ -86,29 +86,29 @@ const GetOJTInfo = ({ options1 }) => {
 
 
 // Get Employee Id's
-  const [employee, setemployee] = useState([]);
-  function EmployeeList(event) {
-    const selectedEmployee = JSON.parse(event.target.value);
-    setemployee([...employee,selectedEmployee]);
-    console.log(selectedEmployee); // Logs the full object
-  }
+  // const [employee, setemployee] = useState([]);
+  // function EmployeeList(event) {
+  //   const selectedEmployee = JSON.parse(event.target.value);
+  //   setemployee([...employee,selectedEmployee]);
+  //   console.log(selectedEmployee); // Logs the full object
+  // }
 
-  function DeleteEmployee(item) {
-    const updatedEmployees = employee.filter((item1) => item1._id !== item._id);
-    setemployee(updatedEmployees); // Update the state with the new array
-  }
+  // function DeleteEmployee(item) {
+  //   const updatedEmployees = employee.filter((item1) => item1._id !== item._id);
+  //   setemployee(updatedEmployees); // Update the state with the new array
+  // }
   
 
-  const [options, setOptions] = useState([]);
-  const fetchOptions = async () => {
-    try {
-      const response = await axios.get(`${base_url}/employee_details_get`);
-      setOptions(response.data.employee);
-      console.log(options);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  // const [options, setOptions] = useState([]);
+  // const fetchOptions = async () => {
+  //   try {
+  //     const response = await axios.get(`${base_url}/employee_details_get`);
+  //     setOptions(response.data.employee);
+  //     console.log(options);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
 
   const delete_employee = async (employee) => {
     try {
@@ -127,6 +127,48 @@ const GetOJTInfo = ({ options1 }) => {
     fetchOptions();
     delete_employee();
   }, []);
+
+
+
+  const [options, setOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedEmployees, setSelectedEmployees] = useState([]);
+
+    // Fetch options from the backend
+    const fetchOptions = async () => {
+      try {
+        const response = await axios.get(`${base_url}/employee_details_get`);
+        const formattedOptions = response.data.employee.map((emp) => ({
+          value: emp.employee_id,
+          label: `${emp.employee_id} - ${emp.employee_name}`,
+          details: emp, // Add full details to use later
+        }));
+        setOptions(formattedOptions);
+      } catch (error) {
+        console.error("Error fetching employee data:", error);
+      }
+    };
+  
+    useEffect(() => {
+      fetchOptions();
+    }, []);
+
+      // Add selected employee to the list
+      const handleAddEmployee = () => {
+        if (selectedOption) {
+          const employeeExists = selectedEmployees.some(
+            (emp) => emp.value === selectedOption.value
+          );
+          if (!employeeExists) {
+            setSelectedEmployees([...selectedEmployees, selectedOption]);
+          }
+        }
+      };
+
+      // Remove employee from the list
+      const handleRemoveEmployee = (id) => {
+        setSelectedEmployees(selectedEmployees.filter((emp) => emp.value !== id));
+      };
 
   return (
     <div>
@@ -170,7 +212,7 @@ const GetOJTInfo = ({ options1 }) => {
             }
             .add-employee{
             display: grid;
-            grid-template-columns: auto auto auto;
+            grid-template-columns: auto auto;
             column-gap: 1rem;
             row-gap: 1rem;
             }
@@ -204,15 +246,25 @@ const GetOJTInfo = ({ options1 }) => {
                 <div className="add-employee" style={{ fontSize: "14px" }}>
                 
                 <div className="info-div-item">
-                  <label>Employee ID</label>
-                  <select onChange={ EmployeeList }>
-                      <option>Select Employee</option>
-                      {options.map((item) => (
-                        <option key={item.employee_id} value={JSON.stringify(item)}>
-                          {item.employee_id} - {item.employee_name}
-                        </option>
-                      ))}
-                    </select>
+                  {/* <label>Employee ID</label> */}
+                  <div className="info-div-item" style={{display:"flex", alignItems: "center", gap: "10px"}}>
+                    <Select
+                      options={options}
+                      value={selectedOption}
+                      onChange={(selected) => setSelectedOption(selected)}
+                      placeholder="Search Employee"
+                      isSearchable
+                      styles={{
+                        container: (base) => ({
+                          ...base,
+                          flex: 1,
+                        }),
+                      }}
+                    />
+                    <button onClick={handleAddEmployee} style={{ padding: "8px 12px" }}>
+                      Add
+                    </button>
+                  </div>
                 </div>
 
                 <div className="date-div">
@@ -273,20 +325,19 @@ const GetOJTInfo = ({ options1 }) => {
                         </tr>
                       </thead>
                       <tbody>
-                          {
-                            employee.map((item,index)=>
-                            (
-                              <tr>
-                                <td>{index+1}</td>
-                                <td>{item.employee_name}</td>
-                                <td>{item.employee_id}</td>
-                                <td>{item.project_name}</td>
-                                <td>
-                                  <button onClick={() => DeleteEmployee(item)}>Delete</button>
-                                </td>
-                              </tr>
-                            ))
-                          }
+                        {selectedEmployees.map((emp, index) => (
+                          <tr key={emp.value}>
+                            <td>{index + 1}</td>
+                            <td>{emp.details.employee_name}</td>
+                            <td>{emp.details.employee_id}</td>
+                            <td>{emp.details.project_name}</td>
+                            <td>
+                              <button onClick={() => handleRemoveEmployee(emp.value)}>
+                                Remove
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
                       </tbody>
                     </table>
                   </div>
