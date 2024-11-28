@@ -3,6 +3,7 @@ import QuestionForm from './QuestionForm';
 import QuestionFormTwo from './QuestionTextForm';
 import MatchTheFollowingForm from './MatchTheFollowingForm';
 import Button from 'react-bootstrap/Button';
+import DuplicateAssessment from './DuplicateAssessment';
 
 function AddDifferentSection() {
     const [questionText, setQuestionText] = useState('');
@@ -29,6 +30,10 @@ function AddDifferentSection() {
         setSelectedQuestionType('match');
     }
 
+    function DuplicateQuestion() {
+        setSelectedQuestionType('duplicate');
+    }
+
     const addQuestionToAssessment = () => {
         if (selectedQuestionType === 'mcq') {
             const mcqData = {
@@ -50,6 +55,11 @@ function AddDifferentSection() {
                 // Add your match-the-following question data here
             };
             setQuestions([...questions, matchData]);
+        } else if (selectedQuestionType === 'duplicate') {
+            const duplicateData = {
+                type: 'duplicate',
+            };
+            setQuestions([...questions, duplicateData]);
         }
 
         // Clear the form after adding the question
@@ -159,15 +169,15 @@ function AddDifferentSection() {
                     <button id='mcq-questions-btn' onClick={MCQquestion}>Multiple Choice Questions</button>
                     <button id='text-questions-btn' onClick={Textquestion}>Text type questions</button>
                     <button id='match-following-btn' onClick={MTFquestion}>Match the following</button>
-                    <button id='duplicate-questions-btn'>Duplicate</button>
+                    <button id='duplicate-questions-btn' onClick={DuplicateQuestion}>Duplicate</button>
                 </div>
             </div>
 
-            {selectedQuestionType === 'mcq' && (
+                            {selectedQuestionType === 'mcq' && (
                                 <div className='mcq-type-container questions-container'>
                                     <h5>Multiple Choice Question</h5>
                                     <QuestionForm setQuestionText={setQuestionText} setOptions={setOptions} setCorrectAnswer={setCorrectAnswer} />
-                                    <Button variant="primary" className='added-btn' onClick={addQuestionToAssessment}>Add MCQ Question</Button>
+                                    {/* <Button variant="primary" className='added-btn' onClick={addQuestionToAssessment}>Add MCQ Question</Button> */}
                                 </div>
                             )}
 
@@ -175,7 +185,7 @@ function AddDifferentSection() {
                                 <div className='text-type-container questions-container'>
                                     <h5>Text type question</h5>
                                     <QuestionFormTwo setQuestionText={setQuestionText} />
-                                    <Button variant="primary" className='added-btn' onClick={addQuestionToAssessment}>Add Text Question</Button>
+                                    {/* <Button variant="primary" className='added-btn' onClick={addQuestionToAssessment}>Add Text Question</Button> */}
                                 </div>
                             )}
 
@@ -183,7 +193,15 @@ function AddDifferentSection() {
                                 <div className='match-type-container questions-container'>
                                     <h5>Match the following type questions</h5>
                                     <MatchTheFollowingForm />
-                                    <Button variant="primary" className='added-btn' onClick={addQuestionToAssessment}>Add Match Question</Button>
+                                    {/* <Button variant="primary" className='added-btn' onClick={addQuestionToAssessment}>Add Match Question</Button> */}
+                                </div>
+                            )}
+
+                            {selectedQuestionType === 'duplicate' && (
+                                <div className='duplicate-type-container questions-container'>
+                                    {/* <h5>Duplicate type questions</h5> */}
+                                    <DuplicateAssessment />
+                                    {/* <Button variant="primary" className='added-btn' onClick={addQuestionToAssessment}>Add Duplicate</Button> */}
                                 </div>
                             )}
 

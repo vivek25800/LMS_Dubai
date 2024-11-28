@@ -182,7 +182,7 @@ function CreateAssessment() {
                             </div>
                             <div className="info-div-item">
                                 <label>Assign assessment time</label>
-                                <input type='text' placeholder='00:00:00' value={time} onChange={(e) => setTime(e.target.value)} />
+                                <input type='time' placeholder='HH:MM' value={time} onChange={(e) => setTime(e.target.value)} />
                             </div>
                         </div>
                     </div>

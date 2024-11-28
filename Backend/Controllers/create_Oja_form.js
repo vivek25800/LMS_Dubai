@@ -52,6 +52,16 @@ const get_oja_details_byIds = async (req, res) => {
     }
 }
 
+const update_oja_details = async (req, res) => {
+  try {
+    const id = req.params._id;
+    const resp = await create_oja_modal.findByIdAndUpdate(id, req.body);
+    res.status(200).send({message: "OJA data successfully updated", create_oja: resp});
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const updateOjaInfo = async (req, res) => {
     try {
       const ojaId = req.params.id;
@@ -78,4 +88,4 @@ const updateOjaInfo = async (req, res) => {
     }
   };
 
-module.exports = {post_oja_data, get_oja_details, delete_oja_data, get_oja_details_byIds, updateOjaInfo};
+module.exports = {post_oja_data, get_oja_details, delete_oja_data, get_oja_details_byIds, update_oja_details, updateOjaInfo};

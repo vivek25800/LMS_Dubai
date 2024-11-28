@@ -12,8 +12,8 @@ function ViewOJTOJAINA() {
 
     useEffect(() => {
         // fetchOjtData();
-        fetchOjaData();
-        fetchInaData();
+        // fetchOjaData();
+        // fetchInaData();
     }, []);
 
     // ---------------------------------------- OJT Integration Code ------------------------------------- //
@@ -148,7 +148,7 @@ function ViewOJTOJAINA() {
     const addActivity = () => {
         const updatedOJT = { ...selectedOJT };
         updatedOJT.activities.push({
-            activity_ojt_title: `New Activity ${updatedOJT.activities.length + 1}`,
+            activity_ojt_title: `Enter New Activity ${updatedOJT.activities.length + 1}`,
             content: [],
         });
         setSelectedOJT(updatedOJT);
@@ -159,70 +159,168 @@ function ViewOJTOJAINA() {
 
     // ----------------------------------------------- OJA Integration Code ---------------------------------------
     const [ojaData, setOjaData] = useState([]);
-    const [show2, setshow2] = useState(false);
+    const [show2, setShow2] = useState(false);
     const [selectedOJA, setSelectedOJA] = useState(null);
+
+    useEffect(() => {
+        fetchOjaData();
+    }, []);
 
     const fetchOjaData = async () => {
         try {
-           const resp = await axios.get(`${base_url}/get_oja_info`);
-           setOjaData(resp.data.create_oja);
+            const resp = await axios.get(`${base_url}/get_oja_info`);
+            setOjaData(resp.data.create_oja);
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
-    }
+    };
 
     const deleteOjaData = async (_id) => {
         try {
-           const id = _id;
-           const resp = await axios.delete(`${base_url}/oja_data_delete/${id}`);
-           setOjaData(resp.data.create_oja);
-           toast.success("OJA delete successfully", {autoClose:"3000"});
-           setTimeout(() => {
-            window.location.reload();
-           }, 500);
+            const resp = await axios.delete(`${base_url}/oja_data_delete/${_id}`);
+            setOjaData(resp.data.create_oja);
+            toast.success("OJA deleted successfully", { autoClose: 2000 });
+            setTimeout(() => {
+                window.location.reload();
+               }, 500);
         } catch (error) {
             console.log(error);
         }
-    }
+    };
 
-    
-    const handleshow2 = () => {
-        setshow2(true);
-    }
-    const handleclose2 = () => { setshow2(false) }
+    const handleEditOJA = async (_id) => {
+        try {
+            const resp = await axios.get(`${base_url}/get_oja_info_byids/${_id}`);
+            setSelectedOJA(resp.data.create_oja);
+            setShow2(true);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleClose2 = () => {
+        setSelectedOJA(null);
+        setShow2(false);
+    };
+
+    const handleUpdateOJA = async () => {
+        try {
+            await axios.put(`${base_url}/oja_details_updated/${selectedOJA._id}`, selectedOJA);
+            toast.success("OJA updated successfully", { autoClose: 2000 });
+            fetchOjaData();
+            handleClose2();
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const addContentOJA = (activityIndex) => {
+        const updatedOJA = { ...selectedOJA };
+        updatedOJA.activities[activityIndex].content.push({
+            srno: updatedOJA.activities[activityIndex].content.length + 1,
+            description: "",
+        });
+        setSelectedOJA(updatedOJA);
+    };
+
+    const deleteContentOJA = (activityIndex, contentIndex) => {
+        const updatedOJA = { ...selectedOJA };
+        updatedOJA.activities[activityIndex].content.splice(contentIndex, 1);
+        setSelectedOJA(updatedOJA);
+    };
+
+    const addActivityOJA = () => {
+        const updatedOJA = { ...selectedOJA };
+        updatedOJA.activities.push({
+            activity_oja_title: `Enter New Activity ${updatedOJA.activities.length + 1}`,
+            content: [],
+        });
+        setSelectedOJA(updatedOJA);
+    };
 
 
     // --------------------------------------------- INA Integration Code ------------------------------------------
     const [inaData, setInaData] = useState([]);
+    const [show3, setShow3] = useState(false);
+    const [selectedINA, setSelectedINA] = useState(null);
+
+    useEffect(() => {
+        fetchInaData();
+    }, []);
+
     const fetchInaData = async () => {
         try {
-           const resp = await axios.get(`${base_url}/get_ina_dataInfo`);
-        //    console.log(resp);
-           setInaData(resp.data.create_ina);
+            const resp = await axios.get(`${base_url}/get_ina_dataInfo`);
+            setInaData(resp.data.create_ina);
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
-    }
+    };
 
-    const deleteINAData = async (_id) => {
+    const deleteInaData = async (_id) => {
         try {
-           const id = _id;
-           const resp = await axios.delete(`${base_url}/ina_data_delete/${id}`);
-           setInaData(resp.data.create_ina);
-           toast.success("INA delete successfully", {autoClose:"3000"});
-           setTimeout(() => {
-            window.location.reload();
-           }, 500);
+            const resp = await axios.delete(`${base_url}/ina_data_delete/${_id}`);
+            setInaData(resp.data.create_ina);
+            toast.success("INA deleted successfully", { autoClose: 2000 });
+            setTimeout(() => {
+                window.location.reload();
+               }, 500);
         } catch (error) {
             console.log(error);
         }
-    }
+    };
 
-    const [show3, setshow3] = useState(false);
-    const handleshow3 = () => {
-        setshow3(true);
-    }
-    const handleclose3 = () => { setshow3(false) }
+    const handleEditINA = async (_id) => {
+        try {
+            const resp = await axios.get(`${base_url}/get_ina_dataById/${_id}`);
+            setSelectedINA(resp.data.create_ina);
+            setShow3(true);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handleClose3 = () => {
+        setSelectedINA(null);
+        setShow3(false);
+    };
+
+    const handleUpdateINA = async () => {
+        try {
+            await axios.put(`${base_url}/ina_details_updated/${selectedINA._id}`, selectedINA);
+            toast.success("INA updated successfully", { autoClose: 2000 });
+            fetchInaData();
+            handleClose3();
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const addContentINA = (activityIndex) => {
+        const updatedINA = { ...selectedINA };
+        updatedINA.activities[activityIndex].content.push({
+            srno: updatedINA.activities[activityIndex].content.length + 1,
+            description: "",
+        });
+        setSelectedINA(updatedINA);
+    };
+
+    const deleteContentINA = (activityIndex, contentIndex) => {
+        const updatedINA = { ...selectedINA };
+        updatedINA.activities[activityIndex].content.splice(contentIndex, 1);
+        setSelectedINA(updatedINA);
+    };
+
+    const addActivityINA = () => {
+        const updatedINA = { ...selectedINA };
+        updatedINA.activities.push({
+            activity_ina_title: `Enter New Activity ${updatedINA.activities.length + 1}`,
+            content: [],
+        });
+        setSelectedINA(updatedINA);
+    };
+
+
 
     function ViewOJT() {
         document.getElementById('ojt-lists').style.display = 'block';
@@ -257,7 +355,7 @@ function ViewOJTOJAINA() {
                 .category-btn button{
                 width: 200px;
                 }
-                .view-Ojt-lists, .view-oja-lists, .view-Ina-lists{
+                .view-Ojt-lists, .view-Oja-lists, .view-Ina-lists{
                 // border: 2px solid #000;
                 padding: 20px;
                 background-color: #ffffff;
@@ -278,6 +376,10 @@ function ViewOJTOJAINA() {
                 .ojt_details .info-div-item{
                 margin-bottom: 1rem;
                 }
+                .oja_details .info-div-item{
+                margin-bottom: 1rem;
+                }
+
                 .activities-div{
                 border: 1px solid rgba(0,0,0,0.2);
                 padding: 1rem;
@@ -345,111 +447,6 @@ function ViewOJTOJAINA() {
                 </div>
             </div>
 
-            {/* <div className='view-Ojt-lists' id='ojt-lists'>
-                <h5 style={{marginBottom:"1.5rem"}}>Here's all OJT List</h5>
-
-                <div className='all-ojt-list'>
-                    <table id="example" class="table table-striped table-bordered" cellspacing="0" style={{fontSize:"14px"}} >
-                        <thead>
-                            <tr>
-                                <th>Sr. No.</th>
-                                <th>OJT Title</th>
-                                <th>OJT Code</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                Array.isArray(ojtData) ? ojtData.map((item, index) => (
-                                    <tr>
-                                        <td>{index+1}</td>
-                                        <td>{item.ojt_title}</td>
-                                        <td>{item.ojt_code}</td>
-                                        <td>
-                                        <Dropdown className='actions-btn'>
-                                            <Dropdown.Toggle variant="success" id="dropdown-basic">
-                                                Action
-                                            </Dropdown.Toggle>
-
-                                            <Dropdown.Menu>
-                                            <Dropdown.Item onClick={() => handleshow(item._id)}>Edit</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => {deleteOjtData(item._id)}}>Delete</Dropdown.Item>
-                                            </Dropdown.Menu>
-                                        </Dropdown>
-                                        </td>
-                                    </tr>
-                                )):[]
-                            }
-                        </tbody>
-                    </table>
-                </div>
-
-                <Modal show={show} onHide={handleclose} size="lg">
-                <Modal.Header closeButton>
-                    <Modal.Title>Edit OJT Details</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className='ojt_details'>
-                    <div className="info-div-item">
-                        <label>OJT Title</label>
-                        <input
-                        type="text"
-                        name="ojt_title"
-                        value={editData.ojt_title}
-                        onChange={handleInputChange}
-                        />
-                    </div>
-                    <div className="info-div-item">
-                        <label>OJT Code</label>
-                        <input
-                        type="text"
-                        name="ojt_code"
-                        value={editData.ojt_code}
-                        onChange={handleInputChange}
-                        />
-                    </div>
-                    {editData.activities.map((activity, index) => (
-                        <div className='activities-div' key={index}>
-                        <h5>Activity {index + 1}</h5>
-                        <div className="info-div-item">
-                        <label>Title</label>
-                        <input
-                            type="text"
-                            value={activity.activity_ojt_title}
-                            onChange={(e) => handleActivityChange(index, 'activity_ojt_title', e.target.value)}
-                        />
-                        </div>
-                        <div className="info-div-item" style={{ display: 'flex', justifyContent: 'space-between' }} >
-                        <div className="add-content-div" style={{ width: '86%' }}>
-                        <label>Content</label>
-                        {activity.content.map((content, contentIndex) => (
-                            <div key={contentIndex}>
-                            <input
-                                type="text"
-                                value={content.description}
-                                onChange={(e) =>
-                                handleActivityChange(index, `content.${contentIndex}.description`, e.target.value)
-                                }
-                            />
-                            </div>
-                        ))}
-                        </div>
-                        </div>
-                    </div>
-                    ))}    
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="primary" onClick={updateOjtData}>
-                    Save Changes
-                    </Button>
-                    <Button variant="secondary" onClick={handleclose}>
-                    Close
-                    </Button>
-                </Modal.Footer>
-                </Modal>
-
-            </div> */}
              <div className="view-Ojt-lists" id="ojt-lists">
             <h5 style={{ marginBottom: "1.5rem" }}>Here's all OJT List</h5>
 
@@ -620,133 +617,186 @@ function ViewOJTOJAINA() {
                     </Modal.Footer>
                 </Modal>
             )}
-        </div>
+                </div>
 
 
-            <div className='view-oja-lists' id='oja-lists'>
-                <h5 style={{marginBottom:"1.5rem"}}>Here's all OJA List</h5>
+                <div className="view-Oja-lists" id="oja-lists">
+            <h5 style={{ marginBottom: "1.5rem" }}>Here's all OJA List</h5>
 
-                <div className='all-oja-list'>
-                    <table id="example" class="table table-striped table-bordered" cellspacing="0" style={{fontSize:"14px"}} >
-                        <thead>
-                            <tr>
-                                <th>Sr. No.</th>
-                                <th>OJA Title</th>
-                                <th>OJA Code</th>
-                                <th>Rating range</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {
-                                Array.isArray(ojaData) ? ojaData.map((item, index) => (
-                                    <tr>
-                                        <td>{index+1}</td>
-                                        <td>{item.oja_title}</td>
-                                        <td>{item.oja_code}</td>
-                                        <td>{item.rating_range_oja}</td>
-                                        <td>
-                                        <Dropdown className='actions-btn'>
+            <div className="all-oja-list">
+                <table className="table table-striped table-bordered" style={{ fontSize: "14px" }}>
+                    <thead>
+                        <tr>
+                            <th>Sr. No.</th>
+                            <th>OJA Title</th>
+                            <th>OJA Code</th>
+                            <th>Rating range</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {Array.isArray(ojaData) ? ojaData.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{index + 1}</td>
+                                    <td>{item.oja_title}</td>
+                                    <td>{item.oja_code}</td>
+                                    <td>{item.rating_range_oja}</td>
+                                    <td>
+                                        <Dropdown className="actions-btn">
                                             <Dropdown.Toggle variant="success" id="dropdown-basic">
                                                 Action
                                             </Dropdown.Toggle>
 
                                             <Dropdown.Menu>
-                                            <Dropdown.Item onClick={ handleshow2 }>Edit</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => {deleteOjaData(item._id)}}>Delete</Dropdown.Item>
+                                                <Dropdown.Item onClick={() => handleEditOJA(item._id)}>Edit</Dropdown.Item>
+                                                <Dropdown.Item onClick={() => deleteOjaData(item._id)}>Delete</Dropdown.Item>
                                             </Dropdown.Menu>
                                         </Dropdown>
-                                        </td>
-                                    </tr>
-                                )):[]
-                            }
-                        </tbody>
-                    </table>
-                </div>
+                                    </td>
+                                </tr>
+                            )):[]}
+                    </tbody>
+                </table>
+            </div>
 
-                <Modal show={show2} onHide={handleclose2} size='lg'>
-                    <Modal.Header closeButton>
-                        <Modal.Title id="contained-modal-title-vcenter">
-                        Edit OJA Details
-                        </Modal.Title>
+            {selectedOJA && (
+                <Modal show={show2} onHide={handleClose2} size="lg">
+                    <Modal.Header className="modal-header" closeButton>
+                        <Modal.Title>Edit OJA Details</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-
-                        <div className='ojt_details'>
+                        <div className="oja_details">
                             <div className="info-div-item">
                                 <label>OJA Title</label>
-                                <input type='text' id=''  />
+                                <input
+                                    type="text"
+                                    value={selectedOJA.oja_title}
+                                    onChange={(e) => setSelectedOJA({ ...selectedOJA, oja_title: e.target.value })}
+                                    placeholder="Enter OJA Title"
+                                    className="form-control"
+                                />
                             </div>
-
                             <div className="info-div-item">
                                 <label>OJA Code</label>
-                                <input type='text' id="" />
-                            </div>
-
-                            <div className="info-div-item">
-                                <label>Selected rating range </label>
-                                <input type='text' id="" />
-                            </div>
-
-                            <div className='activities-div'>
-                                <div className="info-div-item">
-                                    <h4>Activity { 1}</h4> {/* Adding Activity title */}
-                                </div>
-                                <div className="info-div-item">
-                                    <label>Title</label>
-                                    <input
+                                <input
                                     type="text"
-                                    id='activity_ojt_title'
+                                    value={selectedOJA.oja_code}
+                                    onChange={(e) => setSelectedOJA({ ...selectedOJA, oja_code: e.target.value })}
+                                    placeholder="Enter OJA Code"
+                                    className="form-control"
                                 />
-                                </div>
+                            </div>
+                            <div className="info-div-item">
+                                <label>Select Rating Range</label>
+                                <select
+                                    value={selectedOJA.rating_range_oja}
+                                    onChange={(e) => setSelectedOJA({ ...selectedOJA, rating_range_oja: e.target.value })}
+                                    className="form-control"
+                                >
+                                    <option value="1-5">1-5</option>
+                                    <option value="1-10">1-10</option>
+                                </select>
+                            </div>
 
-                                <div className="info-div-item" style={{ display: 'flex', justifyContent: 'space-between' }} >
-                                  <div className="add-content-div" style={{ width: '86%' }}>
-                                   <label>Content</label>
+                            {selectedOJA.activities.map((activity, activityIndex) => (
+                                <div key={activityIndex} className="activity-block">
+                                    <h5>Activity {activityIndex + 1}</h5>
+                                    <button
+                                        style={{
+                                            position: "absolute",
+                                            top: "5px",
+                                            right: "10px",
+                                            backgroundColor: "#ffffff",
+                                            color: "red",
+                                            cursor: "pointer",
+                                            fontSize: "16px",
+                                            width: "24px",
+                                            height: "24px",
+                                        }}
+                                        onClick={() => {
+                                            const updatedActivities = [...selectedOJA.activities];
+                                            updatedActivities.splice(activityIndex, 1);
+                                            setSelectedOJA({ ...selectedOJA, activities: updatedActivities });
+                                        }}
+                                    >
+                                        <i className="fa-solid fa-trash-can"></i>
+                                    </button>
+                                    <div className="info-div-item">
+                                        <label>Activity title</label>
+                                        <input
+                                            type="text"
+                                            value={activity.activity_oja_title}
+                                            onChange={(e) => {
+                                                const updatedActivities = [...selectedOJA.activities];
+                                                updatedActivities[activityIndex].activity_oja_title = e.target.value;
+                                                setSelectedOJA({ ...selectedOJA, activities: updatedActivities });
+                                            }}
+                                            placeholder="Activity Title"
+                                            className="form-control"
+                                        />
+                                    </div>
 
-                                   <table className="table table-striped table-bordered" cellspacing="0">
+                                    <table className="table table-striped table-bordered">
                                         <thead>
-                                        <tr>
-                                            <th>Sr no.</th>
-                                            <th>Description</th>
-                                            <th style={{ textAlign: 'center' }}>Action</th>
-                                        </tr>
+                                            <tr>
+                                                <th>Sr. No.</th>
+                                                <th>Description</th>
+                                                <th>Action</th>
+                                            </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                            <td></td>
-                                            <td>
-                                                <input
-                                                className="desc-input"
-                                                placeholder="Enter description"
-                                                style={{
-                                                    border: 'none',
-                                                    backgroundColor: 'transparent',
-                                                }}
-                                                />
-                                            </td>
-                                            <td style={{ textAlign: 'center' }}>
-                                                <button className="desc-del-btn" >
-                                                <i className="fa-regular fa-trash-can"></i>
-                                                </button>
-                                            </td>
-                                            </tr>
+                                            {activity.content.map((content, contentIndex) => (
+                                                <tr key={contentIndex}>
+                                                    <td>{contentIndex + 1}</td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            value={content.description}
+                                                            onChange={(e) => {
+                                                                const updatedContent = [...activity.content];
+                                                                updatedContent[contentIndex].description = e.target.value;
+                                                                const updatedActivities = [...selectedOJA.activities];
+                                                                updatedActivities[activityIndex].content = updatedContent;
+                                                                setSelectedOJA({ ...selectedOJA, activities: updatedActivities });
+                                                            }}
+                                                            placeholder="Enter Description"
+                                                            className="form-control"
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            className="btn btn-danger"
+                                                            onClick={() => deleteContentOJA(activityIndex, contentIndex)}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
                                         </tbody>
                                     </table>
-                                  </div>
+                                    <button className="btn btn-primary" onClick={() => addContentOJA(activityIndex)}>
+                                        Add Content
+                                    </button>
                                 </div>
-                                <div className='update-btn'>
-                                    <button>Update</button>
-                                </div>
-                            </div>
-                        </div>
+                            ))}
 
+                            <button className="btn btn-success mt-3" onClick={addActivityOJA}>
+                                Add Activity
+                            </button>
+                        </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant='secondary' onClick={handleclose2}>Close</Button>
+                        <Button variant="primary" onClick={handleUpdateOJA}>
+                            Update
+                        </Button>
+                        <Button variant="secondary" onClick={handleClose2}>
+                            Close
+                        </Button>
                     </Modal.Footer>
                 </Modal>
-            </div>
+            )}
+                </div>
 
             <div className='view-Ina-lists' id='ina-lists'>
                 <h5 style={{marginBottom:"1.5rem"}}>Here's all INA List</h5>
@@ -769,7 +819,7 @@ function ViewOJTOJAINA() {
                                         <td>{index+1}</td>
                                         <td>{item.ina_title}</td>
                                         <td>{item.ina_code}</td>
-                                        <td>{item.rating_range}</td>
+                                        <td>{item.rating_range_ina}</td>
                                         <td>
                                         <Dropdown className='actions-btn'>
                                             <Dropdown.Toggle variant="success" id="dropdown-basic">
@@ -777,8 +827,8 @@ function ViewOJTOJAINA() {
                                             </Dropdown.Toggle>
 
                                             <Dropdown.Menu>
-                                            <Dropdown.Item onClick={ handleshow3 }>Edit</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => {deleteINAData(item._id)}}>Delete</Dropdown.Item>
+                                            <Dropdown.Item onClick={() => handleEditINA(item._id)}>Edit</Dropdown.Item>
+                                                <Dropdown.Item onClick={() => deleteInaData(item._id)}>Delete</Dropdown.Item>
                                             </Dropdown.Menu>
                                         </Dropdown>
                                         </td>
@@ -789,88 +839,143 @@ function ViewOJTOJAINA() {
                     </table>
                 </div>
 
-                <Modal show={show3} onHide={handleclose3} size='lg'>
-                    <Modal.Header closeButton>
-                        <Modal.Title id="contained-modal-title-vcenter">
-                        Edit INA Details
-                        </Modal.Title>
+                {selectedINA && (
+                <Modal show={show3} onHide={handleClose3} size="lg">
+                    <Modal.Header className="modal-header" closeButton>
+                        <Modal.Title>Edit INA Details</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-
-                        <div className='ojt_details'>
+                        <div className="oja_details">
                             <div className="info-div-item">
                                 <label>INA Title</label>
-                                <input type='text' id=''  />
+                                <input
+                                    type="text"
+                                    value={selectedINA.ina_title}
+                                    onChange={(e) => setSelectedINA({ ...selectedINA, ina_title: e.target.value })}
+                                    placeholder="Enter INA Title"
+                                    className="form-control"
+                                />
                             </div>
-
                             <div className="info-div-item">
                                 <label>INA Code</label>
-                                <input type='text' id="" />
-                            </div>
-
-                            <div className="info-div-item">
-                                <label>Selected rating range </label>
-                                <input type='text' id="" />
-                            </div>
-
-                            <div className='activities-div'>
-                                <div className="info-div-item">
-                                    <h4>Activity { 1}</h4> {/* Adding Activity title */}
-                                </div>
-                                <div className="info-div-item">
-                                    <label>Title</label>
-                                    <input
+                                <input
                                     type="text"
-                                    id='activity_ojt_title'
+                                    value={selectedINA.ina_code}
+                                    onChange={(e) => setSelectedINA({ ...selectedINA, ina_code: e.target.value })}
+                                    placeholder="Enter INA Code"
+                                    className="form-control"
                                 />
-                                </div>
+                            </div>
+                            <div className="info-div-item">
+                                <label>Select Rating Range</label>
+                                <select
+                                    value={selectedINA.rating_range_ina}
+                                    onChange={(e) => setSelectedINA({ ...selectedINA, rating_range_ina: e.target.value })}
+                                    className="form-control"
+                                >
+                                    <option value="1-5">1-5</option>
+                                    <option value="1-10">1-10</option>
+                                </select>
+                            </div>
 
-                                <div className="info-div-item" style={{ display: 'flex', justifyContent: 'space-between' }} >
-                                  <div className="add-content-div" style={{ width: '86%' }}>
-                                   <label>Content</label>
+                            {selectedINA.activities.map((activity, activityIndex) => (
+                                <div key={activityIndex} className="activity-block">
+                                    <h5>Activity {activityIndex + 1}</h5>
+                                    <button
+                                        style={{
+                                            position: "absolute",
+                                            top: "5px",
+                                            right: "10px",
+                                            backgroundColor: "#ffffff",
+                                            color: "red",
+                                            cursor: "pointer",
+                                            fontSize: "16px",
+                                            width: "24px",
+                                            height: "24px",
+                                        }}
+                                        onClick={() => {
+                                            const updatedActivities = [...selectedINA.activities];
+                                            updatedActivities.splice(activityIndex, 1);
+                                            setSelectedINA({ ...selectedINA, activities: updatedActivities });
+                                        }}
+                                    >
+                                        <i className="fa-solid fa-trash-can"></i>
+                                    </button>
+                                    <div className="info-div-item">
+                                        <label>Activity title</label>
+                                        <input
+                                            type="text"
+                                            value={activity.activity_ina_title}
+                                            onChange={(e) => {
+                                                const updatedActivities = [...selectedINA.activities];
+                                                updatedActivities[activityIndex].activity_ina_title = e.target.value;
+                                                setSelectedINA({ ...selectedINA, activities: updatedActivities });
+                                            }}
+                                            placeholder="Activity Title"
+                                            className="form-control"
+                                        />
+                                    </div>
 
-                                   <table className="table table-striped table-bordered" cellspacing="0">
+                                    <table className="table table-striped table-bordered">
                                         <thead>
-                                        <tr>
-                                            <th>Sr no.</th>
-                                            <th>Description</th>
-                                            <th style={{ textAlign: 'center' }}>Action</th>
-                                        </tr>
+                                            <tr>
+                                                <th>Sr. No.</th>
+                                                <th>Description</th>
+                                                <th>Action</th>
+                                            </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                            <td></td>
-                                            <td>
-                                                <input
-                                                className="desc-input"
-                                                placeholder="Enter description"
-                                                style={{
-                                                    border: 'none',
-                                                    backgroundColor: 'transparent',
-                                                }}
-                                                />
-                                            </td>
-                                            <td style={{ textAlign: 'center' }}>
-                                                <button className="desc-del-btn" >
-                                                <i className="fa-regular fa-trash-can"></i>
-                                                </button>
-                                            </td>
-                                            </tr>
+                                            {activity.content.map((content, contentIndex) => (
+                                                <tr key={contentIndex}>
+                                                    <td>{contentIndex + 1}</td>
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            value={content.description}
+                                                            onChange={(e) => {
+                                                                const updatedContent = [...activity.content];
+                                                                updatedContent[contentIndex].description = e.target.value;
+                                                                const updatedActivities = [...selectedINA.activities];
+                                                                updatedActivities[activityIndex].content = updatedContent;
+                                                                setSelectedINA({ ...selectedINA, activities: updatedActivities });
+                                                            }}
+                                                            placeholder="Enter Description"
+                                                            className="form-control"
+                                                        />
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            className="btn btn-danger"
+                                                            onClick={() => deleteContentINA(activityIndex, contentIndex)}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
                                         </tbody>
                                     </table>
-                                  </div>
+                                    <button className="btn btn-primary" onClick={() => addContentINA(activityIndex)}>
+                                        Add Content
+                                    </button>
                                 </div>
-                                <div className='update-btn'>
-                                    <button>Update</button>
-                                </div>
-                            </div>
-                        </div>
+                            ))}
 
+                            <button className="btn btn-success mt-3" onClick={addActivityINA}>
+                                Add Activity
+                            </button>
+                        </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant='secondary' onClick={handleclose3}>Close</Button>
+                        <Button variant="primary" onClick={handleUpdateINA}>
+                            Update
+                        </Button>
+                        <Button variant="secondary" onClick={handleClose3}>
+                            Close
+                        </Button>
                     </Modal.Footer>
                 </Modal>
+            )}
             </div>
         </section>
       

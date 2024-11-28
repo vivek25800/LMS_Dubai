@@ -85,7 +85,7 @@ function CreateINA() {
     const data = {
         ina_title: inaTitle,
         ina_code: inaCode,
-        rating_range: inaRatingRange,
+        rating_range_ina: inaRatingRange,
         activities: activities.map((activity) => ({
           activity_ina_title: activity.title, // Changed 'title' to 'activity_oja_title'
           content: activity.addContent.Srno.map((srno, index) => ({
@@ -173,7 +173,7 @@ function CreateINA() {
 
           <div className="info-div-item">
             <label>Select Rating range</label>
-            <select id="rating_range" value={inaRatingRange} onChange={handleSelectChange}>
+            <select id="rating_range_ina" value={inaRatingRange} onChange={handleSelectChange}>
               <option>--Select Range--</option>
               <option>1 -- 5</option>
               <option>1 -- 10</option>

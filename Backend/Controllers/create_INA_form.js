@@ -2,8 +2,8 @@ const create_ina_modal = require('../Modal/create_ina');
 
 const post_ina_data = async (req, res) => {
     try {
-        const {ina_title, ina_code, rating_range, activities} = req.body;
-        const add_create_ina = new create_ina_modal({ina_title, ina_code, rating_range, activities});
+        const {ina_title, ina_code, rating_range_ina, activities} = req.body;
+        const add_create_ina = new create_ina_modal({ina_title, ina_code, rating_range_ina, activities});
         const resp = await add_create_ina.save();
         res.status(200).send({message: "Ina data saved", create_ina: resp});
     } catch (error) {
@@ -46,6 +46,16 @@ const get_ina_data_byIds = async (req, res) => {
     }
 }
 
+const update_ina_details = async (req, res) => {
+  try {
+    const id = req.params._id;
+    const resp = await create_ina_modal.findByIdAndUpdate(id, req.body);
+    res.status(200).send({message: "INA data successfully updated", create_ina: resp});
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const updateInaInfo = async (req, res) => {
     try {
       const inaId = req.params.id;
@@ -72,4 +82,4 @@ const updateInaInfo = async (req, res) => {
     }
   };
 
-module.exports = {post_ina_data, get_ina_data, delete_Ina_data, get_ina_data_byIds, updateInaInfo};
+module.exports = {post_ina_data, get_ina_data, delete_Ina_data, get_ina_data_byIds, update_ina_details, updateInaInfo};

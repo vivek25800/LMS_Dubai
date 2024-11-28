@@ -14,7 +14,7 @@ const activitySchema = new mongoose.Schema({
 const create_ina = new mongoose.Schema({
     ina_title: { type: String, required: true },
     ina_code: { type: String, required: true },
-    rating_range: { type: String, required: true},
+    rating_range_ina: { type: String, required: true},
     activities: [activitySchema],
     finalScore: { type: String } 
 }, { timestamps: true });
