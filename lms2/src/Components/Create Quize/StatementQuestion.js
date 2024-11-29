@@ -5,20 +5,15 @@ import AddIcon from '@mui/icons-material/Add';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
 const StatementQuestion = () => {
-    const [questions, setQuestions] = useState([]);
-
-    const addNewQuestion = () => {
-        setQuestions([
-            ...questions,
-            {
-                id: questions.length + 1,
-                text: '',
-                options: Array(5).fill('').map((_, i) => `Option ${i + 1}`),
-                statements: [{ label: `Statement 1` }],
-                required: false,
-            },
-        ]);
-    };
+    const [questions, setQuestions] = useState([
+        {
+            id: 1,
+            text: '',
+            options: Array(5).fill('').map((_, i) => `Option ${i + 1}`),
+            statements: [{ label: `Statement 1` }],
+            required: false,
+        },
+    ]);
 
     const deleteQuestion = (index) => {
         const updatedQuestions = questions.filter((_, i) => i !== index);
@@ -26,7 +21,7 @@ const StatementQuestion = () => {
     };
 
     const addOption = (questionIndex) => {
-        setQuestions(prevQuestions => {
+        setQuestions((prevQuestions) => {
             const updatedQuestions = [...prevQuestions];
             updatedQuestions[questionIndex].options.push(`Option ${updatedQuestions[questionIndex].options.length + 1}`);
             return updatedQuestions;
@@ -34,7 +29,7 @@ const StatementQuestion = () => {
     };
 
     const deleteOption = (questionIndex, optionIndex) => {
-        setQuestions(prevQuestions => {
+        setQuestions((prevQuestions) => {
             const updatedQuestions = [...prevQuestions];
             updatedQuestions[questionIndex].options.splice(optionIndex, 1);
             return updatedQuestions;
@@ -42,7 +37,7 @@ const StatementQuestion = () => {
     };
 
     const addStatement = (questionIndex) => {
-        setQuestions(prevQuestions => {
+        setQuestions((prevQuestions) => {
             const updatedQuestions = [...prevQuestions];
             const newStatementCount = updatedQuestions[questionIndex].statements.length + 1;
             updatedQuestions[questionIndex].statements.push({
@@ -53,7 +48,7 @@ const StatementQuestion = () => {
     };
 
     const deleteStatement = (questionIndex, statementIndex) => {
-        setQuestions(prevQuestions => {
+        setQuestions((prevQuestions) => {
             const updatedQuestions = [...prevQuestions];
             updatedQuestions[questionIndex].statements.splice(statementIndex, 1);
             return updatedQuestions;
@@ -61,7 +56,7 @@ const StatementQuestion = () => {
     };
 
     const handleQuestionChange = (index, field, value) => {
-        setQuestions(prevQuestions => {
+        setQuestions((prevQuestions) => {
             const updatedQuestions = [...prevQuestions];
             updatedQuestions[index][field] = value;
             return updatedQuestions;
@@ -69,7 +64,7 @@ const StatementQuestion = () => {
     };
 
     const handleOptionLabelChange = (questionIndex, optionIndex, value) => {
-        setQuestions(prevQuestions => {
+        setQuestions((prevQuestions) => {
             const updatedQuestions = [...prevQuestions];
             updatedQuestions[questionIndex].options[optionIndex] = value;
             return updatedQuestions;
@@ -80,12 +75,12 @@ const StatementQuestion = () => {
         <div>
             <style>
                 {`
-                .main-container {
+                .main-container-div {
                     background-color: #ffffff;
                     border-radius: 10px;
-                    border-top: 5px solid #7A1CAC;
+                    // border-top: 5px solid #7A1CAC;
                     width: 100%;
-                    padding: 2rem;
+                    // padding: 2rem;
                     height: fit-content;
                 }
                 .question-container {
@@ -98,7 +93,6 @@ const StatementQuestion = () => {
                 }
                 .options-container, .statements-container {
                     display: flex;
-                    
                     gap: 10px;
                     padding: 10px 0;
                 }
@@ -114,23 +108,23 @@ const StatementQuestion = () => {
                     gap: 10px;
                     margin-top: 5px;
                 }
-                .add-statement-btn, .addnewQ-btn {
+                .add-statement-btn {
                     background-color: #7A1CAC;
                     color: #ffffff;
                     border: none;
                     margin-top: 10px;
                 }
-                .add-statement-btn:hover, .addnewQ-btn:hover {
+                .add-statement-btn:hover {
                     background-color: #2E073F;
                 }
                 `}
             </style>
-            <div className="main-container">
-                <div style={{width: "100%"}}>
+            <div className="main-container-div">
+                <div style={{ width: '100%' }}>
                     {questions.map((question, qIndex) => (
                         <div key={question.id} className="question-container">
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <h5>Question no. {qIndex + 1}</h5>
+                                {/* <h5>Question no. {qIndex + 1}</h5> */}
                                 <IconButton aria-label="delete" onClick={() => deleteQuestion(qIndex)} color="secondary">
                                     <DeleteIcon />
                                 </IconButton>
@@ -173,27 +167,30 @@ const StatementQuestion = () => {
                                 </IconButton>
                             </div>
                             <div className="statements-container">
-                                <span style={{ fontWeight: 'bold', marginRight: 5, width: "120px" }}>Statement</span>
+                                <span style={{ fontWeight: 'bold', marginRight: 5, width: '120px' }}>Statement</span>
                                 {question.options.map((option, oIndex) => (
                                     <div key={oIndex} className="option-box">
-                                        <span>{option}</span> {/* Dynamically reflects option label */}
+                                        <span>{option}</span>
                                     </div>
                                 ))}
                             </div>
                             {question.statements.map((statement, sIndex) => (
                                 <div key={sIndex} className="statement-row">
                                     <TextField
-                                        // value={statement.label}
                                         onChange={(e) =>
                                             handleQuestionChange(qIndex, `statements[${sIndex}].label`, e.target.value)
                                         }
                                         placeholder={`Statement ${sIndex + 1}`}
                                         variant="outlined"
-                                        style={{width: "120px"}}
+                                        style={{ width: '120px' }}
                                     />
                                     {question.options.map((_, oIndex) => (
                                         <div key={oIndex} style={{ display: 'flex', justifyContent: 'center' }}>
-                                            <input type="radio" name={`statement-${qIndex}-${sIndex}`} style={{width: "100px"}}/>
+                                            <input
+                                                type="radio"
+                                                name={`statement-${qIndex}-${sIndex}`}
+                                                style={{ width: '100px' }}
+                                            />
                                         </div>
                                     ))}
                                     <IconButton
@@ -225,9 +222,6 @@ const StatementQuestion = () => {
                             />
                         </div>
                     ))}
-                    <Button variant="contained" onClick={addNewQuestion} className="addnewQ-btn">
-                        Add New Question
-                    </Button>
                 </div>
             </div>
         </div>

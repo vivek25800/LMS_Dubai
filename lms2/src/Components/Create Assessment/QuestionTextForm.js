@@ -6,7 +6,7 @@ import { IconButton } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
 function QuestionTextForm({ index, onChange }) {
-  const [visible, setVisible] = useState(true);
+  // const [visible, setVisible] = useState(true);
   const [question, setQuestion] = useState('');
   const [subtitle, setSubtitle] = useState('');
   const [options, setOptions] = useState([{ text: '', correct: false }]);
@@ -45,35 +45,31 @@ function QuestionTextForm({ index, onChange }) {
     });
   };
 
-  const handleDelete = () => {
-    setVisible(false); // Set visible to false to hide the component
-  };
+  // const handleDelete = () => {
+  //   setVisible(false); // Set visible to false to hide the component
+  // };
 
-  if (!visible) return null; // If visible is false, do not render the component
+  // if (!visible) return null; // If visible is false, do not render the component
 
 
   return (
     <div className='main-container-div'>
         <style>
         {`
-        .question-form {
-          display: flex;
-          flex-direction: column;
-          gap: 16px;
-          max-width: 100%;
-          margin: 1rem auto;
-          padding: 2rem;
-          border: 1px solid rgba(0,0,0,0.2);
-          box-shadow: 4px 4px 8px rgba(0,0,0,0.2);
-          border-radius: 1rem;
-          background-color: #ffffff;
-          position: relative;
-        }
-        .question-input, .subtitle-input {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
+        // .question-form {
+        //   display: flex;
+        //   flex-direction: column;
+        //   gap: 16px;
+        //   max-width: 100%;
+        //   margin: 1rem auto;
+        //   padding: 2rem;
+        //   border: 1px solid rgba(0,0,0,0.2);
+        //   box-shadow: 4px 4px 8px rgba(0,0,0,0.2);
+        //   border-radius: 1rem;
+        //   background-color: #ffffff;
+        //   position: relative;
+        // }
+
           .footer-controls{
           display: flex;
           justify-content: space-between;
@@ -148,7 +144,7 @@ function QuestionTextForm({ index, onChange }) {
       </style>
 
     <div className="question-form" style={{ position: 'relative' }}>
-      <button
+      {/* <button
         style={{
           position: 'absolute',
           top: '10px',
@@ -168,7 +164,7 @@ function QuestionTextForm({ index, onChange }) {
         onClick={handleDelete}
       >
         <i className="fa-solid fa-trash-can"></i>
-      </button>
+      </button> */}
 
       {/* Question Input */}
       <div className="question-input">

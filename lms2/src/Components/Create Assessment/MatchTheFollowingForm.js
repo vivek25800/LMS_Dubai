@@ -10,7 +10,7 @@ const MatchTheFollowingForm = ({index, onDelete}) => {
   ]);
   const [mainCategory, setMainCategory] = useState('');
   const [subCategory, setSubCategory] = useState('');
-  const [visible, setVisible] = useState(true);
+  // const [visible, setVisible] = useState(true);
 
   const handleQuestionChange = (index, value) => {
     const newQuestions = [...questions];
@@ -39,11 +39,11 @@ const MatchTheFollowingForm = ({index, onDelete}) => {
     setQuestions(newQuestions);
   };
 
-  const handleDelete = () => {
-    setVisible(false); // Set visible to false to hide the component
-  };
+  // const handleDelete = () => {
+  //   setVisible(false); // Set visible to false to hide the component
+  // };
 
-  if (!visible) return null; // If visible is false, do not render the component
+  // if (!visible) return null; // If visible is false, do not render the component
 
   return (
     <div style={{ maxWidth: '100%', margin: '2rem auto' }}>
@@ -54,9 +54,9 @@ const MatchTheFollowingForm = ({index, onDelete}) => {
             flex-direction: column;
             gap: 16px;
             background-color: #ffffff;
-            padding: 1.5rem;
-            border-radius: 10px;
-            border: 1px solid rgba(0,0,0,0.2);
+            // padding: 1.5rem;
+            // border-radius: 10px;
+            // border: 1px solid rgba(0,0,0,0.2);
           }
           
           .question-item {
@@ -118,7 +118,7 @@ const MatchTheFollowingForm = ({index, onDelete}) => {
       </style>
       <div className="question-form" style={{position: "relative"}}>
 
-      <button
+      {/* <button
         style={{
           position: 'absolute',
           top: '10px',
@@ -138,7 +138,7 @@ const MatchTheFollowingForm = ({index, onDelete}) => {
         onClick={handleDelete}
       >
         <i className="fa-solid fa-trash-can"></i>
-      </button>
+      </button> */}
 
         {questions.map((q, index) => (
           <div className="question-item" key={index}>

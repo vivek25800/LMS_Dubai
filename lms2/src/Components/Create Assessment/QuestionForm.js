@@ -417,15 +417,10 @@ const QuestionForm = () => {
   gap: 16px;
   max-width: 100%;
   margin: 1rem auto;
-  padding: 2rem;
-  border: 2px solid rgba(0,0,0,0.2);
+  // padding: 2rem;
+  // border: 2px solid rgba(0,0,0,0.2);
   border-radius: 8px;
   background-color: #ffffff;
-}
-.question-input, .subtitle-input {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 .footer-controls{
   display: flex;
@@ -492,7 +487,7 @@ input {
 </style>
 
       <div className="question-form" style={{ position: 'relative' }}>
-        <button
+        {/* <button
           onClick={handleDelete}
           style={{
             position: 'absolute',
@@ -512,7 +507,7 @@ input {
           }}
         >
           <i className="fa-solid fa-trash-can"></i>
-        </button>
+        </button> */}
 
         <div className="question-input">
           <div style={{ display: 'flex', alignItems: 'center' }}>

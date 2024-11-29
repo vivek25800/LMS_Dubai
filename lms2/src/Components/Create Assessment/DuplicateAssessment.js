@@ -6,10 +6,10 @@ function DuplicateAssessment() {
     const [questions, setQuestions] = useState([]);
 
   // Function to delete a question by index
-  const deleteQuestion = (index) => {
-    const newQuestions = questions.filter((_, i) => i !== index);
-    setQuestions(newQuestions);
-  };
+  // const deleteQuestion = (index) => {
+  //   const newQuestions = questions.filter((_, i) => i !== index);0
+  //   setQuestions(newQuestions);
+  // };
 
   // Function to add a new question
   const addQuestion = () => {
@@ -77,7 +77,7 @@ function DuplicateAssessment() {
         <div className="duplicate-assessment" key={index}>
           <h5>Add Duplicate Question</h5>
 
-          <button
+          {/* <button
             style={{
               position: "absolute",
               top: "10px",
@@ -97,7 +97,7 @@ function DuplicateAssessment() {
             onClick={() => deleteQuestion(index)} // Pass index to deleteQuestion
           >
             <i className="fa-solid fa-trash-can"></i>
-          </button>
+          </button> */}
 
           <div className="category-div">
             <div className="dropdowns">

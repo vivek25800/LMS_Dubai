@@ -6,22 +6,17 @@ import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
 function TextQuize({ index, onDelete, onChange }) {
   const [question, setQuestion] = useState('');
-  const [subtitle, setSubtitle] = useState('');
   const [options, setOptions] = useState([{ text: '', correct: false }]);
   const [points, setPoints] = useState(0);
-  const [mathToggle, setMathToggle] = useState(false);
   const [multipleAnswers, setMultipleAnswers] = useState(true);
   const [required, setRequired] = useState(false);
   const [answerType, setAnswerType] = useState('short'); // 'short' or 'long'
-
-  const [mainCategory, setMainCategory] = useState('');
-  const [subCategory, setSubCategory] = useState('');
 
   const handleOptionChange = (idx, value) => {
     const newOptions = [...options];
     newOptions[idx].text = value;
     setOptions(newOptions);
-    handleChange();
+    // handleChange();
   };
 
   const addOption = () => {
@@ -31,21 +26,21 @@ function TextQuize({ index, onDelete, onChange }) {
   const removeOption = (idx) => {
     const newOptions = options.filter((_, i) => i !== idx);
     setOptions(newOptions);
-    handleChange();
+    // handleChange();
   };
 
-  const handleChange = () => {
-    onChange(index, {
-      question,
-      subtitle,
-      options,
-      points,
-      mathToggle,
-      multipleAnswers,
-      required,
-      answerType,
-    });
-  };
+  // const handleChange = () => {
+  //   onChange(index, {
+  //     question,
+  //     subtitle,
+  //     options,
+  //     points,
+  //     mathToggle,
+  //     multipleAnswers,
+  //     required,
+  //     answerType,
+  //   });
+  // };
 
   return (
     <div>
@@ -57,12 +52,12 @@ function TextQuize({ index, onDelete, onChange }) {
           gap: 16px;
           max-width: 100%;
           margin: 1rem auto;
-          padding: 2rem;
-          border-top: 5px solid #7A1CAC;
-          box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
-          border-radius: 1rem;
-          background-color: #ffffff;
-          position: relative;
+          // padding: 2rem;
+          // border-top: 5px solid #7A1CAC;
+          // box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+          // border-radius: 1rem;
+          // background-color: #ffffff;
+          // position: relative;
         }
         .question-input, .subtitle-input {
           display: flex;
@@ -143,7 +138,7 @@ function TextQuize({ index, onDelete, onChange }) {
       </style>
 
     <div className="question-form" style={{ position: 'relative' }}>
-      <button
+      {/* <button
         style={{
           position: 'absolute',
           top: '10px',
@@ -163,9 +158,9 @@ function TextQuize({ index, onDelete, onChange }) {
         onClick={() => onDelete(index)}
       >
         <i className="fa-solid fa-trash-can"></i>
-      </button>
+      </button> */}
 
-      <h5>Question No. {index + 1}</h5>
+      {/* <h5>Question No. {index + 1}</h5> */}
 
       {/* Question Input */}
       <div className="question-input">
@@ -175,7 +170,7 @@ function TextQuize({ index, onDelete, onChange }) {
             value={question}
             onChange={(e) => {
               setQuestion(e.target.value);
-              handleChange();
+              // handleChange();
             }}
             placeholder="Enter your question"
             style={{ width: '100%' }}
@@ -188,14 +183,14 @@ function TextQuize({ index, onDelete, onChange }) {
       </div>
 
       {/* Subtitle Input */}
-      <div className="subtitle-input">
+      {/* <div className="subtitle-input">
         <input
           type="text"
           value={subtitle}
           onChange={(e) => setSubtitle(e.target.value)}
           placeholder="Enter a subtitle (optional)"
         />
-      </div>
+      </div> */}
 
       {/* Options List */}
       <div className="options-list">
@@ -343,45 +338,49 @@ function TextQuize({ index, onDelete, onChange }) {
   );
 }
 
-const AddQuestionContainer = () => {
-  const [questions, setQuestions] = useState([]);
 
-  const addNewQuestion = () => {
-    setQuestions([...questions, {}]);
-  };
+export default TextQuize;
 
-  const deleteQuestion = (index) => {
-    const newQuestions = questions.filter((_, i) => i !== index);
-    setQuestions(newQuestions);
-  };
 
-  const handleQuestionChange = (index, questionData) => {
-    const newQuestions = [...questions];
-    newQuestions[index] = questionData;
-    setQuestions(newQuestions);
-  };
+// const AddQuestionContainer = () => {
+//   const [questions, setQuestions] = useState([]);
 
-  return (
-    <div>
-      {questions.map((_, index) => (
-        <TextQuize
-          key={index}
-          index={index}
-          onDelete={deleteQuestion}
-          onChange={handleQuestionChange}
-        />
-      ))}
+//   const addNewQuestion = () => {
+//     setQuestions([...questions, {}]);
+//   };
 
-      <div className="info-div-item btn-div">
-        <button id="add-newQues-btn" onClick={addNewQuestion}>
-          <i className="fa-solid fa-plus"></i> Add new question
-        </button>
-        {/* <button id="submit-questions-btn">
-          Submit Questions
-        </button> */}
-      </div>
-    </div>
-  );
-};
+//   const deleteQuestion = (index) => {
+//     const newQuestions = questions.filter((_, i) => i !== index);
+//     setQuestions(newQuestions);
+//   };
 
-export default AddQuestionContainer;
+//   const handleQuestionChange = (index, questionData) => {
+//     const newQuestions = [...questions];
+//     newQuestions[index] = questionData;
+//     setQuestions(newQuestions);
+//   };
+
+//   return (
+//     <div>
+//       {questions.map((_, index) => (
+//         <TextQuize
+//           key={index}
+//           index={index}
+//           onDelete={deleteQuestion}
+//           onChange={handleQuestionChange}
+//         />
+//       ))}
+
+//       <div className="info-div-item btn-div">
+//         <button id="add-newQues-btn" onClick={addNewQuestion}>
+//           <i className="fa-solid fa-plus"></i> Add new question
+//         </button>
+//         {/* <button id="submit-questions-btn">
+//           Submit Questions
+//         </button> */}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default AddQuestionContainer;
