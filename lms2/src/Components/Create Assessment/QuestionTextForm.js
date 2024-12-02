@@ -6,12 +6,9 @@ import { IconButton } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
 function QuestionTextForm({ index, onChange }) {
-  // const [visible, setVisible] = useState(true);
   const [question, setQuestion] = useState('');
-  const [subtitle, setSubtitle] = useState('');
   const [options, setOptions] = useState([{ text: '', correct: false }]);
   const [points, setPoints] = useState(0);
-  const [multipleAnswers, setMultipleAnswers] = useState(true);
   const [answerType, setAnswerType] = useState('short'); // 'short' or 'long'
 
   const [mainCategory, setMainCategory] = useState('');
@@ -21,7 +18,6 @@ function QuestionTextForm({ index, onChange }) {
     const newOptions = [...options];
     newOptions[idx].text = value;
     setOptions(newOptions);
-    handleChange();
   };
 
   const addOption = () => {
@@ -31,44 +27,19 @@ function QuestionTextForm({ index, onChange }) {
   const removeOption = (idx) => {
     const newOptions = options.filter((_, i) => i !== idx);
     setOptions(newOptions);
-    handleChange();
   };
-
-  const handleChange = () => {
-    onChange(index, {
-      question,
-      subtitle,
-      options,
-      points,
-      multipleAnswers,
-      answerType,
-    });
-  };
-
-  // const handleDelete = () => {
-  //   setVisible(false); // Set visible to false to hide the component
-  // };
-
-  // if (!visible) return null; // If visible is false, do not render the component
-
 
   return (
     <div className='main-container-div'>
         <style>
         {`
-        // .question-form {
-        //   display: flex;
-        //   flex-direction: column;
-        //   gap: 16px;
-        //   max-width: 100%;
-        //   margin: 1rem auto;
-        //   padding: 2rem;
-        //   border: 1px solid rgba(0,0,0,0.2);
-        //   box-shadow: 4px 4px 8px rgba(0,0,0,0.2);
-        //   border-radius: 1rem;
-        //   background-color: #ffffff;
-        //   position: relative;
-        // }
+        .question-form {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+          max-width: 100%;
+          margin: 1rem auto;
+        }
 
           .footer-controls{
           display: flex;
@@ -144,28 +115,7 @@ function QuestionTextForm({ index, onChange }) {
       </style>
 
     <div className="question-form" style={{ position: 'relative' }}>
-      {/* <button
-        style={{
-          position: 'absolute',
-          top: '10px',
-          right: '10px',
-          backgroundColor: 'transparent',
-          color: '#000',
-          borderRadius: '50%',
-          cursor: 'pointer',
-          fontSize: '16px',
-          width: '24px',
-          height: '24px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          opacity: '0.7',
-        }}
-        onClick={handleDelete}
-      >
-        <i className="fa-solid fa-trash-can"></i>
-      </button> */}
-
+    
       {/* Question Input */}
       <div className="question-input">
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -174,7 +124,7 @@ function QuestionTextForm({ index, onChange }) {
             value={question}
             onChange={(e) => {
               setQuestion(e.target.value);
-              handleChange();
+              // handleChange();
             }}
             placeholder="Enter your question"
             style={{ width: '100%' }}
@@ -185,16 +135,6 @@ function QuestionTextForm({ index, onChange }) {
             </IconButton>
         </div>
       </div>
-
-      {/* Subtitle Input */}
-      {/* <div className="subtitle-input">
-        <input
-          type="text"
-          value={subtitle}
-          onChange={(e) => setSubtitle(e.target.value)}
-          placeholder="Enter a subtitle (optional)"
-        />
-      </div> */}
 
       {/* Options List */}
       <div className="options-list">
@@ -275,18 +215,6 @@ function QuestionTextForm({ index, onChange }) {
             onChange={(e) => setPoints(Number(e.target.value))}
           />
         </div>
-
-        {/* <div className="control-item">
-          <Form>
-            <Form.Check
-              type="switch"
-              id="multiple-switch"
-              label="Multiple answers:"
-              checked={multipleAnswers}
-              onChange={(e) => setMultipleAnswers(e.target.checked)}
-            />
-          </Form>
-        </div> */}
       </div>
     </div>
     </div>
@@ -294,68 +222,3 @@ function QuestionTextForm({ index, onChange }) {
 }
 
 export default QuestionTextForm;
-
-// const AddQuestionContainer = () => {
-//   const [questions, setQuestions] = useState([]);
-
-//   const addNewQuestion = () => {
-//     setQuestions([...questions, {}]);
-//   };
-
-//   const deleteQuestion = (index) => {
-//     const newQuestions = questions.filter((_, i) => i !== index);
-//     setQuestions(newQuestions);
-//   };
-
-//   const handleQuestionChange = (index, questionData) => {
-//     const newQuestions = [...questions];
-//     newQuestions[index] = questionData;
-//     setQuestions(newQuestions);
-//   };
-
-//   const submitQuestions = async () => {
-//     try {
-//       const response = await axios.post(`${base_url}/add_textquestion`, { questions });
-//       console.log('Questions submitted:', response.data);
-//       alert('Questions saved successfully!');
-//       setQuestions([]); // Clear form after submission
-//     } catch (error) {
-//       console.error('Error submitting questions:', error);
-//       alert('Failed to save questions.');
-//     }
-//   };
-
-//   return (
-//     <div>
-//       <style>
-//               {`
-//               .btn-div button{
-//               background-color: #7A1CAC;
-//               }
-//               .btn-div button:hover{
-//               background-color: #2E073F;
-//               }
-//               `}
-//           </style>
-//       {questions.map((_, index) => (
-//         <QuestionTextForm
-//           key={index}
-//           index={index}
-//           onDelete={deleteQuestion}
-//           onChange={handleQuestionChange}
-//         />
-//       ))}
-
-//       <div className="info-div-item btn-div">
-//         <button id="add-newQues-btn" onClick={addNewQuestion}>
-//           <i className="fa-solid fa-plus"></i> Add new question
-//         </button>
-//         <button id="submit-questions-btn" onClick={submitQuestions}>
-//           Submit Questions
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default AddQuestionContainer;

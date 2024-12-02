@@ -12,6 +12,8 @@ const { createQuestion, getAllQuestions } = require('../Controllers/text_questio
 const {post_training_budget, get_training_budget} = require('../Controllers/training_budget_form');
 const { post_trainingRequestForm, get_trainingRequestData, get_trainingRequestByIds } = require('../Controllers/trainingRequest_form');
 const { createAssessment, getAssessments } = require('../Controllers/create_assessment_form');
+const  upload  = require('../MiddleWare/file');
+const uploadFields = require('../MiddleWare/file');
 
 const router = express.Router();
 
@@ -38,7 +40,7 @@ router.get('/get_events_by_date', getEventsByDate);
 
 router.post('/add_attendence_details', post_attendence_details);
 
-router.post('/add_course_details', post_course_creation);
+router.post('/add_course_details', uploadFields, post_course_creation);
 
 router.post('/create_ojt_form', post_create_ojt);
 router.get('/get_Ojt_info', get_ojt_data);
@@ -75,7 +77,6 @@ router.post('/training_request_form', post_trainingRequestForm);
 router.get('/get_trainingrequestdata', get_trainingRequestData);
 router.get('/get_trainingByID/:_id', get_trainingRequestByIds);
 
-router.post('/create_assessment', createAssessment);
-router.get('/get_assessment_data', getAssessments);
+
 
 module.exports = router;

@@ -12,6 +12,9 @@ import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import UploadIcon from '@mui/icons-material/Upload';
+import axios from "axios";
+import { base_url } from "./Utils/base_url";
+import { useState } from "react";
 
 
 const VisuallyHiddenInput = styled('input')({
@@ -29,21 +32,135 @@ const VisuallyHiddenInput = styled('input')({
 
 function CreateNewCourse() {
 
-  // const[course, setCourse] = useState({
-  //   course_title:"", course_category:"", course_code:"", course_content:"",
-  //           organization:"", instructor:"", course_label:"", course_duration:"",
-  // });
+  const[course, setCourse] = React.useState({
+    course_title_main:"", add_main_category:"", add_sub_category:"", description:"",
+    course_code:"", course_title:"", add_Content:[], pdf_file:[], word_file:[], image_file:[],
+  });
 
   // const course_creation_infoget = async () => {
   //   try {
   //     const resp = await axios.post(`${base_url}/add_course_details`, course);
   //     if(resp.status === 200){
-  //       toast.success("course created successfully", {autoClose: 2000});
+  //       toast.success("Course created successfully", {autoClose: 2000});
   //     }
   //   } catch (error) {
   //     console.log(error);
   //   }
   // }
+
+  const handlePdfFile = (event) => {
+    // Convert FileList to an array of files
+    const files = Array.from(event.target.files);
+
+    // Update the state by replacing the old files with the newly selected files
+    setCourse((prevState) => ({
+        ...prevState,
+        pdf_file: files, // Replace the array with the new set of files
+    }));
+  }
+
+    const handleWordFile = (event) => {
+      // Convert FileList to an array of files
+      const files = Array.from(event.target.files);
+  
+      // Update the state by replacing the old files with the newly selected files
+      setCourse((prevState) => ({
+          ...prevState,
+          word_file: files, // Replace the array with the new set of files
+      }));
+    }
+
+  const handledocumentpicchange = (event) => {
+    // Convert FileList to an array of files
+    const files = Array.from(event.target.files);
+
+    // Update the state by replacing the old files with the newly selected files
+    setCourse((prevState) => ({
+        ...prevState,
+        image_file: files, // Replace the array with the new set of files
+    }));   
+};
+
+  const course_creation_infoget = async (e) => {
+    e.preventDefault();
+  
+    try {
+        const formData = new FormData();
+  
+        // Manually append all contact data (excluding files)
+        for (let key in course) {
+            if (Array.isArray(course[key])) {
+              course[key].forEach((value) => {
+                    formData.append(key, value);
+                });
+            } else if (course[key]) {
+                formData.append(key, course[key]);
+            }
+        }
+  
+        // Append files (document_pic)
+        if (course.image_file && course.image_file.length > 0) {
+            // Loop through the files and append them to FormData
+            course.image_file.forEach((file) => {
+                // Ensure we don't append the same file multiple times
+                formData.append('image_file', file);
+            });
+        }
+  
+        // Now submit the FormData with files included
+        const resp = await axios.post(`${base_url}/add_course_details`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data', // Ensure Content-Type is set correctly for file uploads
+            },
+        });
+  
+        if (resp.status === 200) {
+            toast.success(resp.data.message, { autoClose: 2000 });
+        
+        }
+    } catch (error) {
+        toast.error(error.response?.data?.message || 'Error saving contact', { autoClose: 2000 });
+    }
+  };
+
+  const[chapterMain, setchapterMain]=useState([]);
+  const[chapter, setChapter]=useState({chapter_title:"",chapter_description:"", video_file:[]})
+
+                                        const addChapter = () => {
+                       
+                                            if (chapter.chapter_title ) 
+                                              {
+                                                 
+                                                const updateChapter = [...chapterMain, chapter];
+                                                setchapterMain(updateChapter);
+                                                setCourse(prevState => ({
+                                                  ...prevState,
+                                                  add_Content: updateChapter
+                                                }));
+                                              
+                                                 } 
+                                                 else
+                                                   {
+                                                       toast.error("Please fill out all fields.");
+                                                   }
+                                                 };
+                                                
+                                                 
+                                    const deleteblock = (index) => {
+                                    
+
+                                      // Filter out the destination at the given index
+                                      const newblocks = course.add_Content.filter((_, i) => i !== index);
+                                      setchapterMain(newblocks)
+
+                                      // Set the updated destination details
+                                      setCourse(prevState => ({
+                                        ...prevState,
+                                        add_Content: newblocks
+                                      }));
+                                    };
+
+                                    console.log(course.add_Content);
 
   function addLessons() {
     document.getElementById("add-lesson-div").style.display = "block"
@@ -53,18 +170,28 @@ function CreateNewCourse() {
     document.getElementById("customize-course").style.display = "block";
     document.getElementById("add-new-category").style.display = "none"
     document.getElementById("add-document-category").style.display = "none";
+    document.getElementById("finish_div").style.display = "none";
   }
 
   function MediaContainer() {
     document.getElementById("customize-course").style.display = "none";
     document.getElementById("add-new-category").style.display = "block"
     document.getElementById("add-document-category").style.display = "none";
+    document.getElementById("finish_div").style.display = "none";
   }
 
   function DocumentContainer() {
     document.getElementById("customize-course").style.display = "none";
     document.getElementById("add-new-category").style.display = "none"
     document.getElementById("add-document-category").style.display = "block";
+    document.getElementById("finish_div").style.display = "none";
+  }
+
+  function FinishContainer() {
+    document.getElementById("customize-course").style.display = "none";
+    document.getElementById("add-new-category").style.display = "none"
+    document.getElementById("add-document-category").style.display = "none";
+    document.getElementById("finish_div").style.display = "block";
   }
 
   return (
@@ -179,75 +306,11 @@ function CreateNewCourse() {
                 </h6>
               </div>
             
-            <div className="finish-div">
+            <div className="finish-div" id="finish-div" onClick={FinishContainer}>
               <h6>Finish</h6>     
             </div>
           </div>
         </div>
-
-        {/* <div className="add-new-Catgory">
-          <div className="adding-course-div" style={{ width: "100%" }}>
-            <h5 style={{ marginBottom: "1rem" }}>Add New course</h5>
-            <div className="inputs-div">
-              <div className="info-div">
-                <label htmlFor="title">How about a course title</label>
-                <input type="text" id="course_title" placeholder="Course Title" onChange={(e) => {setCourse({...course, course_title:e.target.value})}} />
-              </div>
-              <div className="info-div">
-                <label htmlFor="parent-category">Course Category</label>
-                <select
-                  name="parent-category"
-                  id="course_category"
-                  placeholder="Select none for parent"
-                  onChange={(e) => {setCourse({...course, course_category:e.target.value})}}
-                >
-                  <option value="programming">Programming</option>
-                  <option value="digital-marketing">Digital Marketing</option>
-                  <option value="web-dev">Web Development</option>
-                  <option value="data-science">Data Science</option>
-                  <option value="cyber-security">Cyber Security</option>
-                </select>
-              </div>
-              <div className="info-div">
-                <label htmlFor="course-code">Course Code</label>
-                <input type="text" id="course_code" placeholder="Enter course code" onChange={(e) => {setCourse({...course, course_code:e.target.value})}} />
-              </div>
-              <div className="info-div">
-                <label htmlFor="content">Content</label>
-                <input type="text" id="course_content" placeholder="Enter content" onChange={(e) => {setCourse({...course, course_content:e.target.value})}} />
-              </div>
-              <div className="info-div">
-                <label htmlFor="organization">Organization</label>
-                <input type="text" id="organization" placeholder="Organization name" onChange={(e) => {setCourse({...course, organization:e.target.value})}} />
-              </div>
-              <div className="info-div">
-                <label htmlFor="category">Instructor</label>
-                <input type="text" id="instructor" placeholder="Enter Instructor name" onChange={(e) => {setCourse({...course, instructor:e.target.value})}} />
-              </div>
-              <div className="info-div">
-                <label htmlFor="meta-title">Courses Label</label>
-                <input type="text" id="course_label" placeholder="Enter meta title" onChange={(e) => {setCourse({...course, course_label:e.target.value})}} />
-              </div>
-              
-              <div className="info-div">
-                <label htmlFor="course-duration">Courses duaration</label>
-                <input type="text" id="course_duration" placeholder="00:00:00" onChange={(e) => {setCourse({...course, course_duration:e.target.value})}} />
-                <p style={{ opacity: "0.7", fontSize: "12px" }}>
-                  Please follow the pattern <b>(hh:mm:ss)</b>
-                </p>
-              </div>
-            </div>
-
-                <div className="meta-description">
-                    <label htmlFor="meta-desc">Meta Description</label>
-                    <Textedit/>
-                </div>
-
-            <div className="content-div" style={{ float: "right" }}>
-              <button onClick={course_creation_infoget}> <NavLink to={'/Media'}>Next</NavLink> </button>
-            </div>
-          </div>
-        </div> */}
 
         <div className="customize-course" id="customize-course">
           <div className="course-info-section">
@@ -257,37 +320,45 @@ function CreateNewCourse() {
                   <div className="info-div-items">
                     <TextField
                       required
-                      id=""
+                      id="course_title_main"
+                      name="course_title_main"
                       label="Course title"
                       defaultValue=""
                       className="input"
+                      onChange={(e) => setCourse({...course, course_title_main: e.target.value})}
                     />
                   </div>
                   <div className="info-div-items">
                   <TextField
                       required
-                      id="outlined-required"
+                      id="add_main_category"
+                      name="add_main_category"
                       label="Add main category"
                       defaultValue=""
                       className="input"
+                      onChange={(e) => setCourse({...course, add_main_category: e.target.value})}
                     />
                   </div>
                   <div className="info-div-items">
                   <TextField
                       required
-                      id="outlined-required"
+                      id="add_sub_category"
+                      name="add_sub_category"
                       label="Add sub category"
                       defaultValue=""
                       className="input"
+                      onChange={(e) => setCourse({...course, add_sub_category: e.target.value})}
                     />
                      <div className="info-div-items">
                      <TextField
-                        id="outlined-multiline-static"
+                        id="description"
+                        name="description"
                         label="Description"
                         multiline
                         rows={4}
                         defaultValue=""
                         className="input"
+                        onChange={(e) => setCourse({...course, description: e.target.value})}
                       />
                      </div>
                   </div>
@@ -300,19 +371,23 @@ function CreateNewCourse() {
                   <div className="info-div-items">
                     <TextField
                       required
-                      id="outlined-required"
+                      id="course_code"
+                      name="course_code"
                       label="Course code"
                       defaultValue=""
                       className="input"
+                      onChange={(e) => setCourse({...course, course_code: e.target.value})}
                     />
                   </div>
                   <div className="info-div-items">
                   <TextField
                       required
-                      id="outlined-required"
+                      id="course_title"
+                      name="course_title"
                       label="Course title"
                       defaultValue=""
                       className="input"
+                      onChange={(e) => setCourse({...course, course_title: e.target.value})}
                     />
                   </div>
                   <div className="info-div-items">
@@ -340,8 +415,10 @@ function CreateNewCourse() {
                     Choose files or drag and drop
                     <VisuallyHiddenInput
                       type="file"
-                      onChange={(event) => console.log(event.target.files)}
+                      name="video_file"
+                      onChange={(e) => setChapter({...chapter, video_file: e.target.value})}
                       multiple
+                      id="video_file"
                     />
                   </Button>
                   <p>Video (512GB)</p>
@@ -353,26 +430,32 @@ function CreateNewCourse() {
                   <div className="info-div-items">
                     <TextField
                       required
-                      id="outlined-required"
+                      id="chapter_title"
+                      name="chapter_title"
                       label="Chapter title"
                       defaultValue=""
                       className="input"
+                      onChange={(e) => setChapter({...chapter, chapter_title: e.target.value})}
                     />
                   </div>
                   <div className="info-div-items">
                     <TextField
                       required
-                      id="outlined-required"
+                      id="chapter_description"
+                      name="chapter_description"
                       label="Chapter description"
                       defaultValue=""
                       className="input"
+                      maxRows={3}
+                      onChange={(e) => setChapter({...chapter, chapter_description: e.target.value})}
                     />
                   </div>
             </div>
           </div>
           <div className="upload-btn-div" style={{marginTop:"1.5rem"}}>
-            <button> <UploadIcon/> Upload Chapter</button>
+            <button onClick={addChapter}> <UploadIcon/> Add Chapter</button>
           </div>
+
           </div>
             
         </div>
@@ -385,7 +468,7 @@ function CreateNewCourse() {
                         <div style={{width: "30%"}}>
                             <p style={{fontSize: "12px", fontWeight: "600"}}>Thumbnail (548 x 234)</p>
                             <div className="upload-div" style={{marginTop: "1rem"}}>
-                                <input type="file" id='file-upload' style={{display: "none"}} />
+                                <input type="file" id='file-upload' name="file-upload" style={{display: "none"}} />
                                 <p><label htmlFor="file-upload"><i class="fa-solid fa-arrow-up-from-bracket"></i></label></p>
                             </div>
                         </div>
@@ -420,22 +503,22 @@ function CreateNewCourse() {
                         <div style={{width: "30%"}}>
                             <p style={{fontSize: "12px", fontWeight: "600"}}>PDF file</p>
                             <div className="upload-div" style={{marginTop: "1rem"}}>
-                                <input type="file" id='file-upload' style={{display: "none"}} />
-                                <p><label htmlFor="file-upload"><i class="fa-solid fa-arrow-up-from-bracket"></i></label></p>
+                                <input type="file" id='file-upload' name="pdf_file" onChange={handlePdfFile} />
+                                {/* <p><label htmlFor="file-upload"><i class="fa-solid fa-arrow-up-from-bracket"></i></label></p> */}
                             </div>
                         </div>
                         <div style={{width: "30%"}}>
                             <p style={{fontSize: "12px", fontWeight: "600"}}>Word file</p>
                             <div className="upload-div" style={{marginTop: "1rem"}}>
-                                <input type="file" id='file-upload' style={{display: "none"}} />
-                                <p><label htmlFor="file-upload"><i class="fa-solid fa-arrow-up-from-bracket"></i></label></p>
+                                <input type="file" id='file-upload' name="word_file" onChange={handleWordFile} />
+                                {/* <p><label htmlFor="file-upload"><i class="fa-solid fa-arrow-up-from-bracket"></i></label></p> */}
                             </div>
                         </div>
                         <div style={{width: "30%"}}>
                             <p style={{fontSize: "12px", fontWeight: "600"}}>JPG file</p>
                             <div className="upload-div" style={{marginTop: "1rem"}}>
-                                <input type="file" id='file-upload' style={{display: "none"}} />
-                                <p><label htmlFor="file-upload"><i class="fa-solid fa-arrow-up-from-bracket"></i></label></p>
+                                <input type="file" id='file-upload' name="image_file" onChange={handledocumentpicchange} />
+                                {/* <p><label htmlFor="file-upload"><i class="fa-solid fa-arrow-up-from-bracket"></i></label></p> */}
                             </div>
                         </div>
                     </div>
@@ -446,6 +529,12 @@ function CreateNewCourse() {
                     </div>
                     </div>
 
+        </div>
+
+        <div className="add-new-category" id="finish_div">
+          <div className='adding-course-div' style={{width: "100%", height:"200px"}}> 
+            <button onClick={course_creation_infoget}> <UploadIcon/> Upload Course</button>
+          </div>
         </div>
       </section>
       <ToastContainer/>

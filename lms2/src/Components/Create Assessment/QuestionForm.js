@@ -400,9 +400,9 @@ const QuestionForm = () => {
     setOptions(newOptions);
   };
 
-  const handleDelete = () => {
-    setVisible(false);
-  };
+  // const handleDelete = () => {
+  //   setVisible(false);
+  // };
 
   if (!visible) return null;
 
@@ -487,32 +487,11 @@ input {
 </style>
 
       <div className="question-form" style={{ position: 'relative' }}>
-        {/* <button
-          onClick={handleDelete}
-          style={{
-            position: 'absolute',
-            top: '10px',
-            right: '10px',
-            backgroundColor: 'transparent',
-            color: '#000',
-            borderRadius: '50%',
-            cursor: 'pointer',
-            fontSize: '16px',
-            width: '24px',
-            height: '24px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            opacity: '0.7',
-          }}
-        >
-          <i className="fa-solid fa-trash-can"></i>
-        </button> */}
-
         <div className="question-input">
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <input
               type="text"
+              id='mcq_question'
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               placeholder="Enter your question"
@@ -537,6 +516,7 @@ input {
                 <input
                   type="text"
                   value={option.text}
+                  id='options'
                   onChange={(e) => handleOptionChange(idx, e.target.value)}
                   placeholder={`Option ${idx + 1}`}
                 />
@@ -582,6 +562,7 @@ input {
             <label>Points:</label>
             <input
               type="number"
+              id='points'
               value={points}
               min={1}
               max={10}
@@ -613,6 +594,7 @@ input {
               <label>Correct Answers:</label>
               <input
                 type="number"
+                id='correct_number'
                 value={correctAnswers}
                 min={1}
                 max={options.length}

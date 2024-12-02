@@ -1,16 +1,23 @@
 const mongoose = require('mongoose');
 
-const course_creation = new mongoose.Schema({
-    course_title:{type:String},
-    course_category:{type:String},
+const addContent = new mongoose.Schema({
+    video_file:{type:Array},
+    chapter_title:{type:String},
+    chapter_description:{type:String},
+}) 
+
+const createCourse = new mongoose.Schema({
+    course_title_main:{type:String},
+    add_main_category:{type:String},
+    add_sub_category:{type:String},
+    description:{type:String},
     course_code:{type:String},
-    course_content:{type:String},
-    organization:{type:String},
-    instructor:{type:String},
-    course_label:{type:String},
-    course_duration:{type:String},
-});
+    course_title:{type:String},
+    add_Content:[addContent],
+    pdf_file:{type:Array},
+    word_file:{type:Array},
+    image_file:{type:Array},
+})
 
-const course_creation_modal = mongoose.model('course_creation_info', course_creation);
-
-module.exports = course_creation_modal;
+const Course = mongoose.model('createCourse', createCourse);
+module.exports = Course;

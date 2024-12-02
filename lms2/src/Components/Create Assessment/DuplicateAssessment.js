@@ -4,14 +4,6 @@ import Dropdown from 'react-bootstrap/Dropdown';
 function DuplicateAssessment() {
 
     const [questions, setQuestions] = useState([]);
-
-  // Function to delete a question by index
-  // const deleteQuestion = (index) => {
-  //   const newQuestions = questions.filter((_, i) => i !== index);0
-  //   setQuestions(newQuestions);
-  // };
-
-  // Function to add a new question
   const addQuestion = () => {
     setQuestions([...questions, { mainCategory: "", subCategory: "" }]);
   };
@@ -76,28 +68,6 @@ function DuplicateAssessment() {
       {questions.map((question, index) => (
         <div className="duplicate-assessment" key={index}>
           <h5>Add Duplicate Question</h5>
-
-          {/* <button
-            style={{
-              position: "absolute",
-              top: "10px",
-              right: "10px",
-              backgroundColor: "transparent",
-              color: "#000",
-              borderRadius: "50%",
-              cursor: "pointer",
-              fontSize: "16px",
-              width: "24px",
-              height: "24px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              opacity: "0.7",
-            }}
-            onClick={() => deleteQuestion(index)} // Pass index to deleteQuestion
-          >
-            <i className="fa-solid fa-trash-can"></i>
-          </button> */}
 
           <div className="category-div">
             <div className="dropdowns">

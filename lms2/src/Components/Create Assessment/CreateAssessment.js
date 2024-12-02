@@ -133,6 +133,7 @@ function CreateAssessment() {
               <input
                 type="text"
                 placeholder="Enter title"
+                id="assessment_title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
               />
@@ -142,6 +143,7 @@ function CreateAssessment() {
               <input
                 type="text"
                 placeholder="Enter Code"
+                id="assessment_code"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
               />
@@ -150,6 +152,7 @@ function CreateAssessment() {
               <label>Description</label>
               <textarea
                 placeholder="Enter description here..."
+                id="assessment_description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
@@ -158,6 +161,7 @@ function CreateAssessment() {
               <label>Time</label>
               <input
                 type="time"
+                id="assessment_time"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
               />
