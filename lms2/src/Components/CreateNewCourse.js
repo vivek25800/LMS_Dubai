@@ -73,16 +73,6 @@ function CreateNewCourse() {
   
     try {
         const formData = new FormData();
-  
-        // for (let key in course) {
-        //     if (Array.isArray(course[key])) {
-        //       course[key].forEach((value) => {
-        //             formData.append(key, value);
-        //         });
-        //     } else if (course[key]) {
-        //         formData.append(key, course[key]);
-        //     }
-        // }
 
         for (let key in course) {
           if (Array.isArray(course[key])) {
@@ -246,7 +236,7 @@ function CreateNewCourse() {
         }
         .upload-video{
         border: 1px solid rgba(0,0,0,0.2);
-        padding: 2rem 1rem;
+        padding: 2.2rem 1rem;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -459,7 +449,8 @@ function CreateNewCourse() {
                       label="Chapter description"
                       defaultValue=""
                       className="input"
-                      maxRows={3}
+                      multiline
+                      rows={4}
                       onChange={(e) => setChapter({...chapter, chapter_description: e.target.value})}
                     />
                   </div>

@@ -192,11 +192,9 @@ function CreateQuize() {
               <button onClick={() => addQuestion("UploadFile")}>
                 <i className="fa-solid fa-file-arrow-up"></i> Upload File
               </button>
-              <NavLink to={'/addsection'}>
               <button>
                 <i class="fa-solid fa-layer-group" /> Section
               </button>
-              </NavLink>
             </div>
           </div>
         )}

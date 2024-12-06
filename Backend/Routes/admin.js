@@ -14,6 +14,7 @@ const { post_trainingRequestForm, get_trainingRequestData, get_trainingRequestBy
 const { createAssessment, getAssessments } = require('../Controllers/create_assessment_form');
 const  upload  = require('../MiddleWare/file');
 const uploadFields = require('../MiddleWare/file');
+const { postOjtAssignment, getOjtAssignedEmployee } = require('../Controllers/ojt_Assignment_form');
 
 const router = express.Router();
 
@@ -76,6 +77,9 @@ router.get('/get_training_budget_data', get_training_budget);
 router.post('/training_request_form', post_trainingRequestForm);
 router.get('/get_trainingrequestdata', get_trainingRequestData);
 router.get('/get_trainingByID/:_id', get_trainingRequestByIds);
+
+router.post('/add_employee_forOJT', postOjtAssignment);
+router.get('/get_assigned_employees/:ojt_code', getOjtAssignedEmployee);
 
 
 
