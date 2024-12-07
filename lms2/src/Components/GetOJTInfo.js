@@ -427,7 +427,7 @@ const ConductOJT = () => {
       // Check if the employee is already assigned to the OJT
       const alreadyExists = selectedEmployees.some((emp) => emp.value === selectedOption.value);
       if (alreadyExists) {
-        toast.error('This employee is already assigned to this OJT!');
+        toast.error('This employee is already add in the table!');
         setMessage('This employee is already assigned to this OJT!');
         return;
       }
@@ -460,28 +460,45 @@ const ConductOJT = () => {
         employeeChecked: checkStates[`${activityIndex}-${contentIndex}`]?.employeeChecked || false,
       })),
     }));
-
+  
     const schedule = {
       dateFrom: document.getElementById('date_from_atten').value,
       dateTo: document.getElementById('date_to_atten').value,
       timeFrom: document.getElementById('time_from_atten').value,
       timeTo: document.getElementById('time_to_atten').value,
     };
-
-    const currentDateTime = new Date();
-    const scheduleDateFrom = new Date(`${schedule.dateFrom}T${schedule.timeFrom}`);
-    const scheduleDateTo = new Date(`${schedule.dateTo}T${schedule.timeTo}`);
-
-    if (
-      scheduleDateFrom < currentDateTime ||
-      scheduleDateTo < currentDateTime ||
-      scheduleDateFrom > scheduleDateTo
-    ) {
-      toast.error('Invalid schedule: Ensure the date/time range is valid and not in the past.');
+  
+    const currentDate = new Date(); // Get the current date
+    currentDate.setHours(0, 0, 0, 0); // Set to start of the day for comparison
+  
+    const scheduleDateFrom = new Date(schedule.dateFrom);
+    const scheduleDateTo = new Date(schedule.dateTo);
+  
+    // Validate that schedule dates are not in the past
+    if (scheduleDateFrom < currentDate || scheduleDateTo < currentDate) {
+      toast.error("You can't use past date.");
       return;
     }
-
+  
+    // Validate that "From" date is earlier than "To" date
+    if (scheduleDateFrom > scheduleDateTo) {
+      toast.error('Invalid schedule: Ensure the "From" date is earlier than the "To" date.');
+      return;
+    }
+  
     try {
+      // Check if employees are already assigned
+      const response = await axios.post(`${base_url}/check_employee_assignment`, {
+        ojt_code: selectedOjt.ojt_code,
+        employees: selectedEmployees.map((emp) => emp.details.employee_id),
+      });
+  
+      if (response.data.alreadyAssigned) {
+        toast.error('Some employee already assigned to this OJT.');
+        return;
+      }
+  
+      // Proceed to save the OJT assignment
       await axios.post(`${base_url}/add_employee_forOJT`, {
         ojt_title: selectedOjt.ojt_title,
         ojt_code: selectedOjt.ojt_code,
@@ -492,7 +509,7 @@ const ConductOJT = () => {
         activities: formattedActivities,
         schedule,
       });
-      toast.success('Data submitted successfully!');
+      toast.success('OJT assigned successfully!');
     } catch (error) {
       console.error('Error submitting data:', error);
       toast.error('An error occurred while submitting data. Please try again.');
@@ -690,6 +707,7 @@ row-gap: 1rem;
                 <table className="table table-striped">
                   <thead>
                     <tr>
+                      <th>Sr. no.</th>
                       <th>Content</th>
                       <th>Trainer Check</th>
                       <th>Employee Check</th>
@@ -698,6 +716,7 @@ row-gap: 1rem;
                   <tbody>
                     {activity.content.map((content, contentIndex) => (
                       <tr key={contentIndex}>
+                        <td>{contentIndex+1}</td>
                         <td>{content.description}</td>
                         <td>
                           <input

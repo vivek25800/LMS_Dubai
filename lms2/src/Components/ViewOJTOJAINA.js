@@ -17,62 +17,6 @@ function ViewOJTOJAINA() {
     }, []);
 
     // ---------------------------------------- OJT Integration Code ------------------------------------- //
-    // const [ojtData, setOjtData] = useState([]);
-    // const fetchOjtData = async () => {
-    //     try {
-    //        const resp = await axios.get(`${base_url}/get_Ojt_info`);
-    //        setOjtData(resp.data.create_ojt);
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
-
-    // const [show, setShow] = useState(false);
-    // const handleshow = (id) => { 
-    //     setShow(true);
-    //     fetchOjtById(id);
-    // }
-    // const handleclose = () => { setShow(false) }
-
-    // const [editData, setEditData] = useState({
-    //     _id: '',
-    //     ojt_title: '',
-    //     ojt_code: '',
-    //     activities: [],
-    //   });
-
-    //   const fetchOjtById = async (id) => {
-    //     try {
-    //       const resp = await axios.get(`${base_url}/get_ojts_byid/${id}`);
-    //       setEditData(resp.data.create_ojt);
-    //       setShow(true);
-    //     } catch (error) {
-    //       console.error('Error fetching OJT by ID:', error);
-    //     }
-    //   };
-
-    //   const handleInputChange = (e) => {
-    //     const { name, value } = e.target;
-    //     setEditData({ ...editData, [name]: value });
-    //   };
-      
-    //   const handleActivityChange = (index, field, value) => {
-    //     const updatedActivities = [...editData.activities];
-    //     updatedActivities[index][field] = value;
-    //     setEditData({ ...editData, activities: updatedActivities });
-    //   };
-
-    //   const updateOjtData = async () => {
-    //     try {
-    //       await axios.put(`${base_url}/ojt_details_updated/${editData._id}`, editData);
-    //       toast.success('OJT updated successfully!', { autoClose: 2000 });
-    //       fetchOjtData(); // Refresh the OJT list
-    //       setShow(false);
-    //     } catch (error) {
-    //       console.error('Error updating OJT:', error);
-    //     }
-    //   };
-
     const [ojtData, setOjtData] = useState([]);
     const [show, setShow] = useState(false);
     const [selectedOJT, setSelectedOJT] = useState(null);
@@ -693,8 +637,8 @@ function ViewOJTOJAINA() {
                                     onChange={(e) => setSelectedOJA({ ...selectedOJA, rating_range_oja: e.target.value })}
                                     className="form-control"
                                 >
-                                    <option value="1-5">1-5</option>
-                                    <option value="1-10">1-10</option>
+                                    <option>1 -- 5</option>
+                                    <option>1 -- 10</option>
                                 </select>
                             </div>
 
@@ -873,8 +817,8 @@ function ViewOJTOJAINA() {
                                     onChange={(e) => setSelectedINA({ ...selectedINA, rating_range_ina: e.target.value })}
                                     className="form-control"
                                 >
-                                    <option value="1-5">1-5</option>
-                                    <option value="1-10">1-10</option>
+                                    <option>1 -- 5</option>
+                                    <option>1 -- 10</option>
                                 </select>
                             </div>
 

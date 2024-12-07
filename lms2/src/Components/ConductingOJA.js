@@ -7,8 +7,13 @@ import Select from "react-select";
 function ConductingOJA() {
   const [ojaTitles, setOjaTitles] = useState([]); // Stores all OJA titles
   const [selectedOja, setselectedOja] = useState([]); // Stores selected OJA details
-  const [finalScore, setFinalScore] = useState(null); // Stores the final overall score
+  // const [finalScore, setFinalScore] = useState(null); // Stores the final overall score
   const [ratingRange, setratingRange] = useState([]);
+
+  const [options, setOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedEmployees, setSelectedEmployees] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Fetch all OJA titles when the component mounts
   useEffect(() => {
@@ -27,6 +32,7 @@ function ConductingOJA() {
   // Handle OJA selection and fetch its details
   const handleOjaSelect = async (e) => {
     const ojaId = e.target.value; // Get selected OJA ID
+    if (!ojaId) return;
 
     try {
       const response = await axios.get(`${base_url}/get_oja_info_byids/${ojaId}`); 
@@ -35,6 +41,7 @@ function ConductingOJA() {
       
       setselectedOja(response.data.create_oja);
       console.log(response.data.create_oja); // Save selected OJA details in state
+      await fetchAssignedEmployees(ojaId); 
       
       // Set the rating range based on the selected OJA's rating range
       if (selectedOjaData.rating_range_oja === "1 -- 5") {
@@ -53,6 +60,27 @@ function ConductingOJA() {
   useEffect(() => {
     console.log("Updated Rating Range:", ratingRange);
   }, [ratingRange]);
+
+
+   // Fetch assigned employees for the selected OJA
+   const fetchAssignedEmployees = async (ojaId) => {
+    try {
+      const response = await axios.get(`${base_url}/get_assigned_employeeOJA/${ojaId}`);
+      if (response.data && response.data.employees) {
+        const formattedEmployees = response.data.employees.map((emp) => ({
+          value: emp.employeeId,
+          label: `${emp.employeeId} - ${emp.employeeName}`,
+          details: emp,
+        }));
+        setSelectedEmployees(formattedEmployees);
+      } else {
+        setSelectedEmployees([]); // Clear the state if no employees are found
+      }
+    } catch (error) {
+      console.error('Error fetching assigned employees:', error);
+      setSelectedEmployees([]); // Clear the state in case of an error
+    }
+  };
 
   // Handle rating change for each activity description
   const handleRatingChange = (activityIndex, contentIndex, newRating) => {
@@ -101,23 +129,17 @@ function ConductingOJA() {
   
 
   // Handle form submission and save data to the database
-  const handleSubmit = async () => {
-    try {
-      const updatedOja = { ...selectedOja, finalScore: calculateFinalScore() };
-      await axios.put(`${base_url}/update_oja_info/${selectedOja._id}`, updatedOja);
-      toast.success('OJA updated successfully');
-    } catch (error) {
-      console.error("Error updating OJA:", error);
-      toast.error('Failed to update OJA');
-    }
-  };
+  // const handleSubmit = async () => {
+  //   try {
+  //     const updatedOja = { ...selectedOja, finalScore: calculateFinalScore() };
+  //     await axios.put(`${base_url}/update_oja_info/${selectedOja._id}`, updatedOja);
+  //     toast.success('OJA updated successfully');
+  //   } catch (error) {
+  //     console.error("Error updating OJA:", error);
+  //     toast.error('Failed to update OJA');
+  //   }
+  // };
 
-
-
-  const [options, setOptions] = useState([]);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [selectedEmployees, setSelectedEmployees] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
 
     // Fetch options from the backend
     const fetchOptions = async () => {
@@ -152,10 +174,99 @@ function ConductingOJA() {
     };
   
        // Remove employee from the table
-    const handleRemoveEmployee = () => {
-      setSelectedEmployees([]);
-      setErrorMessage(""); // Clear any error messages
+    // const handleRemoveEmployee = () => {
+    //   setSelectedEmployees([]);
+    //   setErrorMessage(""); // Clear any error messages
+    // };
+
+
+    const handleSubmit = async () => {
+      // Format activities to include the overall score
+      const formattedActivities = selectedOja.activities.map((activity) => {
+        // Calculate the overall score for this activity
+        const totalScore = activity.content.reduce((sum, content) => sum + content.rating, 0);
+        const activityScore = activity.content.length > 0 ? totalScore / activity.content.length : 0; // Average score
+    
+        return {
+          ...activity,
+          overallScore: activityScore, // Add the calculated overall score
+        };
+      });
+    
+      // Calculate the final overall score for all activities
+      const finalOverallScore =
+        formattedActivities.length > 0
+          ? formattedActivities.reduce((sum, activity) => sum + activity.overallScore, 0) / formattedActivities.length
+          : 0;
+    
+      // Schedule details
+      const schedule = {
+        dateFrom: document.getElementById('date_from_atten').value,
+        dateTo: document.getElementById('date_to_atten').value,
+        timeFrom: document.getElementById('time_from_atten').value,
+        timeTo: document.getElementById('time_to_atten').value,
+      };
+    
+      const currentDate = new Date(); // Get the current date
+      currentDate.setHours(0, 0, 0, 0); // Set to start of the day for comparison
+    
+      const scheduleDateFrom = new Date(schedule.dateFrom);
+      const scheduleDateTo = new Date(schedule.dateTo);
+    
+      // Validate that schedule dates are not in the past
+      if (scheduleDateFrom < currentDate || scheduleDateTo < currentDate) {
+        toast.error("You can't use past date.");
+        return;
+      }
+    
+      // Validate that "From" date is earlier than "To" date
+      if (scheduleDateFrom > scheduleDateTo) {
+        toast.error('Invalid schedule: Ensure the "From" date is earlier than the "To" date.');
+        return;
+      }
+    
+      try {
+        // Check if employees are already assigned
+        const response = await axios.post(`${base_url}/check_employee_forOJA`, {
+          oja_code: selectedOja.oja_code,
+          employees: selectedEmployees.map((emp) => emp.details.employee_id),
+        });
+    
+        if (response.data.alreadyAssigned) {
+          toast.error('Some employees are already assigned to this OJA.');
+          return;
+        }
+    
+        // Proceed to save the OJA assignment
+        await axios.post(`${base_url}/add_employee_forOJA`, {
+          oja_title: selectedOja.oja_title,
+          oja_code: selectedOja.oja_code,
+          employees: selectedEmployees.map((emp) => ({
+            employeeId: emp.details.employee_id,
+            employeeName: emp.details.employee_name,
+          })),
+          activities: formattedActivities,
+          schedule,
+          finalOverallScore, // Include the final overall score
+        });
+    
+        toast.success('OJA assigned successfully!');
+    
+        // Auto-clear all fields after successful submission
+        setselectedOja(null); // Clear selected OJA
+        setSelectedEmployees([]); // Clear selected employees
+        document.getElementById('date_from_atten').value = '';
+        document.getElementById('date_to_atten').value = '';
+        document.getElementById('time_from_atten').value = '';
+        document.getElementById('time_to_atten').value = '';
+      } catch (error) {
+        console.error('Error submitting data:', error);
+        toast.error('An error occurred while submitting data. Please try again.');
+      }
     };
+    
+    
+
 
   return (
     <div>
@@ -300,18 +411,26 @@ function ConductingOJA() {
                   </tr>
                 </thead>
                 <tbody>
-                  {selectedEmployees.map((emp, index) => (
-                    <tr key={emp.value}>
-                      <td>{index + 1}</td>
-                      <td>{emp.details.employee_name}</td>
-                      <td>{emp.details.employee_id}</td>
-                      <td>
-                        <button onClick={() => handleRemoveEmployee(emp.value)}>
-                          Remove
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                {selectedEmployees.map((emp, index) => {
+                const employeeName = emp.details?.employee_name || 'Unknown';
+                const employeeId = emp.details?.employee_id || 'Unknown';
+                return (
+                  <tr key={index}>
+                    <td>{index+1}</td>
+                    <td>{employeeName}</td>
+                    <td>{employeeId}</td>
+                    <td>
+                      <button
+                        onClick={() =>
+                          setSelectedEmployees(selectedEmployees.filter((e) => e.value !== emp.value))
+                        }
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
                 </tbody>
               </table>
             </div>
@@ -340,7 +459,7 @@ function ConductingOJA() {
                 <tbody>
                   {activity.content.map((content, contentIndex) => (
                     <tr key={contentIndex}>
-                      <td>{content.srno}</td>
+                      <td>{contentIndex+1}</td>
                       <td>{content.description}</td>
                       <td>
                         <select
@@ -351,8 +470,7 @@ function ConductingOJA() {
                         >
                           <option value="">--Select Rating--</option>
                           {ratingRange.map((rating) => (
-                            <option key={rating} value={rating}>
-                              
+                            <option key={rating} value={rating}>                             
                               {rating}
                             </option>
                           ))}
@@ -375,7 +493,34 @@ function ConductingOJA() {
       ) : (
         <p>Select an OJA to view activities.</p>
       )}
-              {/* {
+
+              <div className="finalscore-div">
+                <div className="info-div-item">
+                  <label className="rating-label">Final Overall Score</label>
+                  <p>{calculateFinalScore()}</p>
+                </div>
+                <button onClick={handleSubmit}>Submit</button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+      <ToastContainer />
+    </div>
+  );
+}
+
+export default ConductingOJA;
+
+
+
+
+
+
+
+
+
+{/* {
               selectedOja.activities.map((activity, activityIndex) => (
                 <div key={activityIndex} className="activity-div">
                   <div className="info-div-item">
@@ -433,21 +578,3 @@ function ConductingOJA() {
                   </div>
                 </div>
               ))} */}
-
-              <div className="finalscore-div">
-                <div className="info-div-item">
-                  <label className="rating-label">Final Overall Score</label>
-                  <p>{calculateFinalScore()}</p>
-                </div>
-                <button onClick={handleSubmit}>Submit</button>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-      <ToastContainer />
-    </div>
-  );
-}
-
-export default ConductingOJA;

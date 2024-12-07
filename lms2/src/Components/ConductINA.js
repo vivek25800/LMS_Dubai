@@ -7,8 +7,13 @@ import Select from "react-select";
 function ConductINA() {
   const [inaTitles, setInaTitles] = useState([]); // Stores all OJA titles
   const [selectedIna, setselectedIna] = useState([]); // Stores selected OJA details
-  const [finalScore, setFinalScore] = useState(null); // Stores the final overall score
+  // const [finalScore, setFinalScore] = useState(null); // Stores the final overall score
   const [ratingRange, setratingRange] = useState([]);
+
+  const [options, setOptions] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedEmployees, setSelectedEmployees] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Fetch all OJA titles when the component mounts
   useEffect(() => {
@@ -27,6 +32,7 @@ function ConductINA() {
   // Handle OJA selection and fetch its details
   const handleInaSelect = async (e) => {
     const inaId = e.target.value; // Get selected OJA ID
+    if (!inaId) return;
 
     try {
       const response = await axios.get(`${base_url}/get_ina_dataById/${inaId}`); 
@@ -34,10 +40,11 @@ function ConductINA() {
       
       setselectedIna(response.data.create_ina); // Save selected OJA details in state
       console.log(selectedIna);
+      await fetchAssignedEmployees(inaId); 
 
-      if (response.data.create_ina.rating_range === "1 -- 5") {
+      if (response.data.create_ina.rating_range_ina === "1 -- 5") {
         setratingRange([1, 2, 3, 4, 5]);
-      } else if (response.data.create_ina.rating_range === "1 -- 10") {
+      } else if (response.data.create_ina.rating_range_ina === "1 -- 10") {
         setratingRange([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
       } else {
         setratingRange([]); // Clear the range if it's not valid
@@ -45,6 +52,27 @@ function ConductINA() {
       
     } catch (error) {
       console.error("Error fetching OJA details:", error);
+    }
+  };
+
+
+  // Fetch assigned employees for the selected OJA
+  const fetchAssignedEmployees = async (inaId) => {
+    try {
+      const response = await axios.get(`${base_url}/get_assigned_employeeINA/${inaId}`);
+      if (response.data && response.data.employees) {
+        const formattedEmployees = response.data.employees.map((emp) => ({
+          value: emp.employeeId,
+          label: `${emp.employeeId} - ${emp.employeeName}`,
+          details: emp,
+        }));
+        setSelectedEmployees(formattedEmployees);
+      } else {
+        setSelectedEmployees([]); // Clear the state if no employees are found
+      }
+    } catch (error) {
+      console.error('Error fetching assigned employees:', error);
+      setSelectedEmployees([]); // Clear the state in case of an error
     }
   };
 
@@ -95,23 +123,17 @@ function ConductINA() {
   };
 
   // Handle form submission and save data to the database
-  const handleSubmit = async () => {
-    try {
-      const updatedIna = { ...selectedIna, finalScore: calculateFinalScore() };
-      const response = await axios.put(`${base_url}/update_ina_data/${selectedIna._id}`, updatedIna);
-      toast.success('INA updated successfully');
-    } catch (error) {
-      console.error("Error updating INA:", error);
-      toast.error('Failed to update INA');
-    }
-  };
+  // const handleSubmit = async () => {
+  //   try {
+  //     const updatedIna = { ...selectedIna, finalScore: calculateFinalScore() };
+  //     const response = await axios.put(`${base_url}/update_ina_data/${selectedIna._id}`, updatedIna);
+  //     toast.success('INA updated successfully');
+  //   } catch (error) {
+  //     console.error("Error updating INA:", error);
+  //     toast.error('Failed to update INA');
+  //   }
+  // };
 
-
-
-  const [options, setOptions] = useState([]);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [selectedEmployees, setSelectedEmployees] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
 
     // Fetch options from the backend
   const fetchOptions = async () => {
@@ -149,6 +171,91 @@ function ConductINA() {
   const handleRemoveEmployee = () => {
     setSelectedEmployees([]);
     setErrorMessage(""); // Clear any error messages
+  };
+
+  const handleSubmit = async () => {
+    // Format activities to include the overall score
+    const formattedActivities = selectedIna.activities.map((activity) => {
+      // Calculate the overall score for this activity
+      const totalScore = activity.content.reduce((sum, content) => sum + content.rating, 0);
+      const activityScore = activity.content.length > 0 ? totalScore / activity.content.length : 0; // Average score
+  
+      return {
+        ...activity,
+        overallScore: activityScore, // Add the calculated overall score
+      };
+    });
+  
+    // Calculate the final overall score for all activities
+    const finalOverallScore =
+      formattedActivities.length > 0
+        ? formattedActivities.reduce((sum, activity) => sum + activity.overallScore, 0) / formattedActivities.length
+        : 0;
+  
+    // Schedule details
+    const schedule = {
+      dateFrom: document.getElementById('date_from_atten').value,
+      dateTo: document.getElementById('date_to_atten').value,
+      timeFrom: document.getElementById('time_from_atten').value,
+      timeTo: document.getElementById('time_to_atten').value,
+    };
+  
+    const currentDate = new Date(); // Get the current date
+    currentDate.setHours(0, 0, 0, 0); // Set to start of the day for comparison
+  
+    const scheduleDateFrom = new Date(schedule.dateFrom);
+    const scheduleDateTo = new Date(schedule.dateTo);
+  
+    // Validate that schedule dates are not in the past
+    if (scheduleDateFrom < currentDate || scheduleDateTo < currentDate) {
+      toast.error("You can't use past date.");
+      return;
+    }
+  
+    // Validate that "From" date is earlier than "To" date
+    if (scheduleDateFrom > scheduleDateTo) {
+      toast.error('Invalid schedule: Ensure the "From" date is earlier than the "To" date.');
+      return;
+    }
+  
+    try {
+      // Check if employees are already assigned
+      const response = await axios.post(`${base_url}/check_employee_forINA`, {
+        ina_code: selectedIna.ina_code,
+        employees: selectedEmployees.map((emp) => emp.details.employee_id),
+      });
+  
+      if (response.data.alreadyAssigned) {
+        toast.error('Some employees are already assigned to this INA.');
+        return;
+      }
+  
+      // Proceed to save the OJA assignment
+      await axios.post(`${base_url}/add_employee_forINA`, {
+        ina_title: selectedIna.ina_title,
+        ina_code: selectedIna.ina_code,
+        employees: selectedEmployees.map((emp) => ({
+          employeeId: emp.details.employee_id,
+          employeeName: emp.details.employee_name,
+        })),
+        activities: formattedActivities,
+        schedule,
+        finalOverallScore, // Include the final overall score
+      });
+  
+      toast.success('INA assigned successfully!');
+  
+      // Auto-clear all fields after successful submission
+      setselectedIna(null); // Clear selected OJA
+      setSelectedEmployees([]); // Clear selected employees
+      document.getElementById('date_from_atten').value = '';
+      document.getElementById('date_to_atten').value = '';
+      document.getElementById('time_from_atten').value = '';
+      document.getElementById('time_to_atten').value = '';
+    } catch (error) {
+      console.error('Error submitting data:', error);
+      toast.error('An error occurred while submitting data. Please try again.');
+    }
   };
 
   return (
@@ -302,18 +409,26 @@ function ConductINA() {
                   </tr>
                 </thead>
                 <tbody>
-                  {selectedEmployees.map((emp, index) => (
-                    <tr key={emp.value}>
-                      <td>{index + 1}</td>
-                      <td>{emp.details.employee_name}</td>
-                      <td>{emp.details.employee_id}</td>
-                      <td>
-                        <button onClick={() => handleRemoveEmployee(emp.value)}>
-                          Remove
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                    {selectedEmployees.map((emp, index) => {
+                    const employeeName = emp.details?.employee_name || 'Unknown';
+                    const employeeId = emp.details?.employee_id || 'Unknown';
+                    return (
+                      <tr key={index}>
+                        <td>{index+1}</td>
+                        <td>{employeeName}</td>
+                        <td>{employeeId}</td>
+                        <td>
+                          <button
+                            onClick={() =>
+                              setSelectedEmployees(selectedEmployees.filter((e) => e.value !== emp.value))
+                            }
+                          >
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -343,7 +458,7 @@ function ConductINA() {
                       <tbody>
                         {activity.content.map((content, contentIndex) => (
                           <tr key={contentIndex}>
-                            <td>{content.srno}</td>
+                            <td>{contentIndex+1}</td>
                             <td>{content.description}</td>
                             <td>
                               <select
@@ -354,10 +469,10 @@ function ConductINA() {
                               >
                                 <option value="">--Select Rating--</option>
                                 {ratingRange.map((rating) => (
-                            <option key={rating} value={rating}>
-                              {rating}
-                            </option>
-                          ))}
+                                <option key={rating} value={rating}>
+                                    {rating}
+                                  </option>
+                                ))}
                               </select>
                             </td>
                           </tr>
@@ -376,7 +491,7 @@ function ConductINA() {
                   </div>
                 </div>
               )):(
-                <p>Select an OJI to view activities.</p>
+                <p>Select an INA to view activities.</p>
               )}
 
                 <div className="finalscore-div">

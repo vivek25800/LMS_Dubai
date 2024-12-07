@@ -104,6 +104,7 @@ const StatementQuestion = () => {
                 }
                 .statement-row {
                     display: flex;
+                    justify-content: space-between;
                     align-items: center;
                     gap: 10px;
                     margin-top: 5px;
@@ -182,14 +183,14 @@ const StatementQuestion = () => {
                                         }
                                         placeholder={`Statement ${sIndex + 1}`}
                                         variant="outlined"
-                                        style={{ width: '120px' }}
+                                        style={{ width: '180px' }}
                                     />
                                     {question.options.map((_, oIndex) => (
                                         <div key={oIndex} style={{ display: 'flex', justifyContent: 'center' }}>
                                             <input
                                                 type="radio"
                                                 name={`statement-${qIndex}-${sIndex}`}
-                                                style={{ width: '100px' }}
+                                                style={{ width: '20px' }}
                                             />
                                         </div>
                                     ))}
