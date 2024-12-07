@@ -7,8 +7,6 @@ function TextAssessmentCAT({ index, onDelete, onChange }) {
   const [subtitle, setSubtitle] = useState('');
   const [options, setOptions] = useState([{ text: '', correct: false }]);
   const [points, setPoints] = useState(0);
-  const [mathToggle, setMathToggle] = useState(false);
-  const [multipleAnswers, setMultipleAnswers] = useState(true);
   const [required, setRequired] = useState(false);
   const [answerType, setAnswerType] = useState('short'); // 'short' or 'long'
 
@@ -35,8 +33,6 @@ function TextAssessmentCAT({ index, onDelete, onChange }) {
       subtitle,
       options,
       points,
-      mathToggle,
-      multipleAnswers,
       required,
       answerType,
     });
@@ -235,7 +231,7 @@ function TextAssessmentCAT({ index, onDelete, onChange }) {
           />
         </div>
 
-        <div className="control-item">
+        {/* <div className="control-item">
           <Form>
             <Form.Check
               type="switch"
@@ -245,9 +241,9 @@ function TextAssessmentCAT({ index, onDelete, onChange }) {
               onChange={(e) => setMathToggle(e.target.checked)}
             />
           </Form>
-        </div>
+        </div> */}
 
-        <div className="control-item">
+        {/* <div className="control-item">
           <Form>
             <Form.Check
               type="switch"
@@ -257,7 +253,7 @@ function TextAssessmentCAT({ index, onDelete, onChange }) {
               onChange={(e) => setMultipleAnswers(e.target.checked)}
             />
           </Form>
-        </div>
+        </div> */}
 
         <div className="control-item">
           <Form>

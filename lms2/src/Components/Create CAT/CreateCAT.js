@@ -203,7 +203,7 @@ function CreateCAT() {
 
                     </Modal.Body>
                     <Modal.Footer>
-                    <Button variant='primary' className='submit-button'>Submit Assessment</Button>
+                    <Button variant='primary' className='submit-button'>Create Assessment</Button>
                         <Button variant='secondary' onClick={handleClose}>Close</Button>
                     </Modal.Footer>
                 </Modal>

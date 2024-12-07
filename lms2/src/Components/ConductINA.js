@@ -226,7 +226,7 @@ function ConductINA() {
       });
   
       if (response.data.alreadyAssigned) {
-        toast.error('Some employees are already assigned to this INA.');
+        toast.error('This employees are already assigned to this INA.');
         return;
       }
   

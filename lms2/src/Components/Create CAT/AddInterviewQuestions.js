@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form';
 function InterviewQuestionForm({ index, onDelete }) {
   const [question, setQuestion] = useState('');
   const [ratingRange, setRatingRange] = useState('1-5');
-  const [rating, setRating] = useState(0);
+  // const [rating, setRating] = useState(0);
 
   return (
     <div className="question-form">
@@ -51,7 +51,7 @@ function InterviewQuestionForm({ index, onDelete }) {
         </Form.Control>
       </Form.Group>
 
-      <Form.Group>
+      {/* <Form.Group>
         <Form.Label>Rating (Choose between {ratingRange}):</Form.Label>
         <Form.Control
           type="number"
@@ -60,7 +60,7 @@ function InterviewQuestionForm({ index, onDelete }) {
           value={rating}
           onChange={(e) => setRating(Number(e.target.value))}
         />
-      </Form.Group>
+      </Form.Group> */}
       
       <button onClick={() => onDelete(index)} className="btn btn-danger">
         Delete Question

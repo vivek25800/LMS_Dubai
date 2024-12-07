@@ -233,7 +233,7 @@ function ConductingOJA() {
         });
     
         if (response.data.alreadyAssigned) {
-          toast.error('Some employees are already assigned to this OJA.');
+          toast.error('This employees are already assigned to this OJA.');
           return;
         }
     
