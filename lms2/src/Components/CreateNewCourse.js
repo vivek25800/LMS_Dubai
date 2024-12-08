@@ -1,7 +1,5 @@
-// import "../StyleCode/CreateCategoryList.css";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
-import { NavLink } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import TextField from '@mui/material/TextField';
 import * as React from 'react';
@@ -32,53 +30,207 @@ const VisuallyHiddenInput = styled('input')({
 
 function CreateNewCourse() {
 
-  const[course, setCourse] = React.useState({
-    course_title_main:"", add_main_category:"", add_sub_category:"", description:"",
-    course_code:"", course_title:"", add_Content:[], pdf_file:[], word_file:[], image_file:[],
-  });
+//   const[course, setCourse] = React.useState({
+//     course_title_main:"", add_main_category:"", add_sub_category:"", description:"",
+//     course_code:"", course_title:"", add_Content:[], pdf_file:[], word_file:[], image_file:[],
+//   });
 
-  const handlePdfFile = (event) => {
-    const files = Array.from(event.target.files);
-    setCourse((prevState) => ({
-        ...prevState,
-        pdf_file: files, // Replace the array with the new set of files
-    }));
-  }
+//   const handlePdfFile = (event) => {
+//     const files = Array.from(event.target.files);
+//     setCourse((prevState) => ({
+//         ...prevState,
+//         pdf_file: files, // Replace the array with the new set of files
+//     }));
+//   }
 
-    const handleWordFile = (event) => {
-      const files = Array.from(event.target.files);
+//     const handleWordFile = (event) => {
+//       const files = Array.from(event.target.files);
+//       setCourse((prevState) => ({
+//           ...prevState,
+//           word_file: files, // Replace the array with the new set of files
+//       }));
+//     }
+
+//   const handledocumentpicchange = (event) => {
+//     const files = Array.from(event.target.files);
+//     setCourse((prevState) => ({
+//         ...prevState,
+//         image_file: files, // Replace the array with the new set of files
+//     }));   
+//   };
+
+//   const handleVideo = (event) => {
+//     const files = Array.from(event.target.files);
+//     setCourse((prevState) => ({
+//         ...prevState,
+//         video_file: files, // Replace the array with the new set of files
+//     }));   
+//   };
+
+//   const course_creation_infoget = async (e) => {
+  
+//     try {
+//         const formData = new FormData();
+
+//         for (let key in course) {
+//           if (Array.isArray(course[key])) {
+//               course[key].forEach((value, index) => {
+//                   if (typeof value === "object") {
+//                       // Convert object to JSON string
+//                       formData.append(`${key}[${index}]`, JSON.stringify(value));
+//                   } else {
+//                       formData.append(`${key}[${index}]`, value);
+//                   }
+//               });
+//           } else if (course[key]) {
+//               formData.append(key, course[key]);
+//           }
+//       }
+      
+  
+//         if (course.image_file && course.image_file.length > 0) {
+//             course.image_file.forEach((file) => {
+//                 formData.append('image_file', file);
+//             });
+//         }
+//         if (course.pdf_file && course.pdf_file.length > 0) {
+//           course.pdf_file.forEach((file) => {
+//               formData.append('pdf_file', file);
+//           });
+//       }
+//       if (course.word_file && course.word_file.length > 0) {
+//         course.word_file.forEach((file) => {
+//             formData.append('word_file', file);
+//         });
+//       }
+//       if (course.add_Content.video_file && course.add_Content.video_file.length > 0) {
+//         course.add_Content.video_file.forEach((file) => {
+//             formData.append('video_file', file);
+//         });
+//       }
+
+//         const resp = await axios.post(`${base_url}/add_course_details`, formData, {
+//             headers: {
+//                 'Content-Type': 'multipart/form-data', // Ensure Content-Type is set correctly for file uploads
+//             },
+//         }
+//       );
+  
+//         if (resp.status === 200) {
+//             toast.success(resp.data.message, { autoClose: 2000 });
+        
+//         }
+//     } catch (error) {
+//         toast.error(error.response?.data?.message || 'Error saving contact', { autoClose: 2000 });
+//     }
+//   };
+
+//   const[chapterMain, setchapterMain]=useState([]);
+//   const[chapter, setChapter]=useState({video_file:[], chapter_title:"",chapter_description:""})
+//   const addChapter = () => {
+//     if (chapter.chapter_title && chapter.chapter_description) {
+//         // Add the current chapter to the main array
+//         const updatedChapter = [...chapterMain, chapter];
+
+//         // Update the state for chapters
+//         setchapterMain(updatedChapter);
+
+//         // Ensure `add_Content` is passed as an array of objects
+//         setCourse((prevState) => ({ ...prevState, add_Content: updatedChapter }));
+
+//         // Reset the chapter input fields if needed
+//         setChapter({ video_file:[], chapter_title: "", chapter_description: "" });
+
+//         // toast.success("Chapter added successfully!");
+//     } else {
+//         toast.error("Please fill out all fields before adding a chapter.");
+//     }
+// };
+
+
+const [course, setCourse] = React.useState({
+  course_title_main: "",
+  add_main_category: "",
+  add_sub_category: "",
+  description: "",
+  course_code: "",
+  course_title: "",
+  add_Content: [],
+  pdf_file: [],
+  word_file: [],
+  image_file: [],
+});
+
+const [chapterMain, setchapterMain] = useState([]);
+const [chapter, setChapter] = useState({
+  video_file: [],
+  chapter_title: "",
+  chapter_description: "",
+});
+
+const handlePdfFile = (event) => {
+  const files = Array.from(event.target.files);
+  setCourse((prevState) => ({
+      ...prevState,
+      pdf_file: files,
+  }));
+};
+
+const handleWordFile = (event) => {
+  const files = Array.from(event.target.files);
+  setCourse((prevState) => ({
+      ...prevState,
+      word_file: files,
+  }));
+};
+
+const handledocumentpicchange = (event) => {
+  const files = Array.from(event.target.files);
+  setCourse((prevState) => ({
+      ...prevState,
+      image_file: files,
+  }));
+};
+
+const handleVideo = (event) => {
+  const files = Array.from(event.target.files);
+  setChapter((prevState) => ({
+      ...prevState,
+      video_file: files,
+  }));
+};
+
+const addChapter = () => {
+  if (chapter.chapter_title && chapter.chapter_description) {
+      const updatedChapter = [...chapterMain, chapter];
+
+      setchapterMain(updatedChapter);
+
       setCourse((prevState) => ({
           ...prevState,
-          word_file: files, // Replace the array with the new set of files
+          add_Content: updatedChapter,
       }));
-    }
 
-  const handledocumentpicchange = (event) => {
-    const files = Array.from(event.target.files);
-    setCourse((prevState) => ({
-        ...prevState,
-        image_file: files, // Replace the array with the new set of files
-    }));   
-  };
+      setChapter({
+          video_file: [],
+          chapter_title: "",
+          chapter_description: "",
+      });
 
-  const handleVideo = (event) => {
-    const files = Array.from(event.target.files);
-    setCourse((prevState) => ({
-        ...prevState,
-        video_file: files, // Replace the array with the new set of files
-    }));   
-  };
+      // toast.success("Chapter added successfully!");
+  } else {
+      toast.error("Please fill out all fields before adding a chapter.");
+  }
+};
 
-  const course_creation_infoget = async (e) => {
-  
-    try {
-        const formData = new FormData();
+const course_creation_infoget = async (e) => {
+  try {
+      const formData = new FormData();
 
-        for (let key in course) {
+      for (let key in course) {
           if (Array.isArray(course[key])) {
               course[key].forEach((value, index) => {
                   if (typeof value === "object") {
-                      // Convert object to JSON string
                       formData.append(`${key}[${index}]`, JSON.stringify(value));
                   } else {
                       formData.append(`${key}[${index}]`, value);
@@ -88,82 +240,66 @@ function CreateNewCourse() {
               formData.append(key, course[key]);
           }
       }
-      
-  
-        if (course.image_file && course.image_file.length > 0) {
-            course.image_file.forEach((file) => {
-                formData.append('image_file', file);
-            });
-        }
-        if (course.pdf_file && course.pdf_file.length > 0) {
-          course.pdf_file.forEach((file) => {
-              formData.append('pdf_file', file);
+
+      if (course.image_file.length > 0) {
+          course.image_file.forEach((file) => {
+              formData.append("image_file", file);
           });
       }
-      if (course.word_file && course.word_file.length > 0) {
-        course.word_file.forEach((file) => {
-            formData.append('word_file', file);
-        });
+      if (course.pdf_file.length > 0) {
+          course.pdf_file.forEach((file) => {
+              formData.append("pdf_file", file);
+          });
       }
-      if (course.add_Content.video_file && course.add_Content.video_file.length > 0) {
-        course.add_Content.video_file.forEach((file) => {
-            formData.append('video_file', file);
-        });
+      if (course.word_file.length > 0) {
+          course.word_file.forEach((file) => {
+              formData.append("word_file", file);
+          });
       }
 
-        const resp = await axios.post(`${base_url}/add_course_details`, formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data', // Ensure Content-Type is set correctly for file uploads
-            },
-        }
+      // Handle video files from each chapter
+      if (course.add_Content.length > 0) {
+          course.add_Content.forEach((chapter, chapterIndex) => {
+              if (chapter.video_file && chapter.video_file.length > 0) {
+                  chapter.video_file.forEach((file) => {
+                      // formData.append(`add_Content[${chapterIndex}][video_file]`, file);
+                      formData.append("video_file", file);
+                  });
+              }
+              // formData.append(`add_Content[${chapterIndex}][chapter_title]`, chapter.chapter_title);
+              // formData.append(`add_Content[${chapterIndex}][chapter_description]`, chapter.chapter_description);
+          });
+      }
+
+      const resp = await axios.post(`${base_url}/add_course_details`, formData, {
+          headers: {
+              "Content-Type": "multipart/form-data",
+          },
+      });
+
+      if (resp.status === 200) {
+          toast.success(resp.data.message, { autoClose: 2000 });
+      }
+  } catch (error) {
+      toast.error(
+          error.response?.data?.message || "Error saving course details",
+          { autoClose: 2000 }
       );
-  
-        if (resp.status === 200) {
-            toast.success(resp.data.message, { autoClose: 2000 });
-        
-        }
-    } catch (error) {
-        toast.error(error.response?.data?.message || 'Error saving contact', { autoClose: 2000 });
-    }
+  }
+};                                              
+                                                 
+  const deleteblock = (index) => {
+                                    
+    const newblocks = course.add_Content.filter((_, i) => i !== index);
+    setchapterMain(newblocks)
+
+    setCourse(prevState => ({
+      ...prevState,
+      add_Content: newblocks
+    }));
   };
 
-  const[chapterMain, setchapterMain]=useState([]);
-  const[chapter, setChapter]=useState({video_file:[], chapter_title:"",chapter_description:""})
-  const addChapter = () => {
-    if (chapter.chapter_title && chapter.chapter_description) {
-        // Add the current chapter to the main array
-        const updatedChapter = [...chapterMain, chapter];
-
-        // Update the state for chapters
-        setchapterMain(updatedChapter);
-
-        // Ensure `add_Content` is passed as an array of objects
-        setCourse((prevState) => ({ ...prevState, add_Content: updatedChapter }));
-
-        // Reset the chapter input fields if needed
-        setChapter({ video_file:[], chapter_title: "", chapter_description: "" });
-
-        // toast.success("Chapter added successfully!");
-    } else {
-        toast.error("Please fill out all fields before adding a chapter.");
-    }
-};
-
-  
-                                                
-                                                 
-                                    const deleteblock = (index) => {
-                                    
-                                      const newblocks = course.add_Content.filter((_, i) => i !== index);
-                                      setchapterMain(newblocks)
-
-                                      setCourse(prevState => ({
-                                        ...prevState,
-                                        add_Content: newblocks
-                                      }));
-                                    };
-
-                                    console.log(course.add_Content);
+  console.log(course.add_Content);
 
   function addLessons() {
     document.getElementById("add-lesson-div").style.display = "block"

@@ -70,12 +70,23 @@ const post_course_creation = async (req, res) => {
             }
         }
 
-        const { course_title_main, add_main_category, add_sub_category, description, course_code, course_title, add_Content } = parsedBody;
+        // Destructure fields from parsedBody
+        const {
+            course_title_main,
+            add_main_category,
+            add_sub_category,
+            description,
+            course_code,
+            course_title,
+            add_Content
+        } = parsedBody;
 
         const images = [];
         const pdfFile = [];
         const wordFile = [];
+        const videoFile = [];
 
+        // Process image files
         if (req.files?.image_file) {
             for (let file of req.files.image_file) {
                 const result = await cloudinary.uploader.upload(file.path);
@@ -83,6 +94,7 @@ const post_course_creation = async (req, res) => {
             }
         }
 
+        // Process PDF files
         if (req.files?.pdf_file) {
             for (let file of req.files.pdf_file) {
                 const result = await cloudinary.uploader.upload(file.path);
@@ -90,6 +102,7 @@ const post_course_creation = async (req, res) => {
             }
         }
 
+        // Process Word files
         if (req.files?.word_file) {
             for (let file of req.files.word_file) {
                 const result = await cloudinary.uploader.upload(file.path);
@@ -97,6 +110,17 @@ const post_course_creation = async (req, res) => {
             }
         }
 
+        // Process Video files
+        if (req.files?.video_file) {
+            for (let file of req.files.video_file) {
+                const result = await cloudinary.uploader.upload(file.path, {
+                    resource_type: "video"
+                });
+                videoFile.push(result.secure_url);
+            }
+        }
+
+        // Create a new course instance
         const add_course_creation = new Course({
             course_title_main,
             add_main_category,
@@ -108,8 +132,10 @@ const post_course_creation = async (req, res) => {
             image_file: images,
             pdf_file: pdfFile,
             word_file: wordFile,
+            video_file: videoFile, // Include video files
         });
 
+        // Save the course data to the database
         const resp = await add_course_creation.save();
         res.status(200).send({ message: "Course data saved", course_data: resp });
     } catch (error) {
@@ -118,8 +144,8 @@ const post_course_creation = async (req, res) => {
     }
 };
 
-
 module.exports = post_course_creation;
+
 
 // const Course = require('../Modal/course_creation');
 // const cloudinary = require('cloudinary').v2;

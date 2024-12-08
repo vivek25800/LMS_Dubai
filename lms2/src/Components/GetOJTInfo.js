@@ -562,6 +562,14 @@ grid-template-columns: auto auto;
 column-gap: 1rem;
 row-gap: 1rem;
 }
+.submit-button{
+ padding: 8px 1.2rem;
+  border-radius: 5px;
+  background-color: #7A1CAC;
+}
+  .submit-button:hover{
+  background-color: #2E073F;
+  }
 `}
 </style>
 
@@ -741,7 +749,7 @@ row-gap: 1rem;
             ))}
           </div>
 
-          <button onClick={handleSubmit}>Submit</button>
+          <button className='submit-button' onClick={handleSubmit}>Submit</button>
         </div>
       )}
       </div>

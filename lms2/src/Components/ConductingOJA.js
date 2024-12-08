@@ -292,12 +292,12 @@ function ConductingOJA() {
         box-shadow: 4px 4px 8px rgba(0,0,0,0.2);
         }
         .finalscore-div button{
-        height: 2.5rem;
-        width: 7rem;
+         padding: 8px 1.2rem;
+          border-radius: 5px;
         background-color: #7A1CAC;
         }
         .finalscore-div button:hover{
-        background-color: #7a1cacc6;
+        background-color: #2E073F;
         }
         .add-attendies, .selected-employee{
             border: 1px solid rgba(0,0,0,0.2);
