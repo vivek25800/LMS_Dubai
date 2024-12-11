@@ -310,7 +310,6 @@ import Swal from 'sweetalert2';
 function CreateAssessment() {
   
   const [sections, setSections] = useState([{ id: 1, questions: [] }]);
-  // const [sections, setSections] = useState([]);
   const [globalQuestionNumber, setGlobalQuestionNumber] = useState(1);
   const [questionOptionsVisibility, setQuestionOptionsVisibility] = useState({});
   const [assessmentDetails, setAssessmentDetails] = useState({
@@ -319,12 +318,6 @@ function CreateAssessment() {
     description: "",
     timer: "",
   });
-
-  // const handleSectionUpdate = (updatedSection, index) => {
-  //   const updatedSections = [...sections];
-  //   updatedSections[index] = updatedSection;
-  //   setSections(updatedSections);
-  // };
 
   const addSection = () => {
     const newSection = {
