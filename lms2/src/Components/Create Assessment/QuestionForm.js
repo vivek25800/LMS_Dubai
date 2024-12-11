@@ -325,7 +325,7 @@
 // import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 // import { toast } from 'react-toastify';
 
-// const QuestionForm = () => {
+// const QuestionForm = ({ sections, setSections, sectionIndex }) => {
 //   const [visible, setVisible] = useState(true);
 //   const [question, setQuestion] = useState('');
 //   const [options, setOptions] = useState([
@@ -338,9 +338,32 @@
 //   const [subCategory, setSubCategory] = useState('');
 //   const [correctAnswers, setCorrectAnswers] = useState(1); // Number of correct answers allowed
 
-//   const handleOptionChange = (idx, value) => {
+
+//   // Update the section data with the new MCQ question
+//   const handleAddQuestion = () => {
+//     const updatedSection = { ...sections[sectionIndex] };
+//     updatedSection.questions.questionMCQ.push({ question, options });
+    
+//     // Call the parent function to update the section
+//     setSections(updatedSection, sectionIndex);
+//   };
+
+
+//   // Update question state
+//   const handleQuestionChange = (e) => {
+//     setQuestion(e.target.value);
+//   };
+
+//   // const handleOptionChange = (idx, value) => {
+//   //   const newOptions = [...options];
+//   //   newOptions[idx].text = value;
+//   //   setOptions(newOptions);
+//   // };
+
+//    // Update option state
+//    const handleOptionChange = (index, e) => {
 //     const newOptions = [...options];
-//     newOptions[idx].text = value;
+//     newOptions[index].text = e.target.value;
 //     setOptions(newOptions);
 //   };
 
@@ -493,7 +516,8 @@
 //               type="text"
 //               id='mcq_question'
 //               value={question}
-//               onChange={(e) => setQuestion(e.target.value)}
+//               // onChange={(e) => setQuestion(e.target.value)}
+//               onChange={handleQuestionChange} 
 //               placeholder="Enter your question"
 //               style={{ width: '100%' }}
 //             />
@@ -505,29 +529,30 @@
 //         </div>
 
 //         <div className="options-list">
-//           {options.map((option, idx) => (
-//             <div className="option-item" key={idx}>
+//           {options.map((option, index) => (
+//             <div className="option-item" key={index}>
 //               <input
 //                 type="checkbox"
 //                 checked={option.correct}
-//                 onChange={() => toggleCorrect(idx)}
+//                 onChange={() => toggleCorrect(index)}
 //               />
 //               <div style={{ display: "flex", alignItems: "center" }}>
 //                 <input
 //                   type="text"
 //                   value={option.text}
 //                   id='options'
-//                   onChange={(e) => handleOptionChange(idx, e.target.value)}
-//                   placeholder={`Option ${idx + 1}`}
+//                   // onChange={(e) => handleOptionChange(idx, e.target.value)}
+//                   onChange={(e) => handleOptionChange(index, e)} 
+//                   placeholder={`Option ${index + 1}`}
 //                 />
 //                 <FaUpload className="upload-icon" title="Upload Image" />
 //               </div>
-//               <button className="desc-del-btn" onClick={() => removeOption(idx)}>
+//               <button className="desc-del-btn" onClick={() => removeOption(index)}>
 //                 <i className="fa-regular fa-trash-can"></i>
 //               </button>
 //             </div>
 //           ))}
-//           <button className="add-option-btn" onClick={addOption}>
+//           <button className="add-option-btn" onClick={() => setOptions([...options, { text: '', correct: false }])}>
 //             <i className="fa-solid fa-plus"></i> Add Option
 //           </button>
 //         </div>
@@ -603,6 +628,8 @@
 //             </div>
 //           )}
 //         </div>
+
+//         <button onClick={handleAddQuestion}>Add mcq question</button>
 //       </div>
 //     </div>
 //   );
@@ -619,8 +646,10 @@ import { FaUpload } from 'react-icons/fa';
 import { IconButton } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
-const QuestionForm = () => {
+const QuestionForm = ({ sections, setSections, sectionIndex }) => {
+
   const [formState, setFormState] = useState({
     visible: true,
     question: '',
@@ -698,6 +727,8 @@ const QuestionForm = () => {
   };
 
   if (!formState.visible) return null;
+
+
 
   return (
     
@@ -892,6 +923,7 @@ input {
         )}
       </div>
     </div>
+    
     </div>
   );
 };

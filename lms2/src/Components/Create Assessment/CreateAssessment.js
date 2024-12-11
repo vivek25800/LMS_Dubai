@@ -304,10 +304,13 @@ import DuplicateAssessment from "./DuplicateAssessment";
 import { NavLink } from "react-bootstrap";
 import axios from 'axios';
 import { base_url } from "../Utils/base_url";
+import { useLocation } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 function CreateAssessment() {
   
   const [sections, setSections] = useState([{ id: 1, questions: [] }]);
+  // const [sections, setSections] = useState([]);
   const [globalQuestionNumber, setGlobalQuestionNumber] = useState(1);
   const [questionOptionsVisibility, setQuestionOptionsVisibility] = useState({});
   const [assessmentDetails, setAssessmentDetails] = useState({
@@ -316,6 +319,12 @@ function CreateAssessment() {
     description: "",
     timer: "",
   });
+
+  // const handleSectionUpdate = (updatedSection, index) => {
+  //   const updatedSections = [...sections];
+  //   updatedSections[index] = updatedSection;
+  //   setSections(updatedSections);
+  // };
 
   const addSection = () => {
     const newSection = {
@@ -420,12 +429,46 @@ function CreateAssessment() {
         })),
       });
       console.log('Assessment saved:', response.data);
-      alert('Assessment saved successfully');
+            Swal.fire({
+              icon: 'success',
+              title: 'Course added successfully!',
+              timer: 2000,
+              showConfirmButton: false,
+            });
     } catch (error) {
       console.error('Error saving assessment:', error);
-      alert('Error saving assessment');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error saving assessment!',
+        timer: 2000,
+        showConfirmButton: false,
+      });
     }
   };
+
+  // const handleSubmit = async () => {
+  //   const payload = {
+  //     assessment_title: assessmentDetails.assessment_title,
+  //       assessment_code: assessmentDetails.assessment_code,
+  //       assessment_description: assessmentDetails.assessment_description,
+  //       assessment_timer: assessmentDetails.assessment_timer,
+  //     sections,
+  //   };
+  
+  //   try {
+  //     const response = await axios.post(`${base_url}/assessment_data_save`, payload);
+  //     Swal.fire({
+  //       icon: 'success',
+  //       title: 'Course added successfully!',
+  //       timer: 2000,
+  //       showConfirmButton: false,
+  //     });
+  //     console.log("Assessment saved:", response.data);
+  //   } catch (error) {
+  //     console.error("Error saving assessment:", error);
+  //   }
+  // };
+  
 
   return (
     <div>
