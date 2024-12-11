@@ -38,42 +38,110 @@
 
 
 
+// const multer = require('multer');
+// const path = require('path');
+
+// // Define storage configuration
+// const storage = multer.diskStorage({
+//     filename: (req, file, cb) => {
+//         cb(null, `${Date.now()}-${file.originalname}`);
+//     },
+// });
+
+// // File filter to validate file types
+// const fileFilter = (req, file, cb) => {
+//     const fileTypes = /pdf|jpg|jpeg|png|mp4|mkv|avi|doc|docx/;
+//     const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
+//     const mimetype = fileTypes.test(file.mimetype);
+
+//     if (extname && mimetype) {
+//         return cb(null, true);
+//     } else {
+//         cb(new Error('Only PDF, images, videos, and Word files are allowed.'));
+//     }
+// };
+
+// // Initialize multer
+// const upload = multer({
+//     storage: storage,
+//     limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit for each file
+//     fileFilter: fileFilter,
+// });
+
+// // Define fields for multer to handle
+// const uploadFields = upload.fields([
+//     { name: 'image_file', maxCount: 5 }, // Up to 5 image files
+//     { name: 'pdf_file', maxCount: 5 },   // Up to 5 PDF files
+//     { name: 'word_file', maxCount: 5 },  // Up to 5 Word files
+//     // { name: 'video_file', maxCount: 1 }, // Up to 5 video files
+//     { name: 'add_Content[0][video_file][0]', maxCount: 1 },
+// ]);
+
+// module.exports = uploadFields;
+
+
+
 const multer = require('multer');
 const path = require('path');
+const cloudinary = require('cloudinary').v2;
 
-// Define storage configuration
+
+
+// Storage setup for Multer
 const storage = multer.diskStorage({
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`);
-    },
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/'); // Folder to store uploaded files
+  },
+  filename: function (req, file, cb) {
+    // Set unique filename using timestamp and file extension
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
 });
 
-// File filter to validate file types
+// File filter for accepting specific file types
 const fileFilter = (req, file, cb) => {
-    const fileTypes = /pdf|jpg|jpeg|png|mp4|mkv|avi|doc|docx/;
-    const extname = fileTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = fileTypes.test(file.mimetype);
-
-    if (extname && mimetype) {
-        return cb(null, true);
-    } else {
-        cb(new Error('Only PDF, images, videos, and Word files are allowed.'));
+    
+    const fileTypes = {
+      image: ['image/jpeg', 'image/png'],
+      pdf: ['application/pdf'],
+      word: ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+      video: ['video/mp4', 'video/x-matroska', 'video/avi', 'video/mov', 'video/quicktime']  // Ensure correct video MIME types
+    };
+  
+    // Check for image files
+    if (file.fieldname === 'image_file' && fileTypes.image.includes(file.mimetype)) {
+      return cb(null, true); // Accept image files
+    } 
+    // Check for PDF files
+    else if (file.fieldname === 'pdf_file' && fileTypes.pdf.includes(file.mimetype)) {
+      return cb(null, true); // Accept PDF files
+    } 
+    // Check for Word files
+    else if (file.fieldname === 'word_file' && fileTypes.word.includes(file.mimetype)) {
+      return cb(null, true); // Accept Word files
+    } 
+    // Check for video files (allow dynamic field names like add_Content[0].video_file)
+    else if (file.fieldname.includes('video_file') && fileTypes.video.includes(file.mimetype)) {
+      return cb(null, true); // Accept video files
+    } 
+    // Reject file if it doesn't match the allowed types
+    else {
+      console.log('Rejected File:', file);  // Log rejected file for debugging
+      return cb(new Error('Invalid file type'), false); 
     }
-};
+  };
+  
+  
+  
 
-// Initialize multer
+// Multer upload setup
 const upload = multer({
-    storage: storage,
-    limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit for each file
-    fileFilter: fileFilter,
+  storage: storage,
+  limits: { fileSize: 50 * 1024 * 1024 }, // Max file size 50MB
+  fileFilter: fileFilter
 });
 
-// Define fields for multer to handle
-const uploadFields = upload.fields([
-    { name: 'image_file', maxCount: 5 }, // Up to 5 image files
-    { name: 'pdf_file', maxCount: 5 },   // Up to 5 PDF files
-    { name: 'word_file', maxCount: 5 },  // Up to 5 Word files
-    { name: 'video_file', maxCount: 5 }, // Up to 5 video files
-]);
+// Use upload.any() to allow all fields, since we are using dynamic fields
+const uploadFields = upload.any(); // Allow all fields (works with dynamic field names)
 
 module.exports = uploadFields;

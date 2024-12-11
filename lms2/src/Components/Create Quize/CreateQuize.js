@@ -226,8 +226,9 @@ import { NavLink } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 
 function CreateQuize() {
+  const [sections, setSections] = useState([{ id: 1, questions: [] }]);
   const [questions, setQuestions] = useState([]); // Array to hold questions
-  const [sections, setSections] = useState([]); // Array to hold sections
+  // const [sections, setSections] = useState([]); // Array to hold sections
   const [currentSectionId, setCurrentSectionId] = useState(null); // Tracks current section for "Add New Question"
 
   const addQuestion = (type, sectionId) => {
@@ -245,10 +246,11 @@ function CreateQuize() {
   };
 
   const addSection = () => {
-    setSections([
-      ...sections,
-      { id: sections.length + 1, title: "", subtitle: "" },
-    ]);
+    const newSection = {
+      id: sections.length + 1,
+      questions: [],
+    };
+    setSections([...sections, newSection]);
   };
 
   const handleSectionChange = (id, field, value) => {
@@ -268,6 +270,14 @@ function CreateQuize() {
     setSections(sections.filter((section) => section.id !== sectionId));
     // Remove all questions associated with this section
     setQuestions(questions.filter((question) => question.sectionId !== sectionId));
+
+    // Update section titles after removal to ensure they are sequential
+    setSections((prevSections) =>
+      prevSections.map((section, index) => ({
+        ...section,
+        id: index + 1, // Update section ID to reflect correct order
+      }))
+    );
   };
 
   const renderQuestionComponent = (question) => {

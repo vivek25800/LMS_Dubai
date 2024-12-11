@@ -10,19 +10,26 @@ const postINAAssignment = async (req, res) => {
       }
   
       const { dateFrom, dateTo, timeFrom, timeTo } = schedule;
-  
+
       // Validate schedule dates (ignore time)
       const today = new Date();
       today.setHours(0, 0, 0, 0); // Set to the start of today for comparison
+
       const scheduleStart = new Date(dateFrom);
       const scheduleEnd = new Date(dateTo);
-  
-      if (scheduleStart < today || scheduleEnd < today) {
-        return res.status(400).json({ error: 'You cannot assign past dates.' });
+
+      // Normalize schedule dates to ignore time
+      scheduleStart.setHours(0, 0, 0, 0);
+      scheduleEnd.setHours(0, 0, 0, 0);
+
+      // Ensure schedule dates are only for today
+      if (scheduleStart.getTime() !== today.getTime() || scheduleEnd.getTime() !== today.getTime()) {
+        return res.status(400).json({ error: 'Dates must be set to the current date only.' });
       }
-  
+
+      // Ensure the start date is not after the end date
       if (scheduleStart > scheduleEnd) {
-        return res.status(400).json({ error: 'End date must be later than start date.' });
+        return res.status(400).json({ error: 'End date must be later than or equal to the start date.' });
       }
   
       // Check for existing assignment

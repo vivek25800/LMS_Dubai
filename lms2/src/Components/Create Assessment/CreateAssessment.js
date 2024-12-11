@@ -302,12 +302,14 @@ import QuestionTextForm from "./QuestionTextForm";
 import MatchTheFollowingForm from "./MatchTheFollowingForm";
 import DuplicateAssessment from "./DuplicateAssessment";
 import { NavLink } from "react-bootstrap";
+import axios from 'axios';
+import { base_url } from "../Utils/base_url";
 
 function CreateAssessment() {
+  
   const [sections, setSections] = useState([{ id: 1, questions: [] }]);
   const [globalQuestionNumber, setGlobalQuestionNumber] = useState(1);
   const [questionOptionsVisibility, setQuestionOptionsVisibility] = useState({});
-
   const [assessmentDetails, setAssessmentDetails] = useState({
     title: "",
     code: "",
@@ -329,6 +331,14 @@ function CreateAssessment() {
     const updatedVisibility = { ...questionOptionsVisibility };
     delete updatedVisibility[sectionId];
     setQuestionOptionsVisibility(updatedVisibility);
+
+    // Update section titles after removal to ensure they are sequential
+    setSections((prevSections) =>
+      prevSections.map((section, index) => ({
+        ...section,
+        id: index + 1, // Update section ID to reflect correct order
+      }))
+    );
   };
 
   const addQuestionToSection = (sectionId, type) => {
@@ -394,112 +404,135 @@ function CreateAssessment() {
     }
   };
 
+
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post(`${base_url}/assessment_data_save`, {
+        assessment_title: assessmentDetails.assessment_title,
+        assessment_code: assessmentDetails.assessment_code,
+        assessment_description: assessmentDetails.assessment_description,
+        assessment_timer: assessmentDetails.assessment_timer,
+        sections: sections.map((section) => ({
+          id: section.id,
+          title: document.getElementById(`section-title-${section.id}`).value,
+          subtitle: document.getElementById(`section-subtitle-${section.id}`).value,
+          questions: section.questions,
+        })),
+      });
+      console.log('Assessment saved:', response.data);
+      alert('Assessment saved successfully');
+    } catch (error) {
+      console.error('Error saving assessment:', error);
+      alert('Error saving assessment');
+    }
+  };
+
   return (
     <div>
       <style>
-{`
-body {
-  background-color: rgba(46, 7, 63, 0.2);
-  padding: 1.5rem;
-}
-.header-section {
-  height: 5rem;
-  width: 100%;
-  border-radius: 10px;
-  background-color: #ffffff;
-  padding: 1.7rem 2rem;
-}
-.container {
-  border: 2px solid rgba(0,0,0,0.2);
-  border-radius: 10px;
-  padding: 2rem 6rem;
-  background: #ffffff;
-  width: 70%;
-  margin: 1.5rem auto;
-}
-.section-module {
-  border-top: 5px solid #7A1CAC;
-  width: 70%;
-  margin: 1.5rem auto;
-  border-radius: 10px;
-  background-color: #ffffff;
-  box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
-  position: relative;
-}
-.section-module .section-title-div{
-padding: 10px 2rem;
-background-color: rgba(46, 7, 63, 0.1);
-display: flex;
-justify-content: space-between;
-}
-.section-module .section-contents-div{
-padding: 2rem 6rem;
-}
-.question-type-btn {
-width: 23%;
-height: 2rem;
-background-color: #7A1CAC;
-border: none;
-}
-.question-type-btn:hover{
-background-color: #2E073F;
-}
-.add-new-questions-btn,
-.add-new-section-btn {
-  width: 13rem;
-  height: 2rem;
-  background-color: #7A1CAC;
-  border: none;
-}
-.add-new-questions-btn:hover,
-.add-new-section-btn:hover {
-  background-color: #2E073F;
-}
-.delete_section {
-  background-color: #dc3545;
-  width: 2rem;
-  height: 2rem;
-  border: none;
-}
-  .delete_question{
-  background-color: transparent;
-  width: 2rem;
-  height: 2rem;
-  border: none;
-  }
-  .delete_section:hover,
-  .delete_question:hover{
-  background-color: red;
-  }
-  .add-new-section-div{
-  width: 70%;
-  margin: auto;
-  }
-  .all-type-questions-options{
-  border: 1px solid rgba(0,0,0,0.4);
-  display: flex;
-  padding: 1rem;
-  justify-content: space-between;
-  margin-top: 1rem;
-  border-radius: 10px;
-  }
-  .class-container-div{
-  border: 1px solid rgba(0,0,0,0.2);
-  border-radius: 10px;
-  margin-bottom: 1rem;
-  }
-  .question-header{
-  display: flex;
-  justify-content: space-between;
-  padding: 1rem;
-  background-color: #2E073F;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  }
-  .question-header h5{
-  color: #fff;
-  }
-`}
+        {`
+        body {
+          background-color: rgba(46, 7, 63, 0.2);
+          padding: 1.5rem;
+        }
+        .header-section {
+          height: 5rem;
+          width: 100%;
+          border-radius: 10px;
+          background-color: #ffffff;
+          padding: 1.7rem 2rem;
+        }
+        .container {
+          border: 2px solid rgba(0,0,0,0.2);
+          border-radius: 10px;
+          padding: 2rem 6rem;
+          background: #ffffff;
+          width: 70%;
+          margin: 1.5rem auto;
+        }
+        .section-module {
+          border-top: 5px solid #7A1CAC;
+          width: 70%;
+          margin: 1.5rem auto;
+          border-radius: 10px;
+          background-color: #ffffff;
+          box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+          position: relative;
+        }
+        .section-module .section-title-div{
+          padding: 10px 2rem;
+          background-color: rgba(46, 7, 63, 0.1);
+          display: flex;
+          justify-content: space-between;
+        }
+        .section-module .section-contents-div{
+          padding: 2rem 6rem;
+        }
+        .question-type-btn {
+          width: 23%;
+          height: 2rem;
+          background-color: #7A1CAC;
+          border: none;
+        }
+        .question-type-btn:hover{
+          background-color: #2E073F;
+        }
+        .add-new-questions-btn,
+        .add-new-section-btn {
+          width: 13rem;
+          height: 2rem;
+          background-color: #7A1CAC;
+          border: none;
+        }
+        .add-new-questions-btn:hover,
+        .add-new-section-btn:hover {
+          background-color: #2E073F;
+        }
+        .delete_section {
+          background-color: #dc3545;
+          width: 2rem;
+          height: 2rem;
+          border: none;
+        }
+        .delete_question{
+          background-color: transparent;
+          width: 2rem;
+          height: 2rem;
+          border: none;
+        }
+        .delete_section:hover,
+        .delete_question:hover{
+          background-color: red;
+        }
+        .add-new-section-div{
+          width: 70%;
+          margin: auto;
+        }
+        .all-type-questions-options{
+          border: 1px solid rgba(0,0,0,0.4);
+          display: flex;
+          padding: 1rem;
+          justify-content: space-between;
+          margin-top: 1rem;
+          border-radius: 10px;
+        }
+        .class-container-div{
+          border: 1px solid rgba(0,0,0,0.2);
+          border-radius: 10px;
+          margin-bottom: 1rem;
+        }
+        .question-header{
+          display: flex;
+          justify-content: space-between;
+          padding: 1rem;
+          background-color: #2E073F;
+          border-top-left-radius: 10px;
+          border-top-right-radius: 10px;
+        }
+        .question-header h5{
+          color: #fff;
+        }
+      `}
       </style>
 
       <div className="header-section">
@@ -513,32 +546,32 @@ background-color: #2E073F;
       <div className="container">
         <h4>Assessment Details</h4>
         <TextField
-          name="title"
+          name="assessment_title"
           label="Assessment Title"
-          value={assessmentDetails.title}
+          // value={assessmentDetails.title}
           onChange={handleAssessmentInputChange}
           style={{ width: "100%", marginBottom: "1rem" }}
         />
         <TextField
-          name="code"
+          name="assessment_code"
           label="Assessment Code"
-          value={assessmentDetails.code}
+          // value={assessmentDetails.code}
           onChange={handleAssessmentInputChange}
           style={{ width: "100%", marginBottom: "1rem" }}
         />
         <TextField
-          name="description"
+          name="assessment_description"
           label="Assessment Description"
-          value={assessmentDetails.description}
+          // value={assessmentDetails.description}
           onChange={handleAssessmentInputChange}
           multiline
           rows={3}
           style={{ width: "100%", marginBottom: "1rem" }}
         />
         <TextField
-          name="timer"
+          name="assessment_timer"
           label="Timer (in minutes)"
-          value={assessmentDetails.timer}
+          // value={assessmentDetails.timer}
           onChange={handleAssessmentInputChange}
           type="number"
           style={{ width: "100%" }}
@@ -569,14 +602,14 @@ background-color: #2E073F;
                 multiline
                 style={{ width: "100%", marginBottom: "1rem" }}
               />
-              <div className="questions-list">
-                {section.questions.map((question) => (
+
+              {section.questions.map((question) => {
+                return (
                   <div key={question.id} className="class-container-div">
                     <div className="question-header">
-                      <h5>Question {question.id}</h5>
+                      <h5>Question No. {question.id}</h5>
                       <Button
                         className="delete_question"
-                        variant="danger"
                         onClick={() =>
                           removeQuestionFromSection(section.id, question.id)
                         }
@@ -584,61 +617,67 @@ background-color: #2E073F;
                         <i className="fa-solid fa-trash-can"></i>
                       </Button>
                     </div>
-                    
-                    <div style={{padding:"1rem 2rem"}}>{renderQuestionComponent(question.type)}</div>
-                    
+                    <div style={{padding:"1rem 2rem"}}>
+                     {renderQuestionComponent(question.type)}
+                    </div>
                   </div>
-                ))}
-              </div>
+                );
+              })}
+
               <Button
                 className="add-new-questions-btn"
                 onClick={() => toggleQuestionOptionsVisibility(section.id)}
               >
-                Add New Question
+                Add Question
               </Button>
-              {questionOptionsVisibility[section.id] && (
-                <div className="all-type-questions-options">
-                  <Button
-                    className="question-type-btn"
-                    onClick={() => addQuestionToSection(section.id, "MCQ")}
-                  >
-                    MCQ Type
-                  </Button>
-                  <Button
-                    className="question-type-btn"
-                    onClick={() => addQuestionToSection(section.id, "Text")}
-                  >
-                    Text Type
-                  </Button>
-                  <Button
-                    className="question-type-btn"
-                    onClick={() =>
-                      addQuestionToSection(section.id, "Match The Following")
-                    }
-                  >
-                    Match the Following
-                  </Button>
-                  <Button
-                    className="question-type-btn"
-                    onClick={() =>
-                      addQuestionToSection(section.id, "Duplicate")
-                    }
-                  >
-                    Duplicate
-                  </Button>
-                </div>
-              )}
+
+                {questionOptionsVisibility[section.id] && (
+                  <div className="all-type-questions-options">
+                    <Button
+                      className="question-type-btn"
+                      onClick={() => addQuestionToSection(section.id, "MCQ")}
+                    >
+                      MCQ
+                    </Button>
+                    <Button
+                      className="question-type-btn"
+                      onClick={() => addQuestionToSection(section.id, "Text")}
+                    >
+                      Text
+                    </Button>
+                    <Button
+                      className="question-type-btn"
+                      onClick={() => addQuestionToSection(section.id, "Match The Following")}
+                    >
+                      Match the Following
+                    </Button>
+                    <Button
+                      className="question-type-btn"
+                      onClick={() => addQuestionToSection(section.id, "Duplicate")}
+                    >
+                      Duplicate
+                    </Button>
+                  </div>
+                )}
+
             </div>
           </div>
         );
       })}
       <div className="add-new-section-div">
-        <Button className="add-new-section-btn" onClick={addSection}>
+        <Button
+          className="add-new-section-btn"
+          onClick={addSection}
+        >
           Add New Section
         </Button>
+      </div>
+      <div>
+        <Button onClick={handleSubmit}>Create Assessment</Button>
       </div>
     </div>
   );
 }
 
 export default CreateAssessment;
+

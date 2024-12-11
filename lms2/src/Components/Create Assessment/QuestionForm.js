@@ -318,6 +318,301 @@
 // export default AddQuestionContainer;
 
 
+// import React, { useState } from 'react';
+// import Form from 'react-bootstrap/Form';
+// import { FaUpload } from 'react-icons/fa';
+// import { IconButton } from '@mui/material';
+// import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+// import { toast } from 'react-toastify';
+
+// const QuestionForm = () => {
+//   const [visible, setVisible] = useState(true);
+//   const [question, setQuestion] = useState('');
+//   const [options, setOptions] = useState([
+//     { text: '', correct: false },
+//     { text: '', correct: false },
+//   ]);
+//   const [points, setPoints] = useState(1); // Independent points, limited to 10
+//   const [multipleAnswers, setMultipleAnswers] = useState(false);
+//   const [mainCategory, setMainCategory] = useState('');
+//   const [subCategory, setSubCategory] = useState('');
+//   const [correctAnswers, setCorrectAnswers] = useState(1); // Number of correct answers allowed
+
+//   const handleOptionChange = (idx, value) => {
+//     const newOptions = [...options];
+//     newOptions[idx].text = value;
+//     setOptions(newOptions);
+//   };
+
+//   const toggleCorrect = (idx) => {
+//     const updatedOptions = [...options];
+
+//     if (multipleAnswers) {
+//       const correctCount = updatedOptions.filter((opt) => opt.correct).length;
+
+//       if (!updatedOptions[idx].correct && correctCount >= correctAnswers) {
+//         toast.error(
+//           `You can select up to ${correctAnswers} correct answers.`,
+//           { autoClose: 2000 }
+//         );
+//         return;
+//       }
+
+//       updatedOptions[idx].correct = !updatedOptions[idx].correct;
+//     } else {
+//       updatedOptions.forEach((opt, i) => (opt.correct = i === idx));
+//     }
+
+//     setOptions(updatedOptions);
+//   };
+
+//   const handlePointsChange = (value) => {
+//     const newPoints = Math.max(1, Math.min(10, Number(value))); // Limit to 1-10
+//     setPoints(newPoints);
+//   };
+
+//   const handleCorrectAnswersChange = (value) => {
+//     const newCorrectAnswers = Math.min(Number(value), options.length);
+//     setCorrectAnswers(newCorrectAnswers);
+
+//     // Ensure the correct count doesn't exceed the allowed number
+//     const updatedOptions = [...options];
+//     let correctCount = updatedOptions.filter((opt) => opt.correct).length;
+
+//     if (correctCount > newCorrectAnswers) {
+//       updatedOptions.forEach((opt, idx) => {
+//         if (correctCount > newCorrectAnswers && opt.correct) {
+//           opt.correct = false;
+//           correctCount -= 1;
+//         }
+//       });
+//     }
+
+//     setOptions(updatedOptions);
+//   };
+
+//   const addOption = () => {
+//     setOptions([...options, { text: '', correct: false }]);
+//   };
+
+//   const removeOption = (idx) => {
+//     const newOptions = options.filter((_, i) => i !== idx);
+//     setOptions(newOptions);
+//   };
+
+//   // const handleDelete = () => {
+//   //   setVisible(false);
+//   // };
+
+//   if (!visible) return null;
+
+//   return (
+//     <div className='main-container-div'>
+
+// <style>
+// {`
+// .question-form {
+//   display: flex;
+//   flex-direction: column;
+//   gap: 16px;
+//   max-width: 100%;
+//   margin: 1rem auto;
+//   // padding: 2rem;
+//   // border: 2px solid rgba(0,0,0,0.2);
+//   border-radius: 8px;
+//   background-color: #ffffff;
+// }
+// .footer-controls{
+//   display: flex;
+//   justify-content: space-between;
+//   padding-top: 1rem;
+//   border-top: 1px solid rgba(0,0,0,0.1);
+// }
+// .options-list {
+//   display: flex;
+//   flex-direction: column;
+//   gap: 8px;
+// }
+// .option-item {
+//   display: flex;
+//   align-items: center;
+//   gap: 8px;
+// }
+// .upload-icon {
+//   margin-left: 8px;
+//   cursor: pointer;
+//   color: #007bff;
+// }
+// .desc-del-btn {
+//   background-color: transparent;
+//   color: red;
+//   box-shadow: none;
+//   width: fit-content;
+//   border-radius: 50%;
+// }
+// .desc-del-btn:hover {
+//   background-color: red;
+//   color: #ffffff;
+// }
+// .add-option-btn {
+//   background-color: #ffffff;
+//   color: #7A1CAC;
+//   border: 1px solid #7A1CAC;
+//   width: 18%;
+//   font-weight: 500;
+// }
+// .add-option-btn:hover {
+//   background-color: #7A1CAC;
+//   color: #ffffff;
+// }
+// .btn-div button {
+//   background-color: #7A1CAC;
+// }
+// .btn-div button:hover {
+//   background-color: #2E073F;
+// }
+// input {
+//   height: 2.5rem;
+//   padding-left: 10px;
+// }
+// .dropdowns {
+//   display: flex;
+//   gap: 16px;
+//   margin-top: 16px;
+// }
+// .dropdowns select {
+//   border-color: rgba(0,0,0,0.5);
+// }
+// `}
+// </style>
+
+//       <div className="question-form" style={{ position: 'relative' }}>
+//         <div className="question-input">
+//           <div style={{ display: 'flex', alignItems: 'center' }}>
+//             <input
+//               type="text"
+//               id='mcq_question'
+//               value={question}
+//               onChange={(e) => setQuestion(e.target.value)}
+//               placeholder="Enter your question"
+//               style={{ width: '100%' }}
+//             />
+//             <IconButton color="primary" component="label">
+//               <input hidden accept="image/*" type="file" />
+//               <AddPhotoAlternateIcon />
+//             </IconButton>
+//           </div>
+//         </div>
+
+//         <div className="options-list">
+//           {options.map((option, idx) => (
+//             <div className="option-item" key={idx}>
+//               <input
+//                 type="checkbox"
+//                 checked={option.correct}
+//                 onChange={() => toggleCorrect(idx)}
+//               />
+//               <div style={{ display: "flex", alignItems: "center" }}>
+//                 <input
+//                   type="text"
+//                   value={option.text}
+//                   id='options'
+//                   onChange={(e) => handleOptionChange(idx, e.target.value)}
+//                   placeholder={`Option ${idx + 1}`}
+//                 />
+//                 <FaUpload className="upload-icon" title="Upload Image" />
+//               </div>
+//               <button className="desc-del-btn" onClick={() => removeOption(idx)}>
+//                 <i className="fa-regular fa-trash-can"></i>
+//               </button>
+//             </div>
+//           ))}
+//           <button className="add-option-btn" onClick={addOption}>
+//             <i className="fa-solid fa-plus"></i> Add Option
+//           </button>
+//         </div>
+
+//         <div className="dropdowns">
+//           <div>
+//             <label>Main Category:</label>
+//             <select
+//               value={mainCategory}
+//               onChange={(e) => setMainCategory(e.target.value)}
+//             >
+//               <option value="">Select Main Category</option>
+//               <option value="Category 1">Category 1</option>
+//               <option value="Category 2">Category 2</option>
+//             </select>
+//           </div>
+//           <div>
+//             <label>Sub Category:</label>
+//             <select
+//               value={subCategory}
+//               onChange={(e) => setSubCategory(e.target.value)}
+//             >
+//               <option value="">Select Sub Category</option>
+//               <option value="Sub Category 1">Sub Category 1</option>
+//               <option value="Sub Category 2">Sub Category 2</option>
+//             </select>
+//           </div>
+//         </div>
+
+//         <div className="footer-controls">
+//           <div className="control-item">
+//             <label>Points:</label>
+//             <input
+//               type="number"
+//               id='points'
+//               value={points}
+//               min={1}
+//               max={10}
+//               onChange={(e) => handlePointsChange(e.target.value)}
+//             />
+//           </div>
+//           <div className="control-item">
+//             <Form>
+//               <Form.Check
+//                 type="switch"
+//                 id="custom-switch"
+//                 label="Multiple answers:"
+//                 checked={multipleAnswers}
+//                 onChange={(e) => {
+//                   setMultipleAnswers(e.target.checked);
+//                   if (!e.target.checked) {
+//                     // Reset selections when switching to single answer mode
+//                     const updatedOptions = [...options];
+//                     updatedOptions.forEach((opt, i) => (opt.correct = i === 0));
+//                     setOptions(updatedOptions);
+//                   }
+//                 }}
+//               />
+//             </Form>
+//           </div>
+
+//           {multipleAnswers && (
+//             <div className="control-item">
+//               <label>Correct Answers:</label>
+//               <input
+//                 type="number"
+//                 id='correct_number'
+//                 value={correctAnswers}
+//                 min={1}
+//                 max={options.length}
+//                 onChange={(e) => handleCorrectAnswersChange(e.target.value)}
+//               />
+//             </div>
+//           )}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default QuestionForm;
+
+
+
+
 import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import { FaUpload } from 'react-icons/fa';
@@ -326,91 +621,89 @@ import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { toast } from 'react-toastify';
 
 const QuestionForm = () => {
-  const [visible, setVisible] = useState(true);
-  const [question, setQuestion] = useState('');
-  const [options, setOptions] = useState([
-    { text: '', correct: false },
-    { text: '', correct: false },
-  ]);
-  const [points, setPoints] = useState(1); // Independent points, limited to 10
-  const [multipleAnswers, setMultipleAnswers] = useState(false);
-  const [mainCategory, setMainCategory] = useState('');
-  const [subCategory, setSubCategory] = useState('');
-  const [correctAnswers, setCorrectAnswers] = useState(1); // Number of correct answers allowed
+  const [formState, setFormState] = useState({
+    visible: true,
+    question: '',
+    options: [
+      { text: '', correct: false },
+      { text: '', correct: false },
+    ],
+    points: 1,
+    multipleAnswers: false,
+    mainCategory: '',
+    subCategory: '',
+    correctAnswers: 1,
+  });
 
-  const handleOptionChange = (idx, value) => {
-    const newOptions = [...options];
-    newOptions[idx].text = value;
-    setOptions(newOptions);
+  const updateState = (key, value) => {
+    setFormState((prevState) => ({
+      ...prevState,
+      [key]: value,
+    }));
   };
 
-  const toggleCorrect = (idx) => {
-    const updatedOptions = [...options];
+  const updateOption = (index, field, value) => {
+    const updatedOptions = [...formState.options];
+    updatedOptions[index][field] = value;
+    updateState('options', updatedOptions);
+  };
 
-    if (multipleAnswers) {
+  const toggleCorrect = (index) => {
+    const updatedOptions = [...formState.options];
+    if (formState.multipleAnswers) {
       const correctCount = updatedOptions.filter((opt) => opt.correct).length;
 
-      if (!updatedOptions[idx].correct && correctCount >= correctAnswers) {
-        toast.error(
-          `You can select up to ${correctAnswers} correct answers.`,
-          { autoClose: 2000 }
-        );
+      if (!updatedOptions[index].correct && correctCount >= formState.correctAnswers) {
+        toast.error(`You can select up to ${formState.correctAnswers} correct answers.`, {
+          autoClose: 2000,
+        });
         return;
       }
-
-      updatedOptions[idx].correct = !updatedOptions[idx].correct;
+      updatedOptions[index].correct = !updatedOptions[index].correct;
     } else {
-      updatedOptions.forEach((opt, i) => (opt.correct = i === idx));
+      updatedOptions.forEach((opt, i) => (opt.correct = i === index));
     }
-
-    setOptions(updatedOptions);
+    updateState('options', updatedOptions);
   };
 
   const handlePointsChange = (value) => {
-    const newPoints = Math.max(1, Math.min(10, Number(value))); // Limit to 1-10
-    setPoints(newPoints);
+    updateState('points', Math.max(1, Math.min(10, Number(value))));
   };
 
   const handleCorrectAnswersChange = (value) => {
-    const newCorrectAnswers = Math.min(Number(value), options.length);
-    setCorrectAnswers(newCorrectAnswers);
+    const correctAnswers = Math.min(Number(value), formState.options.length);
+    updateState('correctAnswers', correctAnswers);
 
-    // Ensure the correct count doesn't exceed the allowed number
-    const updatedOptions = [...options];
+    const updatedOptions = [...formState.options];
     let correctCount = updatedOptions.filter((opt) => opt.correct).length;
 
-    if (correctCount > newCorrectAnswers) {
+    if (correctCount > correctAnswers) {
       updatedOptions.forEach((opt, idx) => {
-        if (correctCount > newCorrectAnswers && opt.correct) {
+        if (correctCount > correctAnswers && opt.correct) {
           opt.correct = false;
           correctCount -= 1;
         }
       });
     }
-
-    setOptions(updatedOptions);
+    updateState('options', updatedOptions);
   };
 
   const addOption = () => {
-    setOptions([...options, { text: '', correct: false }]);
+    updateState('options', [...formState.options, { text: '', correct: false }]);
   };
 
-  const removeOption = (idx) => {
-    const newOptions = options.filter((_, i) => i !== idx);
-    setOptions(newOptions);
+  const removeOption = (index) => {
+    const newOptions = formState.options.filter((_, i) => i !== index);
+    updateState('options', newOptions);
   };
 
-  // const handleDelete = () => {
-  //   setVisible(false);
-  // };
-
-  if (!visible) return null;
+  if (!formState.visible) return null;
 
   return (
+    
     <div className='main-container-div'>
-
-<style>
-{`
+       <style>
+ {`
 .question-form {
   display: flex;
   flex-direction: column;
@@ -484,166 +777,125 @@ input {
   border-color: rgba(0,0,0,0.5);
 }
 `}
-</style>
+ </style>
 
-      <div className="question-form" style={{ position: 'relative' }}>
-        <div className="question-input">
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <input
-              type="text"
-              id='mcq_question'
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              placeholder="Enter your question"
-              style={{ width: '100%' }}
-            />
-            <IconButton color="primary" component="label">
-              <input hidden accept="image/*" type="file" />
-              <AddPhotoAlternateIcon />
-            </IconButton>
-          </div>
-        </div>
-
-        <div className="options-list">
-          {options.map((option, idx) => (
-            <div className="option-item" key={idx}>
-              <input
-                type="checkbox"
-                checked={option.correct}
-                onChange={() => toggleCorrect(idx)}
-              />
-              <div style={{ display: "flex", alignItems: "center" }}>
-                <input
-                  type="text"
-                  value={option.text}
-                  id='options'
-                  onChange={(e) => handleOptionChange(idx, e.target.value)}
-                  placeholder={`Option ${idx + 1}`}
-                />
-                <FaUpload className="upload-icon" title="Upload Image" />
-              </div>
-              <button className="desc-del-btn" onClick={() => removeOption(idx)}>
-                <i className="fa-regular fa-trash-can"></i>
-              </button>
-            </div>
-          ))}
-          <button className="add-option-btn" onClick={addOption}>
-            <i className="fa-solid fa-plus"></i> Add Option
-          </button>
-        </div>
-
-        <div className="dropdowns">
-          <div>
-            <label>Main Category:</label>
-            <select
-              value={mainCategory}
-              onChange={(e) => setMainCategory(e.target.value)}
-            >
-              <option value="">Select Main Category</option>
-              <option value="Category 1">Category 1</option>
-              <option value="Category 2">Category 2</option>
-            </select>
-          </div>
-          <div>
-            <label>Sub Category:</label>
-            <select
-              value={subCategory}
-              onChange={(e) => setSubCategory(e.target.value)}
-            >
-              <option value="">Select Sub Category</option>
-              <option value="Sub Category 1">Sub Category 1</option>
-              <option value="Sub Category 2">Sub Category 2</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="footer-controls">
-          <div className="control-item">
-            <label>Points:</label>
-            <input
-              type="number"
-              id='points'
-              value={points}
-              min={1}
-              max={10}
-              onChange={(e) => handlePointsChange(e.target.value)}
-            />
-          </div>
-          <div className="control-item">
-            <Form>
-              <Form.Check
-                type="switch"
-                id="custom-switch"
-                label="Multiple answers:"
-                checked={multipleAnswers}
-                onChange={(e) => {
-                  setMultipleAnswers(e.target.checked);
-                  if (!e.target.checked) {
-                    // Reset selections when switching to single answer mode
-                    const updatedOptions = [...options];
-                    updatedOptions.forEach((opt, i) => (opt.correct = i === 0));
-                    setOptions(updatedOptions);
-                  }
-                }}
-              />
-            </Form>
-          </div>
-
-          {multipleAnswers && (
-            <div className="control-item">
-              <label>Correct Answers:</label>
-              <input
-                type="number"
-                id='correct_number'
-                value={correctAnswers}
-                min={1}
-                max={options.length}
-                onChange={(e) => handleCorrectAnswersChange(e.target.value)}
-              />
-            </div>
-          )}
+    <div className="question-form" style={{ position: 'relative' }}>
+      <div className="question-input">
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <input
+            type="text"
+            value={formState.question}
+            onChange={(e) => updateState('question', e.target.value)}
+            placeholder="Enter your question"
+            style={{ width: '100%' }}
+          />
+          <IconButton color="primary" component="label">
+            <input hidden accept="image/*" type="file" />
+            <AddPhotoAlternateIcon />
+          </IconButton>
         </div>
       </div>
+
+      <div className="options-list">
+        {formState.options.map((option, index) => (
+          <div className="option-item" key={index}>
+            <input
+              type="checkbox"
+              checked={option.correct}
+              onChange={() => toggleCorrect(index)}
+            />
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <input
+                type="text"
+                value={option.text}
+                onChange={(e) => updateOption(index, 'text', e.target.value)}
+                placeholder={`Option ${index + 1}`}
+              />
+              <FaUpload className="upload-icon" title="Upload Image" />
+            </div>
+            <button className="desc-del-btn" onClick={() => removeOption(index)}>
+              <i className="fa-regular fa-trash-can"></i>
+            </button>
+          </div>
+        ))}
+        <button className="add-option-btn" onClick={addOption}>
+          <i className="fa-solid fa-plus"></i> Add Option
+        </button>
+      </div>
+
+      <div className="dropdowns">
+        <div>
+          <label>Main Category:</label>
+          <select
+            value={formState.mainCategory}
+            onChange={(e) => updateState('mainCategory', e.target.value)}
+          >
+            <option value="">Select Main Category</option>
+            <option value="Category 1">Category 1</option>
+            <option value="Category 2">Category 2</option>
+          </select>
+        </div>
+        <div>
+          <label>Sub Category:</label>
+          <select
+            value={formState.subCategory}
+            onChange={(e) => updateState('subCategory', e.target.value)}
+          >
+            <option value="">Select Sub Category</option>
+            <option value="Sub Category 1">Sub Category 1</option>
+            <option value="Sub Category 2">Sub Category 2</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="footer-controls">
+        <div className="control-item">
+          <label>Points:</label>
+          <input
+            type="number"
+            value={formState.points}
+            min={1}
+            max={10}
+            onChange={(e) => handlePointsChange(e.target.value)}
+          />
+        </div>
+        <div className="control-item">
+          <Form>
+            <Form.Check
+              type="switch"
+              id="custom-switch"
+              label="Multiple answers:"
+              checked={formState.multipleAnswers}
+              onChange={(e) => {
+                updateState('multipleAnswers', e.target.checked);
+                if (!e.target.checked) {
+                  const updatedOptions = [...formState.options];
+                  updatedOptions.forEach((opt, i) => (opt.correct = i === 0));
+                  updateState('options', updatedOptions);
+                }
+              }}
+            />
+          </Form>
+        </div>
+
+        {formState.multipleAnswers && (
+          <div className="control-item">
+            <label>Correct Answers:</label>
+            <input
+              type="number"
+              value={formState.correctAnswers}
+              min={1}
+              max={formState.options.length}
+              onChange={(e) => handleCorrectAnswersChange(e.target.value)}
+            />
+          </div>
+        )}
+      </div>
+    </div>
     </div>
   );
 };
 
 export default QuestionForm;
 
-
-// const AddQuestionContainer = ({onSaveQuestion}) => {
-//   const [questions, setQuestions] = useState([]);
-//   const addQuestion = (newQuestion) => {
-//     onSaveQuestion(newQuestion);
-//   };
-//   const addNewQuestion = () => {
-//     setQuestions([...questions, {}]);
-//   };
-
-//   return (
-//     <div>
-//       <style>
-//               {`
-//               .btn-div button{
-//               background-color: #7A1CAC;
-//               }
-//               .btn-div button:hover{
-//               background-color: #2E073F;
-//               }
-//               `}
-//           </style>
-//       {questions.map((_, index) => (
-//         <QuestionForm key={index} index={index} onSaveQuestion={addQuestion} />
-//       ))}
-
-//       <div className="info-div-item btn-div">
-//         <button id="add-newQues-btn" onClick={addNewQuestion}>
-//           <i className="fa-solid fa-plus"></i> Add new question
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default AddQuestionContainer;
 

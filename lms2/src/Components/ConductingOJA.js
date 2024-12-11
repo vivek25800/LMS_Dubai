@@ -173,13 +173,6 @@ function ConductingOJA() {
       }
     };
   
-       // Remove employee from the table
-    // const handleRemoveEmployee = () => {
-    //   setSelectedEmployees([]);
-    //   setErrorMessage(""); // Clear any error messages
-    // };
-
-
     const handleSubmit = async () => {
       // Format activities to include the overall score
       const formattedActivities = selectedOja.activities.map((activity) => {
@@ -209,21 +202,29 @@ function ConductingOJA() {
     
       const currentDate = new Date(); // Get the current date
       currentDate.setHours(0, 0, 0, 0); // Set to start of the day for comparison
-    
+
       const scheduleDateFrom = new Date(schedule.dateFrom);
       const scheduleDateTo = new Date(schedule.dateTo);
-    
-      // Validate that schedule dates are not in the past
-      if (scheduleDateFrom < currentDate || scheduleDateTo < currentDate) {
-        toast.error("You can't use past date.");
+
+      // Normalize the time of schedule dates to avoid time comparison issues
+      scheduleDateFrom.setHours(0, 0, 0, 0);
+      scheduleDateTo.setHours(0, 0, 0, 0);
+
+      // Validate that schedule dates are only for today
+      if (
+        scheduleDateFrom.getTime() !== currentDate.getTime() || 
+        scheduleDateTo.getTime() !== currentDate.getTime()
+      ) {
+        toast.error("Schedule dates must be set to today's date.");
         return;
       }
-    
-      // Validate that "From" date is earlier than "To" date
+
+      // Validate that "From" date is earlier than or equal to the "To" date
       if (scheduleDateFrom > scheduleDateTo) {
-        toast.error('Invalid schedule: Ensure the "From" date is earlier than the "To" date.');
+        toast.error('Invalid schedule: Ensure the "From" date is earlier than or equal to the "To" date.');
         return;
       }
+
     
       try {
         // Check if employees are already assigned

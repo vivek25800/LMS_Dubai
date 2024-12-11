@@ -11,12 +11,12 @@ const { addQuestion, getQuestions, deleteQuestion } = require('../Controllers/mc
 const { createQuestion, getAllQuestions } = require('../Controllers/text_question_form');
 const {post_training_budget, get_training_budget} = require('../Controllers/training_budget_form');
 const { post_trainingRequestForm, get_trainingRequestData, get_trainingRequestByIds } = require('../Controllers/trainingRequest_form');
-const { createAssessment, getAssessments } = require('../Controllers/create_assessment_form');
 const  upload  = require('../MiddleWare/file');
 const uploadFields = require('../MiddleWare/file');
 const { postOjtAssignment, getOjtAssignedEmployee, checkEmployeeAssignment } = require('../Controllers/ojt_Assignment_form');
 const { postOJAAssignment, checkEmployeeAssignmentOJA, getOJAAssignedEmployee } = require('../Controllers/oja_Assignment_form');
 const { postINAAssignment, getINAAssignedEmployee, checkEmployeeAssignmentINA } = require('../Controllers/ina_Assignment_form');
+const { create_Assessment } = require('../Controllers/create_assessment_form');
 
 const router = express.Router();
 
@@ -66,6 +66,18 @@ router.get('/get_ina_dataById/:_id', get_ina_data_byIds);
 router.put('/ina_details_updated/:_id', update_ina_details);
 router.put('/update_ina_data/:id', updateInaInfo);
 
+router.post('/add_employee_forOJT', postOjtAssignment);
+router.get('/get_assigned_employees/:ojt_code', getOjtAssignedEmployee);
+router.post('/check_employee_assignment', checkEmployeeAssignment);
+
+router.post('/add_employee_forOJA', postOJAAssignment);
+router.get('/get_assigned_employeeOJA/:oja_code', getOJAAssignedEmployee);
+router.post('/check_employee_forOJA', checkEmployeeAssignmentOJA);
+
+router.post('/add_employee_forINA', postINAAssignment);
+router.get('/get_assigned_employeeINA/:ina_code', getINAAssignedEmployee);
+router.post('/check_employee_forINA', checkEmployeeAssignmentINA);
+
 router.post('/add_question', addQuestion);
 router.get('/get_all_question', getQuestions);
 router.delete('/delete_question/:id', deleteQuestion);
@@ -80,18 +92,6 @@ router.post('/training_request_form', post_trainingRequestForm);
 router.get('/get_trainingrequestdata', get_trainingRequestData);
 router.get('/get_trainingByID/:_id', get_trainingRequestByIds);
 
-router.post('/add_employee_forOJT', postOjtAssignment);
-router.get('/get_assigned_employees/:ojt_code', getOjtAssignedEmployee);
-router.post('/check_employee_assignment', checkEmployeeAssignment);
-
-router.post('/add_employee_forOJA', postOJAAssignment);
-router.get('/get_assigned_employeeOJA/:oja_code', getOJAAssignedEmployee);
-router.post('/check_employee_forOJA', checkEmployeeAssignmentOJA);
-
-router.post('/add_employee_forINA', postINAAssignment);
-router.get('/get_assigned_employeeINA/:ina_code', getINAAssignedEmployee);
-router.post('/check_employee_forINA', checkEmployeeAssignmentINA);
-
-
+router.post('/assessment_data_save', create_Assessment);
 
 module.exports = router;
