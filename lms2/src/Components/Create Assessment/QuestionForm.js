@@ -646,9 +646,8 @@ import { FaUpload } from 'react-icons/fa';
 import { IconButton } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
 
-const QuestionForm = ({ sections, setSections, sectionIndex }) => {
+const QuestionForm = () => {
 
   const [formState, setFormState] = useState({
     visible: true,
@@ -808,7 +807,7 @@ input {
   border-color: rgba(0,0,0,0.5);
 }
 `}
- </style>
+        </style>
 
     <div className="question-form" style={{ position: 'relative' }}>
       <div className="question-input">

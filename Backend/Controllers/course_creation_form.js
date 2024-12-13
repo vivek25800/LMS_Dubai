@@ -93,6 +93,17 @@ const post_course_creation = async (req, res) => {
       res.status(500).send({ message: "An error occurred", error: error.message });
     }
   };
+
+  const viewcourse=async(req,res)=>
+    {
+      try {
+        const resp=await Course.find()
+        res.status(200).send({message:"course data fetch",course:resp})
+      } catch (error) {
+        console.log(error);
+        
+      }
+    }
   
-  module.exports = post_course_creation;
+  module.exports = {post_course_creation, viewcourse};
   

@@ -940,6 +940,19 @@ const course_creation_infoget = async (e) => {
         timer: 2000,
         showConfirmButton: false,
       });
+
+      setCourse({
+        course_title_main: "",
+        add_main_category: "",
+        add_sub_category: "",
+        description: "",
+        course_code: "",
+        course_title: "",
+        add_Content: [],
+        pdf_file: [],
+        word_file: [],
+        image_file: [],
+      })
     }
   } catch (error) {
     toast.error(

@@ -111,28 +111,6 @@ const MatchTheFollowingForm = ({index, onDelete}) => {
       </style>
       <div className="question-form" style={{position: "relative"}}>
 
-      {/* <button
-        style={{
-          position: 'absolute',
-          top: '10px',
-          right: '10px',
-          backgroundColor: 'transparent',
-          color: '#000',
-          borderRadius: '50%',
-          cursor: 'pointer',
-          fontSize: '16px',
-          width: '24px',
-          height: '24px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          opacity: '0.7',
-        }}
-        onClick={handleDelete}
-      >
-        <i className="fa-solid fa-trash-can"></i>
-      </button> */}
-
         {questions.map((q, index) => (
           <div className="question-item" key={index}>
             <input

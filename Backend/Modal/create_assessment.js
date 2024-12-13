@@ -245,13 +245,13 @@ const SectionSchema = new mongoose.Schema({
   subtitle: String,
   questions: [
     {
-      questionMCQ: [MCQQuestionSchema]
+      questionMCQ: [MCQQuestionSchema] // Array for MCQs
     },
     {
-      questionText: [TextQuestionSchema]
+      questionText: [TextQuestionSchema] // Array for Text Questions
     },
     {
-      questionMTF: [MatchTheFollowingSchema]
+      questionMTF: [MatchTheFollowingSchema] // Array for Match the Following Questions
     }
   ],
 });

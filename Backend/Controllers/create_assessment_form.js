@@ -90,15 +90,51 @@ const CreateAssessment = require('../Modal/create_assessment');
 // Create a new assessment
 const create_Assessment = async (req, res) => {
   try {
-    const { assessment_title, assessment_code, assessment_description, assessment_timer, sections } = req.body;
+    const { 
+      assessment_title, 
+      assessment_code, 
+      assessment_description, 
+      assessment_timer, 
+      sections 
+    } = req.body;
 
-    // Create a new assessment
+    // Transform incoming section data
+    const transformedSections = sections.map(section => {
+      const questionMCQ = section.questions.filter(q => q.questionMCQ);
+      const questionText = section.questions.filter(q => q.questionText).map(q => ({
+        question: q.question,
+        questionImage: q.questionImage,
+        options: q.options,
+        mainCategory: q.mainCategory,
+        subCategory: q.subCategory,
+        answerType: q.answerType,
+        points: q.points,
+      }));
+      const questionMTF = section.questions.filter(q => q.questionMTF).map(q => ({
+        questions: q.questions,
+        mainCategory: q.mainCategory,
+        subCategory: q.subCategory,
+      }));
+
+      return {
+        id: section.id,
+        title: section.title,
+        subtitle: section.subtitle,
+        questions: {
+          questionMCQ,
+          questionText,
+          questionMTF,
+        },
+      };
+    });
+
+    // Create a new assessment object
     const newAssessment = new CreateAssessment({
       assessment_title,
       assessment_code,
       assessment_description,
       assessment_timer,
-      sections,
+      sections: transformedSections, // Transformed sections for MongoDB
     });
 
     // Save to the database
@@ -109,10 +145,12 @@ const create_Assessment = async (req, res) => {
       assessment: savedAssessment,
     });
   } catch (error) {
-    console.error("Error creating assessment:", error);
-    return res.status(500).json({ message: "Internal server error", error: error.message });
+    console.error('Error creating assessment:', error.message, error.stack);
+    return res.status(500).json({ message: 'Internal server error', error: error.message });
   }
 };
+
+
 
 // Get all assessments
 const get_AllAssessments = async (req, res) => {

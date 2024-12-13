@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
-import axios from 'axios';
 import { base_url } from "../Utils/base_url";
 import { IconButton } from '@mui/material';
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
-function QuestionTextForm({ index, onChange }) {
+function QuestionTextForm({ index }) {
   const [question, setQuestion] = useState('');
   const [options, setOptions] = useState([{ text: '', correct: false }]);
   const [points, setPoints] = useState(0);

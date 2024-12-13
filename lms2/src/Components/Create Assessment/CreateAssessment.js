@@ -304,7 +304,6 @@ import DuplicateAssessment from "./DuplicateAssessment";
 import { NavLink } from "react-bootstrap";
 import axios from 'axios';
 import { base_url } from "../Utils/base_url";
-import { useLocation } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
 function CreateAssessment() {
@@ -406,7 +405,6 @@ function CreateAssessment() {
     }
   };
 
-
   const handleSubmit = async () => {
     try {
       const response = await axios.post(`${base_url}/assessment_data_save`, {
@@ -416,53 +414,67 @@ function CreateAssessment() {
         assessment_timer: assessmentDetails.assessment_timer,
         sections: sections.map((section) => ({
           id: section.id,
-          title: document.getElementById(`section-title-${section.id}`).value,
-          subtitle: document.getElementById(`section-subtitle-${section.id}`).value,
-          questions: section.questions,
+          title: document.getElementById(`section-title-${section.id}`)?.value || '',
+          subtitle: document.getElementById(`section-subtitle-${section.id}`)?.value || '',
+          questionMCQ: (section.questions || []).filter(q => q.type === 'MCQ').map(q => ({
+            question: q.question,
+            questionImage: q.questionImage || '',
+            options: (q.options || []).map(option => ({
+              text: option.text,
+              correct: option.correct,
+              image: option.image || '',
+            })),
+            mainCategory: q.mainCategory || '',
+            subCategory: q.subCategory || '',
+            points: q.points || 0,
+            multipleAnswers: q.multipleAnswers || false,
+            correctAnswers: q.correctAnswers || [],
+          })),
+          questionText: (section.questions || []).filter(q => q.type === 'Text').map(q => ({
+            question: q.question,
+            questionImage: q.questionImage || '',
+            options: (q.options || []).map(option => ({
+              text: option.text,
+              isCorrect: option.isCorrect || false,
+            })),
+            mainCategory: q.mainCategory || '',
+            subCategory: q.subCategory || '',
+            points: q.points || 0,
+            answerType: q.answerType || '',
+          })),
+          questionMTF: (section.questions || []).filter(q => q.type === 'Match').map(q => ({
+            questions: (q.questions || []).map(mq => ({
+              question: mq.question || '',
+              correctAnswer: mq.correctAnswer || '',
+              points: mq.points || 0,
+            })),
+            mainCategory: q.mainCategory || '',
+            subCategory: q.subCategory || '',
+          })),
         })),
+        
+        
       });
       console.log('Assessment saved:', response.data);
-            Swal.fire({
-              icon: 'success',
-              title: 'Course added successfully!',
-              timer: 2000,
-              showConfirmButton: false,
-            });
-    } catch (error) {
-      console.error('Error saving assessment:', error);
       Swal.fire({
-        icon: 'error',
-        title: 'Error saving assessment!',
+        icon: 'success',
+        title: 'Assessment added successfully!',
         timer: 2000,
         showConfirmButton: false,
       });
+    } catch (error) {
+      console.error('Error saving assessment:', error.response ? error.response.data : error.message);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error saving assessment!',
+        text: error.response?.data?.message || error.message,
+        timer: 3000,
+        showConfirmButton: true,
+      });
     }
   };
-
-  // const handleSubmit = async () => {
-  //   const payload = {
-  //     assessment_title: assessmentDetails.assessment_title,
-  //       assessment_code: assessmentDetails.assessment_code,
-  //       assessment_description: assessmentDetails.assessment_description,
-  //       assessment_timer: assessmentDetails.assessment_timer,
-  //     sections,
-  //   };
   
-  //   try {
-  //     const response = await axios.post(`${base_url}/assessment_data_save`, payload);
-  //     Swal.fire({
-  //       icon: 'success',
-  //       title: 'Course added successfully!',
-  //       timer: 2000,
-  //       showConfirmButton: false,
-  //     });
-  //     console.log("Assessment saved:", response.data);
-  //   } catch (error) {
-  //     console.error("Error saving assessment:", error);
-  //   }
-  // };
   
-
   return (
     <div>
       <style>
@@ -711,6 +723,7 @@ function CreateAssessment() {
       <div>
         <Button onClick={handleSubmit}>Create Assessment</Button>
       </div>
+
     </div>
   );
 }

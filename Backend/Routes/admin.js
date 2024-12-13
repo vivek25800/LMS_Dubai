@@ -3,7 +3,7 @@ const {employee_details, remove_data_two, get_data_employee, update_data_employe
 const {students_register, remove_data, get_data_student, get_data_studentbyemail, student_login} = require('../Controllers/students_form');
 const {post_event_details, update_data_event, get_data_event, delete_event_data, get_data_eventbyid, get_events_by_month, getEventsByDate} = require('../Controllers/add_event_form');
 const post_attendence_details = require('../Controllers/attendence_form');
-const post_course_creation = require('../Controllers/course_creation_form');
+const {post_course_creation, viewcourse} = require('../Controllers/course_creation_form');
 const { post_create_ojt, get_ojt_data, get_ojts_data_byIds, updateOJTInfo, delete_ojt_data, update_ojt_details } = require('../Controllers/create_ojt_form');
 const {post_oja_data, get_oja_details, get_oja_details_byIds, updateOjaInfo, delete_oja_data, update_oja_details} = require('../Controllers/create_Oja_form');
 const {post_ina_data, get_ina_data, get_ina_data_byIds, updateInaInfo, delete_Ina_data, update_ina_details}  = require('../Controllers/create_INA_form');
@@ -44,6 +44,7 @@ router.get('/get_events_by_date', getEventsByDate);
 router.post('/add_attendence_details', post_attendence_details);
 
 router.post('/add_course_details', uploadFields, post_course_creation);
+router.get('/viewcourse', viewcourse)
 
 router.post('/create_ojt_form', post_create_ojt);
 router.get('/get_Ojt_info', get_ojt_data);

@@ -3,7 +3,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 
 function DuplicateAssessment() {
 
-    const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState([]);
   const addQuestion = () => {
     setQuestions([...questions, { mainCategory: "", subCategory: "" }]);
   };

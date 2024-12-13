@@ -2,9 +2,22 @@ import React from 'react'
 import SidebarTwo from './SidebarTwo'
 import TopBar from './TopBar'
 import StepsCourse from './StepsCourse'
+import { useLocation } from 'react-router-dom';
+import { logDOM } from '@testing-library/react';
 
 function StartCourse() {
+
+    const location = useLocation();
+
+    const { course } = location.state || {};  // Fallback to empty object if no state is passed
+
+    const chapter=course.add_Content
+
+ console.log(chapter);
+ 
+    
   return (
+    
     <div style={{backgroundColor:"rgba(46, 7, 63, 0.1)"}}>
 
         <style>{`
@@ -92,6 +105,29 @@ function StartCourse() {
             text-transform: uppercase;
             height: 2.5rem;
             }
+            .main-div{
+            border: 1px solid rgba(0,0,0,0.2);
+            padding: 1rem;
+            display: flex;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin: 1rem 0;
+            }
+            .main-div:hover{
+            border-color: #ffffff;
+            box-shadow: 3px 3px 6px rgba(0,0,0,0.2);
+            }
+            .courseImg-div video{
+            width: 130px;
+            heigt: 50px;
+            margin-right: 1rem;
+            border-radius: 6px;
+            }
+            .content-div p{
+            font-size: 12px;
+            opacity: 0.7;
+            margin: 0px;
+            }
         `}</style>
 
         <div className='main-courses-div'>
@@ -110,25 +146,47 @@ function StartCourse() {
                    <div className='main-course-content'>
                       <div className='course-info-div'>
                         <div className='upper-content'>
-                            <img src='photo_1.jpg' />
+                            <img src ={`${course.image_file}`} />
                             <div className='aboutCourse-div'>
                                 <button>START</button>
-                                <p>Data science is an interdisciplinary field that focuses on extracting knowledge and insights from data. It involves using various scientific methods, algorithms, and systems to process large sets of data and derive meaningful patterns. The field encompasses a wide range of areas such as statistics, machine learning, data mining, and big data technologies.  </p>
+                                <p>{course.description}</p>
                             </div>
                         </div>
-                        <div>
+                        <div style={{marginTop:"20px"}}>
                             <h6>Steps:</h6>
                         </div>
-                        <div className='lower-content'>
+                        {/* <div className='lower-content'>
                             <StepsCourse/>
                             <StepsCourse/>
                             <StepsCourse/>
                             <StepsCourse/>
                             <StepsCourse/>
                             <StepsCourse/>
-                        </div>
-                      </div>
+                        </div> */}
+                                            <div>
+                      {Array.isArray(chapter) && chapter.length > 0 ? (
+                            course.add_Content.map((item, index) => (
+                                <div className='main-div'>
+                                    <div className='courseImg-div'>
+                                        <video
+                                        controls
+                                        // style={{ height: "250px", width: "100%",marginBottom:"50px" }}  // Set the height and width for the video
+                                        src={item.video_file}
+                                        />
+                                    </div>
+                                    <div className='content-div'>
+                                        <h5 key={index}>{item.chapter_title}</h5>
+                                        <p>{item.chapter_description}</p>
+                                    </div>
+                                </div>
+                            ))
+                            ) : (
+                            <p>No content available</p>
+                            )}
 
+                            </div>
+                      </div>
+  
                       <div className='enroll-div'>
                         <h5>Your Session</h5>
 
