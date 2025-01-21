@@ -231,30 +231,6 @@ function TextAssessmentCAT({ index, onDelete, onChange }) {
           />
         </div>
 
-        {/* <div className="control-item">
-          <Form>
-            <Form.Check
-              type="switch"
-              id="math-switch"
-              label="Math:"
-              checked={mathToggle}
-              onChange={(e) => setMathToggle(e.target.checked)}
-            />
-          </Form>
-        </div> */}
-
-        {/* <div className="control-item">
-          <Form>
-            <Form.Check
-              type="switch"
-              id="multiple-switch"
-              label="Multiple answers:"
-              checked={multipleAnswers}
-              onChange={(e) => setMultipleAnswers(e.target.checked)}
-            />
-          </Form>
-        </div> */}
-
         <div className="control-item">
           <Form>
             <Form.Check

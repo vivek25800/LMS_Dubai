@@ -13,8 +13,14 @@ app.use(cors());
 app.use('/', require('./Routes/admin'));
 app.use(bodyparsor.json());
 
+const catResponseRoutes = require('./Routes/admin');
+app.use('/api', catResponseRoutes);
+
+app.use('/api/questions', require('./Routes/admin'));
+
 app.listen(5000,()=>
 {
     console.log("server is running on 5000");
     
 });
+

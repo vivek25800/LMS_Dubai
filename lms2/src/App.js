@@ -45,7 +45,7 @@ import LearningHistoryCourse from './Components/Courses/LearningHistoryCourse.js
 import MyCareerJourney from './Components/Courses/MyCareerJourney.js';
 import StartCourse from './Components/Courses/StartCourse.js';
 import Assessment from './Components/Create Assessment/Assessment.js';
-import TakeAssessment from './Components/TakeAssessment.js';
+import TakeAssessment from './Components/Create Assessment/TakeAssessment.js';
 import CreateCAT from './Components/Create CAT/CreateCAT.js';
 import AddInterviewQuestions from './Components/Create CAT/AddInterviewQuestions.js';
 import CreateQuize from './Components/Create Quize/CreateQuize.js';
@@ -62,20 +62,35 @@ import ServiceProviderRegister from './Components/ServiceProviderRegister.js';
 import Video from './Components/Sidebar/Video.js';
 import ViewOJTOJAINA from './Components/ViewOJTOJAINA.js';
 import Curriculum from './Components/Courses/Curriculum.js';
-
-// import TrainingCalendar from './Components/TrainingCalendar.js';
-
-
-
+import UploadAssessment from './Components/Create Assessment/UploadAssessment.js';
+import DataAssessment from './Components/Create Assessment/DataAssessment.js';
+import PreviewAssessment from './Components/Create Assessment/PreviewAssessment.js';
+import UploadQuize from './Components/Create Quize/UploadQuize.js';
+import PreviewQuize from './Components/Create Quize/PreviewQuize.js';
+import TakeAssessmentView from './Components/Create Assessment/TakeAssessmentView.js';
+import DuplicateAssessment from './Components/Create Assessment/DuplicateAssessment.js';
+import CATPreview from './Components/Conduct CAT/CATPreview.js';
+import TakeCAT from './Components/Conduct CAT/TakeCAT.js';
+import TakeQuize from './Components/Create Quize/TakeQuize.js';
+import TakeQuizPage from './Components/Create Quize/TakeQuizPage.js';
+import ExcelUploader from './Components/ExcelUploader.js';
+import MatchingGame from './Components/Create Assessment/MatchingGame.js';
+import ExcelUploadCompo from './Components/ExcelUploadCompo.js';
+import ExcelDataViewer from './Components/ExcelDataViewer.js';
+import ConductInterviewCAT from './Components/Conduct CAT/ConductInterviewCAT.js';
+import TrainingList from './Components/Employee Dashboard/TrainingList.js';
+import AssessmentList from './Components/Employee Dashboard/AssessmentList';
+import CATList from './Components/Employee Dashboard/CATList.js';
+import CertificateList from './Components/Employee Dashboard/CertificateList.js';
+import QuizesList from './Components/Employee Dashboard/QuizesList.js';
+import AssignAssessment from './Components/Create Assessment/AssignAssessment.js';
+import AssignCAT from './Components/Create CAT/AssignCAT.js';
+import AssignQuiz from './Components/Create Quize/AssignQuiz.js';
+import AssignTraining from './Components/AssignTraining.js';
+import CATResult from './Components/Create CAT/CATResult.js';
 
 
 function App() {  
-
-  // const [events] = useState({
-  //   '2024-09-20': ['React Basics', 'JavaScript Mastery'],
-  //   '2024-09-25': ['Advanced CSS Techniques', 'UI/UX Design'],
-  //   '2024-09-28': ['Backend Development with Node.js'],
-  // }); 
 
   return (
     <>
@@ -99,7 +114,7 @@ function App() {
         <Route path='/AllEmployeList' element={<AllEmployeeList/>}></Route>
         <Route path='/AllStudentList' element={<AllStudentsList/>}></Route>
         <Route path='/Studentdash' element={<StudentDashboard/>}></Route>
-        <Route path='/Employeedash' element={<EmployeeDashboard/>}></Route>
+        {/* <Route path='/Employeedash' element={<EmployeeDashboard/>}></Route> */}
         <Route path='/createtraining' element={<TrainingCalendarDemo />}></Route>
         <Route path='/AddEvent' element={<TrainingCalenderForm/>}></Route>
         <Route path='/viewTraining' element={<ViewTrainingDetails/>}></Route>
@@ -119,8 +134,35 @@ function App() {
         <Route path='/pendingtrf' element={<TRFPendingForApproval/>}></Route>
         <Route path='serviceProverRegistration' element={<ServiceProviderRegister/>}></Route>
         <Route path='/viewOjtOjaIna' element={<ViewOJTOJAINA/>}></Route>
+        <Route path='/dataAssessment' element={<DataAssessment/>}></Route>
+        <Route path='/previewAssessment' element={<PreviewAssessment/>}></Route>
+        <Route path='/uploadQuiz' element={<UploadQuize/>}></Route>
+        <Route path='/previewQuize' element={<PreviewQuize/>}></Route>
+        <Route path='/takeAssessmentView/:id' element={<TakeAssessmentView/>}></Route>
+        <Route path='/duplicateAssessment' element={<DuplicateAssessment/>}></Route>
+        <Route path="/catPreview" element={<CATPreview/>} />
+        <Route path="/take-cat/:catId" element={<TakeCAT />} />
+        <Route path="/takeQuizeList" element={<TakeQuize />} />
+        <Route path="/takeQuiz/:quizId" element={<TakeQuizPage />} />
+        <Route path='excelComponent' element={<ExcelUploadCompo/>}></Route>
+        <Route path='/excelUpload' element={<ExcelUploader/>}></Route>
+        <Route path='/excelUploadView' element={<ExcelDataViewer/>}></Route>
+        <Route path='/matchingGame' element={<MatchingGame/>}></Route>
+        <Route path='conductInterviewCAT' element={<ConductInterviewCAT/>}></Route>
+        <Route path='/assignAssessment' element={<AssignAssessment/>}></Route>
+        <Route path='/assignCAT' element={<AssignCAT/>}></Route>
+        <Route path='/assignQuize' element={<AssignQuiz/>}></Route>
+        <Route path='/assignTraining' element={<AssignTraining/>}></Route>
+        <Route path='/showCATResult' element={<CATResult/>}></Route>
 
-        <Route path='/maincourse' element={<CourseList/>}></Route>
+        <Route path='/employeeDashboard/:id' element={<EmployeeDashboard/>}></Route>
+        <Route path='/employeeTraining/:id' element={<TrainingList/>}></Route>
+        <Route path='/employeeAssessments/:id' element={<AssessmentList/>}></Route>
+        <Route path='employeeCATs/:id' element={<CATList/>}></Route>
+        <Route path='employeeQuizes/:id' element={<QuizesList/>}></Route>
+        <Route path='/employeeCertificateList/:id' element={<CertificateList/>}></Route>
+
+        <Route path='/maincourse/:id' element={<CourseList/>}></Route>
         <Route path='/mycareerjourney' element={<MyCareerJourney/>}></Route>
         <Route path='/myLibrary' element={<MyLibrary/>}></Route>
         <Route path='/progreesCourse' element={<InProgressCourse/>}></Route>

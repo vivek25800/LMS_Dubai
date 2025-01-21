@@ -8,7 +8,6 @@ import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 
 const MCQAssessmentCAT = ({ index, onDelete }) => {
   const [question, setQuestion] = useState('');
-  // const [subtitle, setSubtitle] = useState('');
   const [options, setOptions] = useState([{ text: '', correct: false }]);
   const [multipleAnswers, setMultipleAnswers] = useState(false);
   const [points, setPoints] = useState(1);
@@ -297,15 +296,6 @@ const MCQAssessmentCAT = ({ index, onDelete }) => {
           </div>
         </div>
 
-        {/* <div className="subtitle-input">
-          <input
-            type="text"
-            value={subtitle}
-            onChange={(e) => setSubtitle(e.target.value)}
-            placeholder="Enter a subtitle (optional)"
-          />
-        </div> */}
-
         <div className="options-list">
           {options.map((option, idx) => (
             <div className="option-item" key={idx} style={{ display: 'flex', alignItems: 'center' }}>
@@ -439,46 +429,3 @@ const AddQuestionContainer = () => {
 
 export default AddQuestionContainer;
 
-
-
-
-
-// const AddQuestionContainer = () => {
-//   const [questions, setQuestions] = useState([]);
-
-//   const addNewQuestion = () => {
-//     setQuestions([...questions, {}]);
-//   };
-
-//   const deleteQuestion = (index) => {
-//     const newQuestions = questions.filter((_, i) => i !== index);
-//     setQuestions(newQuestions);
-//   };
-
-//   return (
-//     <div>
-//             <style>
-//               {`
-//               .btn-div button{
-//               background-color: #7A1CAC;
-//               }
-//               .btn-div button:hover{
-//               background-color: #2E073F;
-//               }
-//               `}
-//             </style>
-
-//       {questions.map((_, index) => (
-//         <MCQAssessmentCAT key={index} index={index} onDelete={deleteQuestion} />
-//       ))}
-
-//       <div className="info-div-item btn-div">
-//         <button id="add-newQues-btn" onClick={addNewQuestion}>
-//           <i className="fa-solid fa-plus"></i> Add new question
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default AddQuestionContainer;

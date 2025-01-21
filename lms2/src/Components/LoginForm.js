@@ -9,70 +9,44 @@ import { base_url } from "./Utils/base_url";
 
 function LoginForm() {
     const navigate=useNavigate()
-
-   
-    const[login,setlogin]=useState({email_id:"",password:""})
+ 
+    const[login,setlogin]=useState({email_id:"",password:""})    
     const student_login = async () => {
       try {
-        if (login.email_id === "" || login.password === "") {
+        if (!login.email_id || !login.password) {
           toast.error("Please enter email and password");
           return;
         }
-    
-        let resp, resp1;
-    debugger
-        try {
-          resp = await axios.post(`${base_url}/student_login`, login);
-        } catch (error) {
-          // Handle specific error for the student API
-          console.error("Error with student login:", error);
-        }
-    
-        try {
-          resp1 = await axios.post(`${base_url}/employee_login`, login);
-        } catch (error) {
-          // Handle specific error for the employee API
-          console.error("Error with employee login:", error);
-        }
-    
-        // Check responses and navigate accordingly
-        if (resp && resp.status === 200) {
-          toast.success(`Welcome student: ${login.email_id}`);
-    
+
+        const resp = await axios.post(`${base_url}/employee_login`, login);
+        
+        if (resp.status === 200) {
+          localStorage.setItem('employeeData', JSON.stringify(resp.data.employee));
+          toast.success(`Welcome ${resp.data.employee.employee_name}`, {autoClose: 2000});
           setTimeout(() => {
-            navigate('/Studentdash');
-          }, 2000);  // 2 seconds delay
-        } else if (resp1 && resp1.status === 200) {
-          toast.success(`Welcome employee: ${login.email_id}`);
-    
-          setTimeout(() => {
-            navigate('/Employeedash');
-          }, 2000);  // 2 seconds delay
-        } else {
-          // If neither API responds with status 200, show a general error
-          toast.error("Invalid login credentials");
+            navigate(`/employeeDashboard/${resp.data.employee._id}`);
+          }, 2000);
         }
       } catch (error) {
         if (error.response) {
           const { status } = error.response;
-    
-          // Handle different status codes
-          if (status === 404) {
-            toast.error("Email ID not registered");
-          } else if (status === 400) {
-            toast.error("Password does not match");
-          } else if (status === 500) {
-            toast.error("Server error. Please try again later.");
+              
+            // Handle different status codes
+            if (status === 404) {
+              toast.error("Email ID not registered", {autoClose: 2000});
+            } else if (status === 400) {
+              toast.error("Password does not match", {autoClose: 2000});
+            } else if (status === 500) {
+              toast.error("Server error. Please try again later.", {autoClose: 2000});
+            } else {
+              toast.error("An unexpected error occurred.", {autoClose: 2000});
+            }
           } else {
-            toast.error("An unexpected error occurred.");
+            console.log(error);
+            toast.error("An error occurred. Please try again later.", {autoClose: 2000});
           }
-        } else {
-          console.log(error);
-          toast.error("An error occurred. Please try again later.");
-        }
-      }
-    };
-    
+      }
+    };
 
   return (
     <div>
@@ -106,9 +80,7 @@ function LoginForm() {
                                 <p id="errorMessage" class="error-message">Don't have any account?  <NavLink to={'/register'}>Register</NavLink></p>
                                 <button id="google-btn">Continue with google</button>
                             </div>
-                            
-                    
-                        
+                                      
                     </div>
                 </div>
                 

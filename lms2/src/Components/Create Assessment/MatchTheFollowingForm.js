@@ -1,41 +1,50 @@
 import React, { useState } from 'react';
 
 const MatchTheFollowingForm = ({index, onDelete}) => {
-  const [questions, setQuestions] = useState([
-    { question: '', correctAnswer: '', points: 2 },
-    { question: '', correctAnswer: '', points: 2 },
-    { question: '', correctAnswer: '', points: 2 },
-    { question: '', correctAnswer: '', points: 2 },
-    { question: '', correctAnswer: '', points: 2 },
-  ]);
-  const [mainCategory, setMainCategory] = useState('');
-  const [subCategory, setSubCategory] = useState('');
+  const [questionState, setQuestionState] = useState({
+    questions: [
+      { question: '', correctAnswer: '', points: 2 },
+      { question: '', correctAnswer: '', points: 2 },
+      { question: '', correctAnswer: '', points: 2 },
+      { question: '', correctAnswer: '', points: 2 },
+      { question: '', correctAnswer: '', points: 2 },
+    ],
+    mainCategory: '',
+    subCategory: '',
+  });
+
+  const handleStateChange = (key, value) => {
+    setQuestionState((prevState) => ({
+      ...prevState,
+      [key]: value,
+    }));
+  };
 
   const handleQuestionChange = (index, value) => {
-    const newQuestions = [...questions];
+    const newQuestions = [...questionState.questions];
     newQuestions[index].question = value;
-    setQuestions(newQuestions);
+    handleStateChange('questions', newQuestions);
   };
 
   const handleAnswerChange = (index, value) => {
-    const newQuestions = [...questions];
+    const newQuestions = [...questionState.questions];
     newQuestions[index].correctAnswer = value;
-    setQuestions(newQuestions);
+    handleStateChange('questions', newQuestions);
   };
 
   const handlePointsChange = (index, value) => {
-    const newQuestions = [...questions];
+    const newQuestions = [...questionState.questions];
     newQuestions[index].points = Number(value);
-    setQuestions(newQuestions);
+    handleStateChange('questions', newQuestions);
   };
 
   const addQuestion = () => {
-    setQuestions([...questions, { question: '', correctAnswer: '', points: 2 }]);
+    handleStateChange('questions', [...questionState.questions, { question: '', correctAnswer: '', points: 2 }]);
   };
 
   const removeQuestion = (index) => {
-    const newQuestions = questions.filter((_, i) => i !== index);
-    setQuestions(newQuestions);
+    const newQuestions = questionState.questions.filter((_, i) => i !== index);
+    handleStateChange('questions', newQuestions);
   };
 
   return (
@@ -47,71 +56,62 @@ const MatchTheFollowingForm = ({index, onDelete}) => {
             flex-direction: column;
             gap: 16px;
             background-color: #ffffff;
-            // padding: 1.5rem;
-            // border-radius: 10px;
-            // border: 1px solid rgba(0,0,0,0.2);
           }
-          
           .question-item {
             display: flex;
             gap: 10px;
             align-items: center;
-            // justify-content: space-between;
           }
-           .question-item .ques-ans-input{
-           height: 2.5rem;
-           width: 42%;
-           padding-left: 10px;
-           }
-            .points-input {
-           width: 6rem;
-           height: 2.5rem;
-           padding-left: 10px;
-           }
-
+          .question-item .ques-ans-input {
+            height: 2.5rem;
+            width: 42%;
+            padding-left: 10px;
+          }
+          .points-input {
+            width: 6rem;
+            height: 2.5rem;
+            padding-left: 10px;
+          }
           .dropdowns {
             display: flex;
             gap: 16px;
             margin-top: 16px;
           }
-            .add-option-btn{
+          .add-option-btn {
             background-color: #ffffff;
             color: #7A1CAC;
             border: 1px solid #7A1CAC;
             width: 18%;
             font-weight: 500;
-            }
-            .add-option-btn:hover{
+          }
+          .add-option-btn:hover {
             background-color: #7A1CAC;
             color: #ffffff;
-            }
-            .desc-del-btn{
+          }
+          .desc-del-btn {
             background-color: transparent;
             color: red;
             box-shadow: none;
             width: fit-content;
             border-radius: 50%;
-            }
-            .desc-del-btn:hover{
+          }
+          .desc-del-btn:hover {
             background-color: red;
-            color: #ffffff
-            }
-
+            color: #ffffff;
+          }
           @media (max-width: 600px) {
             .question-item {
               flex-direction: column;
               align-items: flex-start;
             }
-
             .dropdowns {
               flex-direction: column;
             }
           }
         `}
       </style>
-      <div className="question-form" style={{position: "relative"}}>
-
-        {questions.map((q, index) => (
+      <div className="question-form" style={{ position: "relative" }}>
+        {questionState.questions.map((q, index) => (
           <div className="question-item" key={index}>
             <input
               type="text"
@@ -142,8 +142,8 @@ const MatchTheFollowingForm = ({index, onDelete}) => {
           <div>
             <label>Main Category:</label>
             <select
-              value={mainCategory}
-              onChange={(e) => setMainCategory(e.target.value)}
+              value={questionState.mainCategory}
+              onChange={(e) => handleStateChange('mainCategory', e.target.value)}
             >
               <option value="">Select Main Category</option>
               <option value="Category 1">Category 1</option>
@@ -153,8 +153,8 @@ const MatchTheFollowingForm = ({index, onDelete}) => {
           <div>
             <label>Sub Category:</label>
             <select
-              value={subCategory}
-              onChange={(e) => setSubCategory(e.target.value)}
+              value={questionState.subCategory}
+              onChange={(e) => handleStateChange('subCategory', e.target.value)}
             >
               <option value="">Select Sub Category</option>
               <option value="Sub Category 1">Sub Category 1</option>
@@ -168,4 +168,3 @@ const MatchTheFollowingForm = ({index, onDelete}) => {
 };
 
 export default MatchTheFollowingForm;
-

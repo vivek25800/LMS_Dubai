@@ -219,57 +219,56 @@ function ViewTrainingDetails() {
             <div className='all-training-details'>
 
             <table id="eventsTable" class="table table-striped table-bordered" cellspacing="0" style={{fontSize:"14px"}} >
-	<thead>
-		<tr>
-			<th>Seq No.</th>
-			<th>Training Category</th>
-			<th>Training Name</th>
-      <th>Trainer Name</th>
-			<th>Region</th>
-			<th>Project</th>
-            <th>Date (from - to)</th>
-            <th>Time (from - to)</th>
-            <th>Total Participents</th>
-            <th>Venue</th>
-            <th>Status</th>
-            <th>Action</th>
-		</tr>
-	</thead>
-	<tbody>  
-		{
-            Array.isArray(details) ? details.map((item,index)=>
-            (
+              <thead>
                 <tr>
-                <td >{index+1}</td>
-                <td >{item.training_category}</td>
-                <td >{item.training_name}</td>
-                <td >{item.trainer_name}</td>
-                <td >{item.region} </td>
-                <td >{item.project_title}</td>
-                <td >{item.from_date} - {item.to_date}</td>
-                <td >{item.from_time} - {item.to_time}</td>
-                <td >{item.participents}</td>
-                <td >{item.venue_name}</td>
-                <td >{item.status}</td>
-                <td>
-                
-    <Dropdown>
-      <Dropdown.Toggle variant="success" id="dropdown-basic">
-        Action
-      </Dropdown.Toggle>
-
-      <Dropdown.Menu>
-      <Dropdown.Item onClick={()=>handleshow(item)}>Edit</Dropdown.Item>
-        <Dropdown.Item  onClick={() => {delete_events(item._id)}}>Delete</Dropdown.Item>
-      </Dropdown.Menu>
-    </Dropdown>
-                </td>
+                  <th>Seq No.</th>
+                  <th>Training Category</th>
+                  <th>Training Name</th>
+                  <th>Trainer Name</th>
+                  <th>Region</th>
+                  <th>Project</th>
+                        <th>Date (from - to)</th>
+                        <th>Time (from - to)</th>
+                        <th>Total Participents</th>
+                        <th>Venue</th>
+                        <th>Status</th>
+                        <th>Action</th>
                 </tr>
-            )):[]
-        }
+              </thead>
+              <tbody>  
+                {
+                        Array.isArray(details) ? details.map((item,index)=>
+                        (
+                            <tr>
+                            <td >{index+1}</td>
+                            <td >{item.training_category}</td>
+                            <td >{item.training_name}</td>
+                            <td >{item.trainer_name}</td>
+                            <td >{item.region} </td>
+                            <td >{item.project_title}</td>
+                            <td >{item.from_date} - {item.to_date}</td>
+                            <td >{item.from_time} - {item.to_time}</td>
+                            <td >{item.participents}</td>
+                            <td >{item.venue_name}</td>
+                            <td >{item.status}</td>
+                            <td>
+                            
+                <Dropdown>
+                  <Dropdown.Toggle variant="success" id="dropdown-basic">
+                    Action
+                  </Dropdown.Toggle>
 
-	</tbody>
-	
+                  <Dropdown.Menu>
+                  <Dropdown.Item onClick={()=>handleshow(item)}>Edit</Dropdown.Item>
+                    <Dropdown.Item  onClick={() => {delete_events(item._id)}}>Delete</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+                            </td>
+                            </tr>
+                        )):[]
+                    }
+
+              </tbody>
 			      </table>
 
     <Modal show={show} onHide={handleclose} size='lg'>

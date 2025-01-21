@@ -34,22 +34,24 @@ const RatingQuestionQuize = () => {
 
   return (
     <div>
-      <style>
-        {`
-          .main-container-section {
-            background-color: #ffffff;
-            border-radius: 10px;
-            // border-top: 5px solid #7A1CAC;
-            // box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
-            width: 100%;
-            // padding: 2rem;
-          }
-          .css-dqr9h-MuiRating-label {
-            margin: 0 5px;
-            font-size: 20px;
-          }
-        `}
-      </style>
+
+<style>
+{`
+  .main-container-section {
+    background-color: #ffffff;
+    border-radius: 10px;
+    // border-top: 5px solid #7A1CAC;
+    // box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+    width: 100%;
+    // padding: 2rem;
+  }
+  .css-dqr9h-MuiRating-label {
+    margin: 0 5px;
+    font-size: 20px;
+  }
+`}
+</style>
+     
       <div className="main-container-section">
         <div style={{ marginBottom: 20, border: '1px solid #ccc', padding: 15, borderRadius: 10 }}>
           
@@ -121,3 +123,4 @@ const RatingQuestionQuize = () => {
 };
 
 export default RatingQuestionQuize;
+

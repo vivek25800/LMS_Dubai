@@ -736,7 +736,7 @@
 
 import Sidebar from "./Sidebar";
 import Header from "./Header";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import TextField from '@mui/material/TextField';
 import * as React from 'react';
 import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
@@ -750,6 +750,8 @@ import axios from "axios";
 import { base_url } from "./Utils/base_url";
 import { useState, useEffect } from "react";
 import Swal from 'sweetalert2';
+import SellIcon from '@mui/icons-material/Sell';
+import PPTPreview from "./PPTPreview";
 
 
 const VisuallyHiddenInput = styled('input')({
@@ -767,23 +769,37 @@ const VisuallyHiddenInput = styled('input')({
 
 function CreateNewCourse() {
 
-const [course, setCourse] = React.useState({
-  course_title_main: "",
-  add_main_category: "",
-  add_sub_category: "",
-  description: "",
-  course_code: "",
-  course_title: "",
+  const [course, setCourse] = useState({
+    course_title_main: "",
+    add_main_category: "",
+    add_sub_category: "",
+    creation_date: "",
+    description: "",
+    course_price: "",
+    course_code: "",
+    sections: [],
+    thumbnail_upload: [],
+    file_upload: [],
+    video_upload: [],
+    image_file: [],
+    pdf_file: [],
+    word_file: [],
+  });
+
+  // State for new section and chapter
+const [newSection, setNewSection] = useState({
+  section_title: "",
   add_Content: [],
-  pdf_file: [],
-  word_file: [],
-  image_file: [],
 });
 
 
 const [pdfPreviews, setPdfPreviews] = useState([]);
 const [wordPreviews, setWordPreviews] = useState([]);
 const [imagePreviews, setImagePreviews] = useState([]);
+const [pptFiles, setPPTFiles] = useState([]);
+
+const [thumbnail, setThumbnail] = useState([]);
+const [fileUpload, setFileUpload] = useState([]);
 
 const handlePdfFile = (event) => {
   const files = Array.from(event.target.files);
@@ -793,6 +809,16 @@ const handlePdfFile = (event) => {
   }));
   const previews = files.map((file) => URL.createObjectURL(file));
   setPdfPreviews(previews);
+};
+
+const handleFileUpload = (event) => {
+  const files = Array.from(event.target.files);
+  setCourse((prevState) => ({
+      ...prevState,
+      file_upload: files
+  }));
+  const previews = files.map((file) => URL.createObjectURL(file));
+  setFileUpload(previews)
 };
 
 const handleWordFile = (event) => {
@@ -815,18 +841,28 @@ const handledocumentpicchange = (event) => {
   setImagePreviews(previews);
 };
 
+const handledthumbnailUpload = (event) => {
+  const files = Array.from(event.target.files);
+  setCourse((prevState) => ({
+      ...prevState,
+      thumbnail_upload: files,
+  }));
+  const previews = files.map((file) => URL.createObjectURL(file));
+  setThumbnail(previews);
+};
+
 const [videoPreviews, setVideoPreviews] = useState([]); 
+// Handle video file upload
 const handleVideo = (event) => {
   const files = Array.from(event.target.files);
-  // Generate preview URLs for all files
-  const previewUrls = files.map((file) => URL.createObjectURL(file));
-  // Update chapter state and preview URLs state
-  setChapter((prevState) => ({
-    ...prevState,
-    video_file: files,
-  }));
+  setChapter({ ...chapter, video_file: files });
+  setVideoPreviews(files.map((file) => URL.createObjectURL(file)));
+};
 
-  setVideoPreviews(previewUrls);
+const handlePPTFile = (event) => {
+  const files = Array.from(event.target.files);
+  setChapter({ ...chapter, ppt_file: files });
+  setPPTFiles(files);  // Store the actual files for preview
 };
 
 useEffect(() => {
@@ -834,148 +870,134 @@ useEffect(() => {
     pdfPreviews.forEach((url) => URL.revokeObjectURL(url));
     imagePreviews.forEach((url) => URL.revokeObjectURL(url));
     videoPreviews.forEach((url) => URL.revokeObjectURL(url));
+
+    thumbnail.forEach((url) => URL.revokeObjectURL(url));
+    fileUpload.forEach((url) => URL.revokeObjectURL(url));
   };
-}, [pdfPreviews, imagePreviews, videoPreviews]);
+}, [pdfPreviews, imagePreviews, videoPreviews, thumbnail, fileUpload]);
 
 
 const [chapterMain, setchapterMain] = useState([]);
 const [chapter, setChapter] = useState({
-  video_file: [],
   chapter_title: "",
   chapter_description: "",
+  youtube_link: "",
+  video_file: [],
+  ppt_file: [],
 });
 
+// Adding Chapter to Section
 const addChapter = () => {
   if (chapter.chapter_title && chapter.chapter_description) {
-      const updatedChapter = [...chapterMain, chapter];
+    const updatedContent = [...newSection.add_Content, chapter];
 
-      setchapterMain(updatedChapter);
+    setNewSection({ ...newSection, add_Content: updatedContent });
 
-      setCourse((prevState) => ({
-          ...prevState,
-          add_Content: updatedChapter,
-      }));
-    
-      toast.success('Chapter added successfully!', {autoClose: 1000});
-
-      setChapter({
-          video_file: [],
-          chapter_title: "",
-          chapter_description: "",
-      });
-      setVideoPreviews([]); // Clear video previews
-
-  } else {
-    Swal.fire({
-      icon: 'error',
-      title: 'Error',
-      text: 'Please fill out all fields before adding a chapter.',
-      showConfirmButton: true,
-    });  
-  }
-};
-
-
-const course_creation_infoget = async (e) => {
-  try {
-    // Create a new FormData object to send the data, including files
-    const formData = new FormData();
-    
-    // Append form fields (e.g., course details)
-    formData.append('course_title_main', course.course_title_main);
-    formData.append('add_main_category', course.add_main_category);
-    formData.append('add_sub_category', course.add_sub_category);
-    formData.append('description', course.description);
-    formData.append('course_code', course.course_code); 
-
-    if (course.add_Content && course.add_Content.length > 0) {
-      course.add_Content.forEach((chapter, index) => {
-        formData.append(`add_Content[${index}].chapter_title`, chapter.chapter_title);
-        formData.append(`add_Content[${index}].chapter_description`, chapter.chapter_description);
-    
-        // Append video files for the chapter (if any)
-        if (chapter.video_file && chapter.video_file.length > 0) {
-          chapter.video_file.forEach((file) => {
-            formData.append(`add_Content[${index}].video_file`, file);  // Nested video files with dynamic indices
-          });
-        }
-      });
-    }
-    
-    
-    // Append multiple files for image_file field
-    if (course.image_file && course.image_file.length > 0) {
-      course.image_file.forEach((file) => {
-        formData.append('image_file', file);  // Same field name as in multer config
-      });
-    }
-    
-    // Append multiple files for pdf_file field
-    if (course.pdf_file && course.pdf_file.length > 0) {
-      course.pdf_file.forEach((file) => {
-        formData.append('pdf_file', file);  // Same field name as in multer config
-      });
-    }
-    
-    // Append multiple files for word_file field
-    if (course. word_file && course. word_file.length > 0) {
-      course. word_file.forEach((file) => {
-        formData.append('word_file', file);  // Same field name as in multer config
-      });
-    }
-    
-  
-    // Send the form data to the backend
-    const resp = await axios.post(`${base_url}/add_course_details`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data", // Ensure it's multipart form data
-      },
+    setChapter({
+      chapter_title: "",
+      chapter_description: "",
+      youtube_link: "",
+      video_file: [],
+      ppt_file: [],
     });
 
-    if (resp.status === 200) {
-      // toast.success(resp.data.message, { autoClose: 2000 });
-      Swal.fire({
-        icon: 'success',
-        title: 'Course added successfully!',
-        timer: 2000,
-        showConfirmButton: false,
-      });
-
-      setCourse({
-        course_title_main: "",
-        add_main_category: "",
-        add_sub_category: "",
-        description: "",
-        course_code: "",
-        course_title: "",
-        add_Content: [],
-        pdf_file: [],
-        word_file: [],
-        image_file: [],
-      })
-    }
-  } catch (error) {
-    toast.error(
-      error.response?.data?.message || "Error saving course details",
-      { autoClose: 2000 }
-    );
+    setVideoPreviews([]);
+    toast.success("Chapter added successfully!");
+  } else {
+    Swal.fire("Error", "Please fill out all fields for the chapter.", "error");
   }
 };
 
-                                                 
-  const deletechapter = (index) => {
-                                    
-    const newchapter = course.add_Content.filter((_, i) => i !== index);
+// Adding Section to Course
+const addSection = () => {
+  if (newSection.section_title && newSection.add_Content.length > 0) {
+    const updatedSections = [...course.sections, newSection];
+    setCourse({ ...course, sections: updatedSections });
 
-    toast.success('Chapter deleted successfully!', {autoClose: 1000});
+    setNewSection({ section_title: "", add_Content: [] });
+    toast.success("Section added successfully!");
+  } else {
+    Swal.fire("Error", "Please fill section title and add chapters.", "error");
+  }
+};
 
-    setchapterMain(newchapter)
 
-    setCourse(prevState => ({
-      ...prevState,
-      add_Content: newchapter
-    }));
-  };
+const handleSubmit = async (e) => {
+  try {
+    const formData = new FormData();
+    formData.append("course_title_main", course.course_title_main);
+    formData.append("add_main_category", course.add_main_category);
+    formData.append("add_sub_category", course.add_sub_category);
+    formData.append("creation_date", course.creation_date);
+    formData.append("description", course.description);
+    formData.append("course_price", course.course_price);
+    formData.append("course_code", course.course_code);
+
+    // Append sections and their chapters
+    course.sections.forEach((section, secIndex) => {
+      formData.append(`sections[${secIndex}].section_title`, section.section_title);
+      section.add_Content.forEach((chapter, chapIndex) => {
+        formData.append(`sections[${secIndex}].add_Content[${chapIndex}].chapter_title`, chapter.chapter_title);
+        formData.append(`sections[${secIndex}].add_Content[${chapIndex}].chapter_description`, chapter.chapter_description);
+        formData.append(`sections[${secIndex}].add_Content[${chapIndex}].youtube_link`, chapter.youtube_link);
+        
+        chapter.video_file.forEach((file) => {
+          formData.append(`sections[${secIndex}].add_Content[${chapIndex}].video_file`, file);
+        });
+        chapter.ppt_file.forEach((file) => {
+          formData.append(`sections[${secIndex}].add_Content[${chapIndex}].ppt_file`, file);
+        });
+      });
+    });
+
+    // Append files
+    ["thumbnail_upload","file_upload","image_file", "pdf_file", "word_file"].forEach((field) => {
+      course[field].forEach((file) => formData.append(field, file));
+    });
+
+    const response = await axios.post(`${base_url}/add_course_details`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    Swal.fire("Success", "Course created successfully!", "success");
+    setPdfPreviews([]);
+    setImagePreviews([]);
+    setWordPreviews([]);
+    setVideoPreviews([]);
+    setCourse({
+      course_title_main: "",
+      add_main_category: "",
+      add_sub_category: "",
+      creation_date: "",
+      description: "",
+      course_price: "",
+      course_code: "",
+      sections: [],
+      thumbnail_upload: [],
+      file_upload: [],
+      video_upload: [],
+      image_file: [],
+      pdf_file: [],
+      word_file: [],
+    });
+
+    console.log([...formData]);
+    
+
+  } catch (error) {
+    toast.error("Error saving course details");
+  }
+};
+
+
+                                                
+const deletechapter = (index) => {
+  const updatedChapters = newSection.add_Content.filter((_, i) => i !== index);
+
+  setNewSection({ ...newSection, add_Content: updatedChapters });
+  setchapterMain(updatedChapters); // If chapterMain is required for another reason
+  toast.success('Chapter deleted successfully!', { autoClose: 1000 });
+};
 
 
 
@@ -1013,6 +1035,7 @@ const course_creation_infoget = async (e) => {
 
   return (
     <div>
+
       <style>
         {`
          body{
@@ -1095,21 +1118,23 @@ const course_creation_infoget = async (e) => {
         margin-top: 1.5rem;
         background-color: rgba(46, 7, 63, 0.2);
         }
-        .chapters-title{
+        .chapter-item{
         // border: 1px solid #000;
         display: flex;
         justify-content: space-between;
+        align-items: center;
         padding: 5px 14px;
         border-radius: 5px;
         background-color: #fff;
         margin: 10px 0px;
         }
-        .edit-delete-chapters i{
+        i{
         margin-left: 14px;
         cursor: pointer;
         }
         `}
       </style>
+      
     <div>
       <Sidebar />
 
@@ -1139,7 +1164,7 @@ const course_creation_infoget = async (e) => {
             
               <div className="document-option addStyle" id="document-option-id" onClick={DocumentContainer}>
                 <h6>
-                  Document <br />
+                   <br />
                   (.pdf, .word, .jpg)
                 </h6>
               </div>
@@ -1187,6 +1212,18 @@ const course_creation_infoget = async (e) => {
                       className="input"
                       onChange={(e) => setCourse({...course, add_sub_category: e.target.value})}
                     />
+                    </div>
+                    <div className="info-div-items">
+                    <input
+                      type="date"
+                        required
+                        id="creation_date"
+                        name="creation_date"
+                        defaultValue=""
+                        className="input"
+                        onChange={(e) => setCourse({...course, creation_date: e.target.value})}
+                      />
+                    </div>
                      <div className="info-div-items">
                      <TextField
                         id="description"
@@ -1198,13 +1235,30 @@ const course_creation_infoget = async (e) => {
                         className="input"
                         onChange={(e) => setCourse({...course, description: e.target.value})}
                       />
-                     </div>
-                  </div>
+                     </div> 
                 </div>
             </div>
 
             <div className="addcourse-div">
-                <h6> <span><DesignServicesIcon/></span> Course Design</h6>
+              <div className="add-price-div" style={{marginBottom:"1rem"}}>
+                <h6> <span><SellIcon/></span> Add price</h6>
+                <div className="inputs-items">
+                  <div className="info-div-items">
+                      <TextField
+                          required
+                          id="course_price"
+                          name="course_price"
+                          label="Course price"
+                          defaultValue=""
+                          className="input"
+                          onChange={(e) => setCourse({...course, course_price: e.target.value})}
+                        />
+                    </div>
+                  </div>
+              </div>
+
+              <div className="add-section-div">
+                <h6> <span><DesignServicesIcon/></span> Add Section</h6>
                 <div className="inputs-items">
                   <div className="info-div-items">
                     <TextField
@@ -1220,23 +1274,25 @@ const course_creation_infoget = async (e) => {
                   <div className="info-div-items">
                   <TextField
                       required
-                      id="course_title"
-                      name="course_title"
-                      label="Course title"
+                      id="section_title"
+                      name="section_title"
+                      label="Course Section title"
+                      value={newSection.section_title}
                       defaultValue=""
                       className="input"
-                      onChange={(e) => setCourse({...course, course_title: e.target.value})}
+                      onChange={(e) => setNewSection({ ...newSection, section_title: e.target.value })}
                     />
                   </div>
                   <div className="info-div-items">
                     <button onClick={addLessons}>Add Chapters</button>
                   </div>
                 </div>
-            </div>
+              </div>
+            </div>            
           </div>
 
           <div className="add-lessons" id="add-lesson-div">
-            <h5> <span><AddCircleIcon /></span> Add Lessons</h5>
+            <h5> <span><AddCircleIcon /></span> Add Chapters</h5>
             <div className="lessons-section">
             <div className="create-lessons">
               <div className="info-div-items upload-video">
@@ -1268,19 +1324,25 @@ const course_creation_infoget = async (e) => {
                   <p>Video (512GB)</p>
                 </div>
                   {videoPreviews.length > 0 && (
-                    <div style={{ marginTop: "20px", display: "flex", flexWrap: "wrap", gap: "10px" }}>
-                      {videoPreviews.map((preview, index) => (
-                        <video
-                          key={index}
-                          src={preview}
-                          controls
-                          style={{ width: "200px", height: "auto" }}
-                        >
-                          Your browser does not support the video tag.
-                        </video>
-                      ))}
-                    </div>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+                    {videoPreviews.map((preview, index) => (
+                      <video key={index} src={preview} controls className="video-preview" style={{width:"200px", height:"100px"}}>
+                        Your browser does not support the video tag.
+                      </video>
+                    ))}
+                  </div>
                   )}
+              </div>
+              <div className="info-div-items" style={{border:"1px solid rgba(0,0,0,0.2)", padding:"1rem"}}>
+                <p style={{fontSize:"12px", fontWeight:"600"}}>Upload PPT</p>
+                <input 
+                  type="file" 
+                  name="ppt_file" 
+                  accept=".ppt,.pptx" 
+                  onChange={handlePPTFile} 
+                  multiple 
+                />
+                <PPTPreview files={pptFiles} />
               </div>
             </div>
 
@@ -1290,7 +1352,7 @@ const course_creation_infoget = async (e) => {
           required
           id="chapter_title"
           name="chapter_title"
-          label="Chapter title"
+          label="Section Chapter title"
           className="input"
           value={chapter.chapter_title} // Bind value to chapter state
           onChange={(e) =>
@@ -1313,28 +1375,45 @@ const course_creation_infoget = async (e) => {
           }
         />
       </div>
+      <div className="info-div-items">
+        <TextField
+          id="youtube_link"
+          label="Youtube Video Link"
+          name="youtube_link"
+          className="input"
+          value={chapter.youtube_link}
+          onChange={(e) =>
+            setChapter({ ...chapter, youtube_link: e.target.value })
+          }
+        />  
+      </div>
     </div>
   </div>
+  <div style={{display:"flex"}}>
+          <div className="upload-btn-div" style={{marginTop:"1.5rem", marginRight:"1.5rem"}}>
+            <button onClick={addChapter}> Upload Chapter</button>
+          </div>
           <div className="upload-btn-div" style={{marginTop:"1.5rem"}}>
-            <button onClick={addChapter}> <UploadIcon/> Add Chapter</button>
+            <button onClick={addSection}>Add Section</button>
           </div>
-
+  </div>
           <div className="added-chapter">
-             <h6>Course chapters</h6>
-             {
-              course.add_Content.map((item,index)=>
-              (
-                <div className="chapters-title">
-                <p style={{margin:"0px"}}>({index+1})  {item.chapter_title}</p>             
-                 <div className="edit-delete-chapters">
-                   {/* <i class="fa-regular fa-pen-to-square"></i> */}
-                  <i class="fa-regular fa-trash-can" onClick={()=>deletechapter(index)}></i>
-                 </div>
-               </div>
-              ))
-             }
-                    
-          </div>
+          <h6>Course Chapters</h6>
+          {newSection.add_Content && newSection.add_Content.length > 0 ? (
+            newSection.add_Content.map((chap, index) => (
+              <div key={index} className="chapter-item">
+                <p style={{marginBottom:"0px"}}>
+                  <strong>{chap.chapter_title}</strong>: {chap.chapter_description}
+                </p>
+                {/* <button >Delete Chapter</button> */}
+                <i onClick={() => deletechapter(index)} class="fa-regular fa-trash-can"></i>
+              </div>
+            ))
+          ) : (
+            <p>No chapters added yet.</p>
+          )}
+        </div>
+
 
           </div>
 
@@ -1350,24 +1429,40 @@ const course_creation_infoget = async (e) => {
                     <h5 style={{marginBottom: "1.5rem"}}>Add media files</h5>
                     <div className='upload-options' style={{display: "flex", justifyContent: "space-between"}}>
                         <div style={{width: "30%"}}>
-                            <p style={{fontSize: "12px", fontWeight: "600"}}>Thumbnail (548 x 234)</p>
+                            <p style={{fontSize: "12px", fontWeight: "600"}}>Thumbnail</p>
                             <div className="upload-div" style={{marginTop: "1rem"}}>
-                                <input type="file" id='file-upload' name="file-upload" style={{display: "none"}} />
-                                <p><label htmlFor="file-upload"><i class="fa-solid fa-arrow-up-from-bracket"></i></label></p>
+                                <input type="file" id='thumbnail_upload' name="thumbnail_upload" onChange={handledthumbnailUpload} accept="image/*" />
+                                {thumbnail.map((preview, index) => (
+                                  <img
+                                    key={index}
+                                    src={preview}
+                                    alt={`img-preview-${index}`}
+                                    style={{ width: "100%", height: "auto", marginTop: "10px" }}
+                                  />
+                                ))}
+                                {/* <p><label htmlFor="file-upload"><i class="fa-solid fa-arrow-up-from-bracket"></i></label></p> */}
                             </div>
                         </div>
                         <div style={{width: "30%"}}>
                             <p style={{fontSize: "12px", fontWeight: "600"}}>Main course file</p>
                             <div className="upload-div" style={{marginTop: "1rem"}}>
-                                <input type="file" id='file-upload' style={{display: "none"}} />
-                                <p><label htmlFor="file-upload"><i class="fa-solid fa-arrow-up-from-bracket"></i></label></p>
+                                <input type="file" name='file_upload' onChange={handleFileUpload} accept="application/pdf" />
+                                {fileUpload.map((preview, index) => (
+                                  <iframe
+                                    key={index}
+                                    src={preview}
+                                    title={`pdf-preview-${index}`}
+                                    style={{ width: "100%", height: "150px", marginTop: "10px" }}
+                                  ></iframe>
+                                ))}
+                                {/* <p><label htmlFor="file-upload"><i class="fa-solid fa-arrow-up-from-bracket"></i></label></p> */}
                             </div>
                         </div>
                         <div style={{width: "30%"}}>
-                            <p style={{fontSize: "12px", fontWeight: "600"}}>Introduction file</p>
+                            <p style={{fontSize: "12px", fontWeight: "600"}}>Upload video</p>
                             <div className="upload-div" style={{marginTop: "1rem"}}>
-                                <input type="file" id='file-upload' style={{display: "none"}} />
-                                <p><label htmlFor="file-upload"><i class="fa-solid fa-arrow-up-from-bracket"></i></label></p>
+                                <input type="file" id='video_upload' name='video_upload' />
+                                {/* <p><label htmlFor="file-upload"><i class="fa-solid fa-arrow-up-from-bracket"></i></label></p> */}
                             </div>
                         </div>
                     </div>
@@ -1380,39 +1475,7 @@ const course_creation_infoget = async (e) => {
 
         </div>
 
-        {/* <div className='add-new-category' id="add-document-category">
-                    <div className='adding-course-div' style={{width: "100%"}}> 
-                    <h5 style={{marginBottom: "1.5rem"}}>Add Documnet files</h5>
-                    <div className='upload-options' style={{display: "flex", justifyContent: "space-between"}}>
-                        <div style={{width: "30%"}}>
-                            <p style={{fontSize: "12px", fontWeight: "600"}}>PDF file</p>
-                            <div className="upload-div" style={{marginTop: "1rem"}}>
-                                <input type="file" id='file-upload' name="pdf_file" onChange={handlePdfFile} />
-                            </div>
-                        </div>
-                        <div style={{width: "30%"}}>
-                            <p style={{fontSize: "12px", fontWeight: "600"}}>Word file</p>
-                            <div className="upload-div" style={{marginTop: "1rem"}}>
-                                <input type="file" id='file-upload' name="word_file" onChange={handleWordFile} />
-                            </div>
-                        </div>
-                        <div style={{width: "30%"}}>
-                            <p style={{fontSize: "12px", fontWeight: "600"}}>JPG file</p>
-                            <div className="upload-div" style={{marginTop: "1rem"}}>
-                                <input type="file" id='file-upload' name="image_file" onChange={handledocumentpicchange} />
-                            </div>
-                        </div>
-                    </div>
-                       
-                    <div className='content-div' style={{marginTop: "1rem"}}>
-                        <button id='previous-btn' onClick={MediaContainer}> Previous </button>
-                        <button id='next btn' style={{height: "3rem"}} onClick={FinishContainer}>Next</button>
-                    </div>
-                    </div>
-
-        </div> */}
-
-<div className="add-new-category" id="add-document-category">
+    <div className="add-new-category" id="add-document-category">
       <div className="adding-course-div" style={{ width: "100%" }}>
         <h5 style={{ marginBottom: "1.5rem" }}>Add Document Files</h5>
         <div
@@ -1500,7 +1563,7 @@ const course_creation_infoget = async (e) => {
 
         <div className="add-new-category" id="finish_div">
           <div className='adding-course-div' style={{width: "100%"}}> 
-            <button onClick={course_creation_infoget}> <UploadIcon/> Upload Course</button>
+            <button onClick={handleSubmit}> <UploadIcon/> Upload Course</button>
 
             <div className='content-div' style={{marginTop: "2rem"}}>
               <button id='previous-btn' onClick={DocumentContainer}> Previous </button>
@@ -1515,3 +1578,4 @@ const course_creation_infoget = async (e) => {
 }
 
 export default CreateNewCourse;
+

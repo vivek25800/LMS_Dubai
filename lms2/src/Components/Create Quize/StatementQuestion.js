@@ -73,53 +73,55 @@ const StatementQuestion = () => {
 
     return (
         <div>
-            <style>
-                {`
-                .main-container-div {
-                    background-color: #ffffff;
-                    border-radius: 10px;
-                    // border-top: 5px solid #7A1CAC;
-                    width: 100%;
-                    // padding: 2rem;
-                    height: fit-content;
-                }
-                .question-container {
-                    border: 1px solid #ccc;
-                    padding: 15px;
-                    border-radius: 10px;
-                    margin-bottom: 20px;
-                    overflow-x: auto;
-                    max-width: 100%;
-                }
-                .options-container, .statements-container {
-                    display: flex;
-                    gap: 10px;
-                    padding: 10px 0;
-                }
-                .option-box, .statement-box {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    min-width: 100px;
-                }
-                .statement-row {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    gap: 10px;
-                    margin-top: 5px;
-                }
-                .add-statement-btn {
-                    background-color: #7A1CAC;
-                    color: #ffffff;
-                    border: none;
-                    margin-top: 10px;
-                }
-                .add-statement-btn:hover {
-                    background-color: #2E073F;
-                }
-                `}
-            </style>
+
+<style>
+{`
+.main-container-div {
+    background-color: #ffffff;
+    border-radius: 10px;
+    // border-top: 5px solid #7A1CAC;
+    width: 100%;
+    // padding: 2rem;
+    height: fit-content;
+}
+.question-container {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    max-width: 100%;
+}
+.options-container, .statements-container {
+    display: flex;
+    gap: 10px;
+    padding: 10px 0;
+}
+.option-box, .statement-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 100px;
+}
+.statement-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+.add-statement-btn {
+    background-color: #7A1CAC;
+    color: #ffffff;
+    border: none;
+    margin-top: 10px;
+}
+.add-statement-btn:hover {
+    background-color: #2E073F;
+}
+`}
+</style>
+           
             <div className="main-container-div">
                 <div style={{ width: '100%' }}>
                     {questions.map((question, qIndex) => (
@@ -230,3 +232,4 @@ const StatementQuestion = () => {
 };
 
 export default StatementQuestion;
+

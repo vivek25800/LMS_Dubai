@@ -1,17 +1,19 @@
 import React from 'react'
 import SidebarTwo from './SidebarTwo'
 import TopBar from './TopBar'
-import StepsCourse from './StepsCourse'
-import { useLocation } from 'react-router-dom';
-import { logDOM } from '@testing-library/react';
+import { useLocation, useNavigate } from 'react-router-dom';
+
 
 function StartCourse() {
 
     const location = useLocation();
-
+    const navigate = useNavigate(); // Initialize useNavigate
     const { course } = location.state || {};  // Fallback to empty object if no state is passed
+    const chapter=course.add_Content;
 
-    const chapter=course.add_Content
+    const handleStartClick = () => {
+        navigate('/curriculum', { state: { course: { ...course, id: course._id } } });
+    };
 
  console.log(chapter);
  
@@ -148,41 +150,41 @@ function StartCourse() {
                         <div className='upper-content'>
                             <img src ={`${course.image_file}`} />
                             <div className='aboutCourse-div'>
-                                <button>START</button>
+                                <button onClick={handleStartClick} >START</button>
+                                <h5>{course.course_title_main}</h5>
                                 <p>{course.description}</p>
                             </div>
                         </div>
                         <div style={{marginTop:"20px"}}>
                             <h6>Steps:</h6>
                         </div>
-                        {/* <div className='lower-content'>
-                            <StepsCourse/>
-                            <StepsCourse/>
-                            <StepsCourse/>
-                            <StepsCourse/>
-                            <StepsCourse/>
-                            <StepsCourse/>
-                        </div> */}
-                                            <div>
-                      {Array.isArray(chapter) && chapter.length > 0 ? (
-                            course.add_Content.map((item, index) => (
-                                <div className='main-div'>
-                                    <div className='courseImg-div'>
-                                        <video
-                                        controls
-                                        // style={{ height: "250px", width: "100%",marginBottom:"50px" }}  // Set the height and width for the video
-                                        src={item.video_file}
-                                        />
-                                    </div>
-                                    <div className='content-div'>
-                                        <h5 key={index}>{item.chapter_title}</h5>
-                                        <p>{item.chapter_description}</p>
-                                    </div>
-                                </div>
-                            ))
-                            ) : (
-                            <p>No content available</p>
-                            )}
+                    <div>
+                                {Array.isArray(course.sections) && course.sections.length > 0 ? (
+                                        course.sections.map((section, sectionIndex) => (
+                                            <div key={sectionIndex} className='section-div'>
+                                                <h5>{section.section_title}</h5>
+                                                {Array.isArray(section.add_Content) && section.add_Content.length > 0 ? (
+                                                    section.add_Content.map((item, index) => (
+                                                        <div className='main-div' key={index}>
+                                                            <div className='courseImg-div'>
+                                                                {item.video_file.length > 0 && (
+                                                                    <video controls src={item.video_file[0]} />
+                                                                )}
+                                                            </div>
+                                                            <div className='content-div'>
+                                                                <h6>{item.chapter_title}</h6>
+                                                                <p>{item.chapter_description}</p>
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                ) : (
+                                                    <p>No chapters available in this section.</p>
+                                                )}
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p>No sections available.</p>
+                                    )}
 
                             </div>
                       </div>

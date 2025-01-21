@@ -390,16 +390,50 @@ function CreateAssessment() {
     setAssessmentDetails({ ...assessmentDetails, [name]: value });
   };
 
-  const renderQuestionComponent = (type) => {
+  // const renderQuestionComponent = (type) => {
+  //   switch (type) {
+  //     case "MCQ":
+  //       return <QuestionForm />;
+  //     case "Text":
+  //       return <QuestionTextForm />;
+  //     case "Match The Following":
+  //       return <MatchTheFollowingForm />;
+  //     case "Duplicate":
+  //       return <DuplicateAssessment />;
+  //     default:
+  //       return null;
+  //   }
+  // };
+
+  const renderQuestionComponent = (type, sectionId, questionId) => {
+    const handleQuestionChange = (data) => {
+      setSections((prevSections) =>
+        prevSections.map((section) => {
+          if (section.id === sectionId) {
+            return {
+              ...section,
+              questions: section.questions.map((question) => {
+                if (question.id === questionId) {
+                  return { ...question, ...data }; // Update question data
+                }
+                return question;
+              }),
+            };
+          }
+          return section;
+        })
+      );
+    };
+  
     switch (type) {
       case "MCQ":
-        return <QuestionForm />;
+        return <QuestionForm onChange={handleQuestionChange} />;
       case "Text":
-        return <QuestionTextForm />;
+        return <QuestionTextForm onChange={handleQuestionChange} />;
       case "Match The Following":
-        return <MatchTheFollowingForm />;
+        return <MatchTheFollowingForm onChange={handleQuestionChange} />;
       case "Duplicate":
-        return <DuplicateAssessment />;
+        return <DuplicateAssessment onChange={handleQuestionChange} />;
       default:
         return null;
     }
@@ -416,43 +450,8 @@ function CreateAssessment() {
           id: section.id,
           title: document.getElementById(`section-title-${section.id}`)?.value || '',
           subtitle: document.getElementById(`section-subtitle-${section.id}`)?.value || '',
-          questionMCQ: (section.questions || []).filter(q => q.type === 'MCQ').map(q => ({
-            question: q.question,
-            questionImage: q.questionImage || '',
-            options: (q.options || []).map(option => ({
-              text: option.text,
-              correct: option.correct,
-              image: option.image || '',
-            })),
-            mainCategory: q.mainCategory || '',
-            subCategory: q.subCategory || '',
-            points: q.points || 0,
-            multipleAnswers: q.multipleAnswers || false,
-            correctAnswers: q.correctAnswers || [],
-          })),
-          questionText: (section.questions || []).filter(q => q.type === 'Text').map(q => ({
-            question: q.question,
-            questionImage: q.questionImage || '',
-            options: (q.options || []).map(option => ({
-              text: option.text,
-              isCorrect: option.isCorrect || false,
-            })),
-            mainCategory: q.mainCategory || '',
-            subCategory: q.subCategory || '',
-            points: q.points || 0,
-            answerType: q.answerType || '',
-          })),
-          questionMTF: (section.questions || []).filter(q => q.type === 'Match').map(q => ({
-            questions: (q.questions || []).map(mq => ({
-              question: mq.question || '',
-              correctAnswer: mq.correctAnswer || '',
-              points: mq.points || 0,
-            })),
-            mainCategory: q.mainCategory || '',
-            subCategory: q.subCategory || '',
-          })),
+          questions: section.questions, // This now contains the updated question data
         })),
-        
         
       });
       console.log('Assessment saved:', response.data);

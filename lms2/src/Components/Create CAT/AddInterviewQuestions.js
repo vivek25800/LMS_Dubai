@@ -50,17 +50,6 @@ function InterviewQuestionForm({ index, onDelete }) {
           <option value="1-10">1 to 10</option>
         </Form.Control>
       </Form.Group>
-
-      {/* <Form.Group>
-        <Form.Label>Rating (Choose between {ratingRange}):</Form.Label>
-        <Form.Control
-          type="number"
-          min={ratingRange === '1-5' ? 1 : 1}
-          max={ratingRange === '1-5' ? 5 : 10}
-          value={rating}
-          onChange={(e) => setRating(Number(e.target.value))}
-        />
-      </Form.Group> */}
       
       <button onClick={() => onDelete(index)} className="btn btn-danger">
         Delete Question

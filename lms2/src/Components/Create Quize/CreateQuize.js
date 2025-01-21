@@ -314,110 +314,110 @@ function CreateQuize() {
     <div>
       {/* Styles */}
       <style>
-        {`
-          body {
-            background-color: rgba(46, 7, 63, 0.2);
-            padding: 1.5rem;
-          }
-          .header-section {
-            width: 100%;
-            border-radius: 10px;
-            background-color: #ffffff;
-            padding: 1.7rem 2rem;
-          }
-            .section-module{
-             border-top: 5px solid #7A1CAC;
-             width: 70%;
-             margin: 0 auto;
-             margin-top: 1.5rem;
-             border-radius: 10px;
-             background-color: #ffffff;
-             padding: 3rem 6rem;
-             box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
-             }
-          .header-section span i {
-            font-size: 1.5rem;
-            cursor: pointer;
-          }
-          .container {
-            border: 2px solid rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            padding: 1.5rem;
-          }
-          .button-grid {
-            display: grid;
-            grid-template-columns: auto auto auto;
-            column-gap: 1rem;
-            row-gap: 1rem;
-          }
-          .button-grid button {
-            width: 100%;
-            height: 2.5rem;
-            background-color: #ffffff;
-            color: #7A1CAC;
-            border: 1px solid #7A1CAC;
-            font-weight: 500;
-          }
-          .button-grid button:hover {
-            background-color: #7A1CAC;
-            color: #ffffff;
-          }
-          .section {
-            border: 2px solid rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            background-color: #fff;
-            width: 70%;
-            margin: 1.5rem auto;
-            border-top: 5px solid #7A1CAC;
-          }
-          .add-new-button {
-            background-color: #7A1CAC;
-            color: #ffffff;
-            border: none;
-          }
-          .add-new-button:hover {
-            background-color: #2E073F;
-          }
-            .header .input{
-            width: 100%;
-            }
-            .section-title-div{
-            padding: 10px 2rem;
-            background-color: rgba(46, 7, 63, 0.1);
-            display: flex;
-            justify-content: space-between;
-            }
-            .section-contents-div{
-            padding: 2rem 6rem;
-            }
-            .quick-start{
-            border: 1px solid rgba(0,0,0,0.3);
-            padding: 1rem;
-            margin-top: 1rem;
-            border-radius: 10px;
-            }
-            .question-item{
-            border: 1px solid rgba(0,0,0,0.3);
-            border-radius: 10px;
-            margin: 1rem 0;
-            }
-            .question-header{
-            display: flex;
-            justify-content: space-between;
-            padding: 1rem;
-            background-color: #2E073F;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-            }
-            .question-header h5{
-            color: #fff;
-            }
-             .add-new-section-div{
-            width: 70%;
-            margin: 1rem auto;
-            }
-        `}
-      </style>
+{`
+  body {
+    background-color: rgba(46, 7, 63, 0.2);
+    padding: 1.5rem;
+  }
+  .header-section {
+    width: 100%;
+    border-radius: 10px;
+    background-color: #ffffff;
+    padding: 1.7rem 2rem;
+  }
+    .section-module{
+     border-top: 5px solid #7A1CAC;
+     width: 70%;
+     margin: 0 auto;
+     margin-top: 1.5rem;
+     border-radius: 10px;
+     background-color: #ffffff;
+     padding: 3rem 6rem;
+     box-shadow: 0px 0px 10px rgba(0,0,0,0.3);
+     }
+  .header-section span i {
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  .container {
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 1.5rem;
+  }
+  .button-grid {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    column-gap: 1rem;
+    row-gap: 1rem;
+  }
+  .button-grid button {
+    width: 100%;
+    height: 2.5rem;
+    background-color: #ffffff;
+    color: #7A1CAC;
+    border: 1px solid #7A1CAC;
+    font-weight: 500;
+  }
+  .button-grid button:hover {
+    background-color: #7A1CAC;
+    color: #ffffff;
+  }
+  .section {
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    background-color: #fff;
+    width: 70%;
+    margin: 1.5rem auto;
+    border-top: 5px solid #7A1CAC;
+  }
+  .add-new-button {
+    background-color: #7A1CAC;
+    color: #ffffff;
+    border: none;
+  }
+  .add-new-button:hover {
+    background-color: #2E073F;
+  }
+    .header .input{
+    width: 100%;
+    }
+    .section-title-div{
+    padding: 10px 2rem;
+    background-color: rgba(46, 7, 63, 0.1);
+    display: flex;
+    justify-content: space-between;
+    }
+    .section-contents-div{
+    padding: 2rem 6rem;
+    }
+    .quick-start{
+    border: 1px solid rgba(0,0,0,0.3);
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 10px;
+    }
+    .question-item{
+    border: 1px solid rgba(0,0,0,0.3);
+    border-radius: 10px;
+    margin: 1rem 0;
+    }
+    .question-header{
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    background-color: #2E073F;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    }
+    .question-header h5{
+    color: #fff;
+    }
+     .add-new-section-div{
+    width: 70%;
+    margin: 1rem auto;
+    }
+`}
+</style>
 
       {/* Header Section */}
       <div className="header-section">
@@ -549,4 +549,5 @@ function CreateQuize() {
 }
 
 export default CreateQuize;
+
 

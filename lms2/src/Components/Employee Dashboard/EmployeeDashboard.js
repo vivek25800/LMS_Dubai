@@ -1,276 +1,258 @@
-import React from 'react'
-import Sidebar from '../Sidebar'
-import Header from '../Header'
 import '../Student Dashboard/Student Style/StudentDashboard.css';
 import LineOne from "../LineOne";
-import { NavLink, Link, useNavigate } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
+import { NavLink, Link } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap';
+import axios from "axios";
+import { base_url } from "../Utils/base_url";
+import EmployeeSidebar from './EmployeeSidebar';
+import EmployeeHeader from './EmployeeHeader';
+import { Row, Col } from 'react-bootstrap';
+
 
 function EmployeeDashboard() {
 
     const navigate = useNavigate();
 
-    const logOut = () => {
-        toast.warning('You logged out successfully.');
-        setTimeout(() => {
-            navigate('/');
-        }, 2000);
+    const [employeeData, setEmployeeData] = useState(null);
+    const [profileImage, setProfileImage] = useState(null);
+    const [detail, setDetail] = useState({
+        name: '',
+        email: '',
+        designation_title: '',
+        job: '',
+        project: '',
+        password: '',
+        country: '',
+        linkedin: '',
+        x: '',
+        job_experience: '', 
+        employmentType: '', 
+        companyName: '', 
+        startDate: '', 
+        endDate: '',
+        totalExperience: '', 
+        certificateTitle: '', 
+        dateOfCertification: '', 
+        validateTill: '',
+    });
+
+    // Fetch employee data when component mounts
+    useEffect(() => {
+        const fetchEmployeeData = async () => {
+            try {
+                // Get employee email from localStorage (saved during login)
+                const storedEmployee = JSON.parse(localStorage.getItem('employeeData'));
+                if (!storedEmployee) {
+                    navigate('/');
+                    return;
+                }
+
+                // Set employee data in state
+                setEmployeeData(storedEmployee);
+                setDetail({
+                    name: storedEmployee.employee_name || '',
+                    email: storedEmployee.employee_email || '',
+                    designation_title: storedEmployee.designation || '',
+                    job: storedEmployee.job_title || '',
+                    project: storedEmployee.project_name || '',
+                    password: storedEmployee.employee_password || '',
+                    country: storedEmployee.region || '',
+                    linkedin: storedEmployee.linkedin || 'https://www.linkedin.com',
+                    x: storedEmployee.x || 'https://www.twitter.com',
+                    job_experience: storedEmployee.job_experience_title,
+                    employmentType: storedEmployee.employment_type,
+                    companyName: storedEmployee.company_name,
+                    startDate: storedEmployee.start_date,
+                    endDate: storedEmployee.end_date,
+                    totalExperience: storedEmployee.total_experience,
+                    certificateTitle: storedEmployee.certificate_title,
+                    dateOfCertification: storedEmployee.date_of_certification,
+                    validateTill: storedEmployee.validate_till,
+                });
+
+            } catch (error) {
+                console.error('Error fetching employee data:', error);
+                toast.error('Error loading employee data');
+            }
+        };
+
+        fetchEmployeeData();
+    }, [navigate]);
+
+
+    useEffect(() => {
+        const data = localStorage.getItem('employeeData');
+        if (data) {
+          setEmployeeData(JSON.parse(data));
+        } else {
+          navigate('/');
+        }
+      }, []);
+
+      const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const formData = new FormData();
+          formData.append('profileImage', file);
+          
+          try {
+            const resp = await axios.post(`${base_url}/upload-profile-image/${employeeData._id}`, formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            });
+            
+            if (resp.status === 200) {
+              setProfileImage(resp.data.imageUrl);
+              toast.success("Profile image updated");
+            }
+          } catch (error) {
+            toast.error("Failed to upload image");
+          }
+        }
+      };
+
+      const handleProfileUpdate = async () => {
+        try {
+          const resp = await axios.put(`${base_url}/employee_update/${employeeData._id}`, detail);
+          console.log(resp);
+          
+          if (resp.status === 200) {
+            localStorage.setItem('employeeData', JSON.stringify(resp.data.employee));
+            setEmployeeData(resp.data.employee);
+            toast.success("Profile updated successfully", {autoClose: 2000} );
+            handleClose();
+          }
+        } catch (error) {
+          toast.error("Failed to update profile");
+        }
+      };
+
+    //update module
+     const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+    const [bg,setBg] = useState({
+        bgbk:"light",
+        bgbody: "light-mone",
+        bgbox:'lightbox',
+        value:true
+    })
+    
+    const bktoggle =()=> {
+        console.log(bg.bgbody)
+        setBg((prevBg) => ({
+            bgbk: prevBg.bgbk === "light" ? "night" : "light",
+            bgbody: prevBg.bgbody === "light-mone" ? "night-mode" : "light-mone",
+            bgbox: prevBg.bgbox === "lightbox" ? "nightbox" : "lightbox",
+            value: prevBg.value === true ? false:true,
+        }));
     }
-  return (
-    <div style={{backgroundColor: "rgba(46, 7, 63, 0.1)", padding: "20px", height: "100%"}}>
-            <section class="left-Dashboard">
-                <div className="dashboard-list">
-                    <div className="title-div">
-                        <img scr="" />
-                        <h5 onClick={() => window.location.reload()} style={{cursor:"pointer"}}>DASHBOARD </h5>
-                    </div>
-                    <div className="list-options">
-                       <div class="accordion accordion-flush" id="accordionFlushExample">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="flush-headingOne">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                                    Course Category
-                                </button>
-                                </h2>
-                                <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                                <div class="accordion-body">
-                                    <ul>
-                                    <li> <NavLink to={'/AllCourse'}>All Course Category</NavLink> </li>
-                                    <li> <NavLink to={'/createCourse'}>Create Course Category</NavLink> </li>
-                                    </ul>
-                                </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="flush-headingTwo">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                                    Course Manage
-                                </button>
-                                </h2>
-                                <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-                                <div class="accordion-body">
-                                    <ul>
-                                        <li>
-                                            <div class="accordion-item" style={{border: "none"}}>
-                                                <h2 class="accordion-header" id="flush-headingEight">
-                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight" style={{height: "2rem", padding: "5px"}}>
-                                                    Subject
-                                                </button>
-                                                </h2>
-                                                <div id="flush-collapseEight" class="accordion-collapse collapse" aria-labelledby="flush-headingEight" data-bs-parent="#accordionFlushExample">
-                                                <div class="accordion-body">
-                                                    <ul>
-                                                        <li><NavLink to={'/AllSubject'}>All Subject List</NavLink></li>
-                                                        <li><NavLink to={'/createSubject'}>Create New Subject</NavLink></li>
-                                                    </ul>
-                                                </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li style={{padding: "5px"}}> <NavLink to={'/tagCourse'}>Tag</NavLink>  </li>
-                                        <li style={{padding: "5px"}}> <NavLink to={'/labelCourse'}>Label</NavLink> </li>
-                                        <li style={{padding: "5px"}}>
-                                            <div class="accordion-item" style={{border: "none"}}>
-                                                <h2 class="accordion-header" id="flush-headingNine">
-                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseNine" aria-expanded="false" aria-controls="flush-collapseNine" style={{height: "2rem", padding: "5px"}}>
-                                                Course
-                                                </button>
-                                                </h2>
-                                                <div id="flush-collapseNine" class="accordion-collapse collapse" aria-labelledby="flush-headingNine" data-bs-parent="#accordionFlushExample">
-                                                <div class="accordion-body">
-                                                    <ul>
-                                                        <li><NavLink to={'/AllCourseList'}>All Course List</NavLink></li>
-                                                        <li><NavLink to={'/CreateNewCourse'}>Create New Course</NavLink></li>
-                                                        <li>Edit Course</li>
-                                                    </ul>
-                                                </div>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li style={{padding: "5px"}}>Course Bundle</li>
-                                    </ul>
-                                </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="flush-headingThree">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-                                    Notice Board
-                                </button>
-                                </h2>
-                                <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
-                                <div class="accordion-body">
-                                    <ul>
-                                        <li> <NavLink to={'/Allnotice'}>All Notice</NavLink> </li>
-                                        <li> <NavLink to={'/addnotice'}>Create Notice</NavLink> </li>
-                                    </ul>
-                                </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="flush-headingFour">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour">
-                                    Users List
-                                </button>
-                                </h2>
-                                <div id="flush-collapseFour" class="accordion-collapse collapse" aria-labelledby="flush-headingFour" data-bs-parent="#accordionFlushExample">
-                                <div class="accordion-body">
-                                    <ul>
-                                        <li> <NavLink to={'/AllEmployeList'}>Employee's List</NavLink> </li>
-                                        <li> <NavLink to={'/AllStudentList'}>Student's List</NavLink> </li>
-                                    </ul>
-                                </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="flush-headingFive">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive">
-                                    Instructor Manage
-                                </button>
-                                </h2>
-                                <div id="flush-collapseFive" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
-                                <div class="accordion-body">
-                                    <ul>
-                                        <li>Instructor lsit</li>
-                                        <li>Create Instructor</li>
-                                    </ul>
-                                </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="flush-headingSix">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSix" aria-expanded="false" aria-controls="flush-collapseSix">
-                                    Testimonial
-                                </button>
-                                </h2>
-                                <div id="flush-collapseSix" class="accordion-collapse collapse" aria-labelledby="flush-headingSix" data-bs-parent="#accordionFlushExample">
-                                <div class="accordion-body">
-                                    <ul>
-                                        <li>List</li>
-                                        <li>Create new</li>
-                                    </ul>
-                                </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="flush-headingSeven">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSeven" aria-expanded="false" aria-controls="flush-collapseSeven">
-                                    Blog Manage
-                                </button>
-                                </h2>
-                                <div id="flush-collapseSeven" class="accordion-collapse collapse" aria-labelledby="flush-headingSeven" data-bs-parent="#accordionFlushExample">
-                                <div class="accordion-body">
-                                    <ul>
-                                        <li>Blogs</li>
-                                        <li>Blog Category</li>
-                                        <li>Create Blog</li>
-                                    </ul>
-                                </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="flush-headingEight">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseEight" aria-expanded="false" aria-controls="flush-collapseEight">
-                                    Authentication
-                                </button>
-                                </h2>
-                                <div id="flush-collapseEight" class="accordion-collapse collapse" aria-labelledby="flush-headingEight" data-bs-parent="#accordionFlushExample">
-                                <div class="accordion-body">
-                                    <ul>
-                                        <li>Sign up</li>
-                                        <li>Sign in</li>
-                                        <li>Two step</li>
-                                        <li>Forgot Password</li>
-                                        <li>New Password</li>
-                                    </ul>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div className="logout-section">
-                        <button onClick={logOut}>Log out <i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+    // Profile section JSX updated to use dynamic data
+    const renderProfileSection = () => (
+        <div className="profile-section">
+            <div className={`main-profile-div ${bg.bgbk}`}>
+                <div className="profile-image-div">
+                    <div className="upper-image">
+                        <img src="https://template.codexshaper.com/admin/lms-hub/assets/images/profile/cover.png" alt="cover" />
+                    </div>
+                    <div className="profile-picture">
+                        <div className="profile-pic"> 
+                            <img 
+                                src={employeeData?.profileImage || "bat.jpg"} 
+                                id="output" 
+                                width="200" 
+                                alt="profile"
+                            />
+                        </div>
                     </div>
                 </div>
-            </section>   
-            <section className="main-content-section">
-
-
-                <Header />
-
-                <div className='header-div header-two'>
-                    <div className='title-name'>
-                        <h5>Employee</h5>
-                        <p><a href="#">Home</a> <i class="fa-solid fa-caret-right"></i> Employee Dashboard</p>
-                    </div>
+                <div className="info-div">
+                    <h4 className={`info-text ${bg.bgbk}`}>
+                        {employeeData?.employee_name || 'Employee Name'}
+                    </h4>
+                    <h6 className={`info-text1 ${bg.bgbk}`}>
+                        {employeeData?.employee_id || 'Employee ID'}
+                    </h6>
+                    <p style={{fontSize: "14px", marginBottom: "5px"}}>
+                        {employeeData?.job_title || 'Job Title'}
+                    </p>
                 </div>
-
-                <div className="profile-section">
-                    <div className="main-profile-div">
-                        <div className="profile-image-div">
-                            <div className="upper-image">
-                                <img src="https://template.codexshaper.com/admin/lms-hub/assets/images/profile/cover.png" />
-                            </div>
-                            <div className="profile-picture">
-                                <div class="profile-pic"> 
-                                    <input id="file" type="file"/>
-                                    <img src="bat.jpg" id="output" width="200" />
-                                    <label class="-label" for="file">
-                                        <span> <i class="fa-solid fa-camera"></i></span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="info-div">
-                            <h4 style={{color: "#170a7c", fontWeight: "600"}}>Vivek Gupta</h4>
-                            <h6 style={{color: "#170a7c", fontSize: "15px"}}>Don't Care Everybody's Word</h6>
-                            <p style={{fontSize: "14px", marginBottom: "5px"}}>UI/UX - Student st Edutech</p>
-                        </div>
-                        <div className="about-div">
-                            <h6 style={{fontSize: "18px"}}>About</h6>
-                            <p style={{color: "#170a7c", marginBottom: "5px" }}> <span style={{marginRight: "10px"}}><i class="fa-solid fa-house"></i></span> Lives in Sector 63, Noida</p>
-                            <p style={{color: "#170a7c", marginBottom: "5px"}}> <span style={{marginRight: "10px"}}><i class="fa-solid fa-briefcase"></i></span> Works at LnBird</p>
-                        </div>
-                        <div className="about-div" style={{marginTop: "2rem"}}>
-                            <h6 style={{fontSize: "18px"}}>Social</h6>
-                            <p style={{color: "#170a7c", marginBottom: "5px" }}> <span style={{marginRight: "10px"}}><i class="fa-brands fa-linkedin"></i></span> Linkedin</p>
-                            <p style={{color: "#170a7c", marginBottom: "5px"}}> <span style={{marginRight: "10px"}}><i class="fa-brands fa-twitter"></i></span> Twitter</p>
-                        </div>
-                    </div>
-                    <div className="profile-content-div">
-                        <div className="multiple-divs-option">
-                            <div className="item-div">
+                <div className="about-div">
+                    <h6 style={{fontSize: "18px"}}>About</h6>
+                    <p className={`about-text ${bg.bgbk}`}>
+                        <span style={{marginRight: "10px"}}>
+                            <i className="fa-solid fa-briefcase"></i>
+                        </span>
+                        {employeeData?.job_title || 'Designation'}
+                    </p>
+                    <p className={`about-text ${bg.bgbk}`}>
+                        <span style={{marginRight: "10px"}}>
+                            <i className="fa-solid fa-earth-americas"></i>
+                        </span>
+                        {employeeData?.region || 'Region'}
+                    </p>
+                </div>
+                <div className="about-div" style={{marginTop: "2rem"}}>
+                    <h6 style={{fontSize: "18px"}}>Social</h6>
+                    <NavLink to={detail.linkedin}>
+                        <p style={{color: "#170a7c", marginBottom: "5px"}}>
+                            <span style={{marginRight: "10px"}}>
+                                <i className="fa-brands fa-linkedin"></i>
+                            </span> 
+                            LinkedIn
+                        </p>
+                    </NavLink> 
+                    <NavLink to={detail.x}>
+                        <p style={{color: "#170a7c", marginBottom: "5px"}}>
+                            <span style={{marginRight: "10px"}}>
+                                <i className="fa-brands fa-twitter"></i>
+                            </span> 
+                            Twitter
+                        </p>
+                    </NavLink>
+                </div>
+            </div>
+            {/* Rest of your dashboard content */}
+            <div className={`profile-content-div ${bg.bgbk}`}>
+                <div className="multiple-divs-option">
+                            <div className={`item-div ${bg.bgbox}`}>
                              <div className="item-content-div">
                                 <span><img src="11675536.png" /></span>
                                 <p>Course in <br /> progress</p>
                                 <h2>09</h2>
                              </div>
                             </div>
-                            <div className="item-div">
+                            <div className={`item-div ${bg.bgbox}`}>
                                 <div className="item-content-div">
                                     <span><img src="13409643.png" /></span>
                                     <p>Completed <br /> courses</p>
                                     <h2>07</h2>
                                 </div> 
                             </div>
-                            <div className="item-div">
+                            <div className={`item-div ${bg.bgbox}`}>
                                 <div className="item-content-div">
                                     <span><img src="11675606.png" /></span>
                                     <p>Course <br /> purchased</p>
                                     <h2>11</h2>
                                 </div> 
                             </div>
-                            <div className="item-div">
+                            <div className={`item-div ${bg.bgbox}`}>
                                 <div className="item-content-div">
                                     <span><img src="13072683.png" /></span>
                                     <p>Certificate</p>
                                     <h2>03</h2>
                                 </div> 
                             </div>
-                        </div>
+                </div>
 
-                        <div className="average-learning">
+                        <div className={`average-learning ${bg.bgbox}`}>
                             <div className="heading-average-div">
                                 <h4>Average Learning</h4>
                                 <div className="duration-div">
@@ -286,11 +268,354 @@ function EmployeeDashboard() {
                             </div>
                         </div>
                     </div>
+        </div>
+    );
+
+    return ( 
+        <div>
+
+            <style>
+                {
+                    `
+                    .add-experience-div, .add-certificate-div {
+                    border: 1px solid rgba(0,0,0,0.2);
+                    padding: 1.5rem;
+                    border-radius: 5px;
+                    margin-bottom: 1rem;
+                    }
+                    .add-btn button{
+                    background-color: #7A1CAC;
+                    border-radius: 5px;
+                    margin-bottom: 1rem;
+                    }
+                    .add-btn button:hover{
+                    background-color: #2E073F;
+                    }
+                    `
+                }
+            </style>
+        <div  className={bg.bgbody} >
+            <EmployeeSidebar/>
+
+            <section className="main-content-section">
+                <EmployeeHeader />
+
+                <div className={`header-div header-two ${bg.bgbk}`} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    {/* Left Section */}
+                    <div className='title-name'>
+                    <h5>Employee Dashboard</h5>
+                    <p>
+                        <a onClick={() => window.location.reload()} style={{ cursor: "pointer", color: "#099ded" }}>Home</a> 
+                        <i className="fa-solid fa-caret-right" style={{ margin: '0 5px' }}></i> 
+                        Employee Dashboard
+                    </p>
+                    </div>
+
+                    {/* Right Section */}
+                    <div>
+                        {/* Update Button */}
+                        <button
+                            className="btn btn-lg p-2"
+                            type="button"
+                            style={{
+                            backgroundColor: '#2C073C',
+                            color: 'white',
+                            borderColor: '#4B0082',
+                            padding: '12px 24px',
+                            fontSize: '14px',
+                            borderRadius: '5px',
+                            cursor: 'pointer',
+                            }}
+                            onClick={handleShow}
+                        >
+                            Update Profile
+                        </button>
+
+                        {/* Modal */}
+                        <Modal show={show} onHide={handleClose} size="xl">
+                            <Modal.Header closeButton>
+                            <Modal.Title>Update Details</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                            <Form>
+                                <Row className="mb-3">
+                                {/* Image Upload */}
+                                <Col md={6}>
+                                    <Form.Group controlId="formImage">
+                                    <Form.Label>Profile Image</Form.Label>
+                                    <Form.Control type="file" onChange={handleImageUpload} />
+                                    </Form.Group>
+                                </Col>
+                                </Row>
+
+                                <Row className="mb-3">
+                                {/* Name Input */}
+                                <Col md={6}>
+                                    <Form.Group controlId="formName">
+                                    <Form.Label>Name</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter your name"
+                                        defaultValue={detail.name}
+                                        onChange={(e) => setDetail({ ...detail, employee_name: e.target.value })}
+                                    />
+                                    </Form.Group>
+                                </Col>
+
+                                {/* Email Input */}
+                                <Col md={6}>
+                                    <Form.Group controlId="formEmail">
+                                    <Form.Label>Email Address</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter your address"
+                                        defaultValue={detail.email}
+                                        onChange={(e) => setDetail({ ...detail, employee_email: e.target.value })}
+                                    />
+                                    </Form.Group>
+                                </Col>
+                                </Row>
+
+                                <Row className="mb-3">
+                                {/* Designation */}
+                                <Col md={6}>
+                                    <Form.Group controlId="formDesignation">
+                                    <Form.Label>Designation</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter your designation"
+                                        defaultValue={detail.designation_title}
+                                        onChange={(e) => setDetail({ ...detail, designation: e.target.value })}
+                                    />
+                                    </Form.Group>
+                                </Col>
+
+                                {/* Job Title */}
+                                <Col md={6}>
+                                    <Form.Group controlId="formJobTitle">
+                                    <Form.Label>Job Title</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter your job title"
+                                        defaultValue={detail.job}
+                                        onChange={(e) => setDetail({ ...detail, job_title: e.target.value })}
+                                    />
+                                    </Form.Group>
+                                </Col>
+                                </Row>
+
+                                <Row className="mb-3">
+                                {/* Project Name */}
+                                <Col md={6}>
+                                    <Form.Group controlId="formProject">
+                                    <Form.Label>Project Name</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter your project name"
+                                        defaultValue={detail.project}
+                                        onChange={(e) => setDetail({ ...detail, project_name: e.target.value })}
+                                    />
+                                    </Form.Group>
+                                </Col>
+
+                                {/* Password */}
+                                <Col md={6}>
+                                    <Form.Group controlId="formPassword">
+                                    <Form.Label>Password</Form.Label>
+                                    <Form.Control
+                                        type="password"
+                                        placeholder="Enter your password"
+                                        defaultValue={detail.password}
+                                        onChange={(e) => setDetail({ ...detail, employee_password: e.target.value })}
+                                    />
+                                    </Form.Group>
+                                </Col>
+                                </Row>
+
+                                <Row className="mb-3">
+                                {/* Linkedin */}
+                                <Col md={6}>
+                                    <Form.Group controlId="formLinkedin">
+                                    <Form.Label>LinkedIn</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter your LinkedIn link"
+                                        defaultValue={detail.linkedin}
+                                        onChange={(e) => setDetail({ ...detail, linkedin: e.target.value })}
+                                    />
+                                    </Form.Group>
+                                </Col>
+
+                                {/* Twitter */}
+                                <Col md={6}>
+                                    <Form.Group controlId="formTwitter">
+                                    <Form.Label>Twitter</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Enter your X link"
+                                        defaultValue={detail.x}
+                                        onChange={(e) => setDetail({ ...detail, x: e.target.value })}
+                                    />
+                                    </Form.Group>
+                                </Col>
+                                </Row>
+
+                                <div className="add-experience-div">
+                                    <h6>Add Experience</h6>
+                                    <Row className="mb-3">
+                                        <Col md={6}>
+                                        <Form.Group controlId="formExperienceJobTitle">
+                                            <Form.Label>Job Title</Form.Label>
+                                            <Form.Control 
+                                                type="text" 
+                                                placeholder="Enter job title" 
+                                                defaultValue={detail.job_experience}
+                                                onChange={(e) => setDetail({...detail, job_experience_title: e.target.value})}
+                                            />
+                                        </Form.Group>
+                                        </Col>
+
+                                        <Col md={6}>
+                                        <Form.Group controlId="formEmploymentType">
+                                            <Form.Label>Employment Type</Form.Label>
+                                            <Form.Control 
+                                                type="text" 
+                                                placeholder="Enter your employment type" 
+                                                defaultValue={detail.employmentType}
+                                                onChange={(e) => setDetail({...detail, employment_type: e.target.value})}
+                                            />
+                                        </Form.Group>
+                                        </Col>
+                                    </Row>
+
+                                    <Row className="mb-3">
+                                        <Col md={6}>
+                                        <Form.Group controlId="formCompany">
+                                            <Form.Label>Company or Organization</Form.Label>
+                                            <Form.Control 
+                                                type="text" 
+                                                placeholder="Enter company or organization name"
+                                                defaultValue={detail.companyName}
+                                                onChange={(e) => setDetail({...detail, company_name: e.target.value})} 
+                                            />
+                                        </Form.Group>
+                                        </Col>
+
+                                        <Col md={3}>
+                                        <Form.Group controlId="formStartDate">
+                                            <Form.Label>Start Date</Form.Label>
+                                            <Form.Control 
+                                                type="date"
+                                                defaultValue={detail.startDate}
+                                                onChange={(e) => setDetail({...detail, start_date: e.target.value})} 
+                                            />
+                                        </Form.Group>
+                                        </Col>
+
+                                        <Col md={3}>
+                                        <Form.Group controlId="formEndDate">
+                                            <Form.Label>End Date</Form.Label>
+                                            <Form.Control 
+                                                type="date"
+                                                defaultValue={detail.endDate}
+                                                onChange={(e) => setDetail({...detail, end_date: e.target.value})} 
+                                            />
+                                        </Form.Group>
+                                        </Col>
+                                    </Row>
+
+                                    <Row className="mb-3">
+                                        <Col md={6}>
+                                        <Form.Group controlId="formExperienceYears">
+                                            <Form.Label>Total Years of Experience</Form.Label>
+                                            <Form.Control 
+                                                type="number" 
+                                                placeholder="Enter your years of experience"
+                                                defaultValue={detail.totalExperience}
+                                                onChange={(e) => setDetail({...detail, total_experience: e.target.value})} 
+                                            />
+                                        </Form.Group>
+                                        </Col>
+                                    </Row>
+                                </div>
+                                <div className='add-more-experience-button add-btn'>
+                                    <button>Add more experience</button>
+                                </div>
+
+                                <div className="add-certificate-div">
+                                <h6>Add Certificate</h6>
+                                <Row className="mb-3">
+                                    <Col md={6}>
+                                    <Form.Group controlId="formCertificateTitle">
+                                        <Form.Label>Certificate</Form.Label>
+                                        <Form.Control 
+                                            type="text" 
+                                            placeholder="Enter certificate title"
+                                            defaultValue={detail.certificateTitle}
+                                            onChange={(e) => setDetail({...detail, certificate_title: e.target.value})} 
+                                        />
+                                    </Form.Group>
+                                    </Col>
+
+                                    <Col md={3}>
+                                    <Form.Group controlId="formCertificationDate">
+                                        <Form.Label>Date of Certification</Form.Label>
+                                        <Form.Control 
+                                            type="date"
+                                            defaultValue={detail.dateOfCertification}
+                                            onChange={(e) => setDetail({...detail, date_of_certification: e.target.value})} 
+                                        />
+                                    </Form.Group>
+                                    </Col>
+
+                                    <Col md={3}>
+                                    <Form.Group controlId="formValidateTill">
+                                        <Form.Label>Validate Till</Form.Label>
+                                        <Form.Control 
+                                            type="date"
+                                            defaultValue={detail.validateTill}
+                                            onChange={(e) => setDetail({...detail, validate_till: e.target.value})} 
+                                        />
+                                    </Form.Group>
+                                    </Col>
+                                </Row>
+                                </div>
+                                <div className='add-more-certificate-button add-btn'>
+                                    <button>Add more certificate</button>
+                                </div>
+                                
+                            </Form>
+                            </Modal.Body>
+
+                            <Modal.Footer>
+                            <Button variant="secondary" onClick={handleClose}>
+                                Close
+                            </Button>
+                            <Button  onClick={handleProfileUpdate}
+                                style={{
+                                    backgroundColor: '#2C073C',
+                                    color: 'white',
+                                    borderColor: '#4B0082',
+                                    padding: '12px 24px',
+                                    fontSize: '14px',
+                                    borderRadius: '5px',
+                                    cursor: 'pointer',
+                                }}
+                                
+                                >
+                                Save Changes
+                            </Button>
+                            </Modal.Footer>
+                        </Modal>
+                    </div>
                 </div>
+
+            {employeeData ? renderProfileSection() : <p>Loading...</p>}
             </section>
             <ToastContainer/>
         </div>
-  )
+        </div>
+     );
 }
 
-export default EmployeeDashboard
+export default EmployeeDashboard;

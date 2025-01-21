@@ -182,13 +182,17 @@ console.log(course);
             <CardContent>
               <Typography variant="h6" component="div">
                 {item.course_title_main}
-              </Typography>
+              </Typography>        
             </CardContent>
             <CardActions>
               <Button variant="contained" color="primary" size="small" className='start-btn'>
               <NavLink to="/startCourse" state={{ course: item }}>Start</NavLink>
               </Button>
-              <IconButton aria-label="share">
+
+              <Typography variant="p" component="div">
+                Price: {item.course_price}
+              </Typography>
+              {/* <IconButton aria-label="share">
                 <ShareIcon />
               </IconButton>
               <IconButton aria-label="bookmark">
@@ -196,7 +200,7 @@ console.log(course);
               </IconButton>
               <IconButton aria-label="more">
                 <MoreVertIcon />
-              </IconButton>
+              </IconButton> */}
             </CardActions>
           </Card>
         </Box>

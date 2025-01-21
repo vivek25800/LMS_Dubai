@@ -13,7 +13,21 @@ const employee_register = new mongoose.Schema({
     project_manger:{type:String},
     employee_id_two:{type:String},
     name:{type:String},
-    designation:{type:String}
+    designation:{type:String},
+
+    // Add Experience
+    job_experience_title: {type:String},
+    employment_type: {type:String},
+    company_name: {type:String},
+    start_date: {type:String},
+    end_date: {type:String},
+    total_experience: {type:Number},
+
+    // Add Certificate
+    certificate_title: {type:String},
+    date_of_certification: {type:String},
+    validate_till: {type:String},
+
 });
 
 const register_modal = mongoose.model('employee-info', employee_register);

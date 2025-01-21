@@ -187,6 +187,36 @@ ul li {
                 </button>
               </div>
               <div className='dash-options'>
+              <EditNoteIcon/>
+                <button className='dropdown-toggle-button menu-btn'> 
+                <MenuItem label="Take Survey" link="/takeQuizeList" />
+                </button>
+              </div>
+              <div className='dash-options'>
+              <EditNoteIcon/>
+                <button className='dropdown-toggle-button menu-btn'> 
+                <MenuItem label="Assign Assessment" link="/assignAssessment" />
+                </button>
+              </div>
+              <div className='dash-options'>
+              <EditNoteIcon/>
+                <button className='dropdown-toggle-button menu-btn'> 
+                <MenuItem label="Assign CAT" link="/assignCAT" />
+                </button>
+              </div>
+              <div className='dash-options'>
+              <EditNoteIcon/>
+                <button className='dropdown-toggle-button menu-btn'> 
+                <MenuItem label="Assign Quize" link="/assignQuize" />
+                </button>
+              </div>
+              <div className='dash-options'>
+              <EditNoteIcon/>
+                <button className='dropdown-toggle-button menu-btn'> 
+                <MenuItem label="Assign Training" link="/assignTraining" />
+                </button>
+              </div>
+              <div className='dash-options'>
               <Assessment/>
                 <button className='dropdown-toggle-button menu-btn'> 
                 <MenuItem label="Create CAT" link="/createcat" />
@@ -196,6 +226,24 @@ ul li {
                 <EditNoteIcon/>
                 <button className='dropdown-toggle-button menu-btn'> 
                 <MenuItem label="Conduct CAT" link="/conductcat" />
+                </button>
+              </div>
+              <div className='dash-options'>
+                <EditNoteIcon/>
+                <button className='dropdown-toggle-button menu-btn'> 
+                <MenuItem label="Conduct Interview CAT" link="/conductInterviewCAT" />
+                </button>
+              </div>
+              <div className='dash-options'>
+                <EditNoteIcon/>
+                <button className='dropdown-toggle-button menu-btn'> 
+                <MenuItem label="CAT Result" link="/showCATResult" />
+                </button>
+              </div>
+              <div className='dash-options'>
+                <EditNoteIcon/>
+                <button className='dropdown-toggle-button menu-btn'> 
+                <MenuItem label="Upload Excel File" link="/excelComponent" />
                 </button>
               </div>
               <div className='dash-options'>
@@ -253,3 +301,4 @@ ul li {
 }
 
 export default Sidebar;
+

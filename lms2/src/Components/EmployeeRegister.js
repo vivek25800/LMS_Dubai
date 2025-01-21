@@ -13,21 +13,58 @@ function EmployeeRegister() {
     const[employee, setemployee] = useState({employee_id:"", employee_name:"",employee_email:"",employee_password:"", job_title:"", date_of_join:"", project_code:"",
         project_name:"", region:"", project_manger:"", employee_id_two:"", name:"", designation:""})
 
-    const employee_Infoget = async () => {
-        try {
-            const resp = await axios.post(`${base_url}/employee_registration`, employee);
-            if(resp.status===200)
-            {
-                toast.success("Employee registered successfull")
+        const employee_Infoget = async () => {
+            try {
+              // Basic validation
+              if (!employee.employee_email || !employee.employee_password) {
+                toast.error("Email and password are required");
+                return;
+              }
+        
+              const resp = await axios.post(`${base_url}/employee_registration`, employee);
+              if (resp.status === 200) {
+                // Store user data in localStorage
+                localStorage.setItem('employeeData', JSON.stringify(resp.data.employee));
+                toast.success("Employee registered successfully");
                 setTimeout(() => {
-                    navigate('/')
+                  navigate('/');
                 }, 2000);
+              }
+            } catch (error) {
+              if (error.response) {
+                toast.error(error.response.data.message || "Registration failed");
+              } else {
+                toast.error("Network error occurred");
+              }
             }
-            
-        } catch (error) {
-            console.log(error);
-        }
+          };
+
+          // Add Google Sign In
+  const handleGoogleSignIn = async () => {
+    try {
+      const googleAuth = await window.gapi.auth2.getAuthInstance();
+      const googleUser = await googleAuth.signIn();
+      const profile = googleUser.getBasicProfile();
+      
+      const googleEmployee = {
+        employee_name: profile.getName(),
+        employee_email: profile.getEmail(),
+        employee_password: '', // Generate a secure random password
+        job_title: '',
+        // ... other fields with default values
+      };
+
+      const resp = await axios.post(`${base_url}/employee_registration`, googleEmployee);
+      if (resp.status === 200) {
+        localStorage.setItem('employeeData', JSON.stringify(resp.data.employee));
+        toast.success("Google sign-in successful");
+        navigate('/');
+      }
+    } catch (error) {
+      toast.error("Google sign-in failed");
     }
+  };
+
     const handltypechange=()=>
     {
         const type=document.getElementById("registrationtype").value
@@ -180,6 +217,8 @@ function EmployeeRegister() {
                                         <input type="text" name="designation" id="designation" placeholder='Enter designation' onChange={(e) => {setemployee({...employee, designation:e.target.value})}}  />
                                     </div>
                                 </div>
+
+                                <button onClick={handleGoogleSignIn}>Sign in with Google</button>
                             </div>
 
                             <div id='bulkregistration' style={{border:"1px solid black",padding:"20px",margin:"10px",borderRadius:"10px",display:"none"}}>

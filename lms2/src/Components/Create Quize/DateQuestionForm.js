@@ -47,50 +47,54 @@ const DateQuestionForm = () => {
           </div>
         </div>
       ))}
-      <style jsx>{`
-        .date-question-form {
-          max-width: 100%;
-          margin: auto;
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
-          border-radius: 10px;
-        }
-        .question-box {
-          border: 1px solid #ddd;
-          border-top: 5px solid #7A1CAC;
-          padding: 1rem;
-          border-radius: 10px;
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-          position: relative;
-          background-color: #ffffff;
-        }
-        .question-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-        .question-input, .answer-input {
-          padding: 0.5rem;
-          font-size: 1rem;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-        }
-        .date-answer {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-        }
-        @media (max-width: 600px) {
-          .date-question-form {
-            padding: 0.5rem;
-          }
-        }
-      `}</style>
+     <style jsx>{`
+  .date-question-form {
+    max-width: 100%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    border-radius: 10px;
+  }
+  .question-box {
+    border: 1px solid #ddd;
+    border-top: 5px solid #7A1CAC;
+    padding: 1rem;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: relative;
+    background-color: #ffffff;
+  }
+  .question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .question-input, .answer-input {
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .date-answer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  @media (max-width: 600px) {
+    .date-question-form {
+      padding: 0.5rem;
+    }
+  }
+`}</style>
     </div>
   );
 };
 
 export default DateQuestionForm;
+
+
+
+

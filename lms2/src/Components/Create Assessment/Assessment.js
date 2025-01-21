@@ -815,13 +815,14 @@ function Assessment() {
 
                     <div className='assessment-related'>
                         <div className='create-assessment'>
-                            <h6> <NavLink to={'/createAssessment'}>Create Assessment</NavLink></h6>
+                            <h6> <NavLink to={'/dataAssessment'}>Create Assessment</NavLink></h6>
                         </div>
                         <div className='create-quize'>
-                            <h6> <NavLink to={'/createQuize'}>Create Survey</NavLink> </h6>
+                            <h6> <NavLink to={'/uploadQuiz'}>Create Survey</NavLink> </h6>
                         </div>
                         <div className='quick-import'>
-                            <h6>Quick Import</h6>
+                            
+                            <NavLink to={'/excelUploadView'}><h6>Quick Import</h6></NavLink>
                         </div>
                     </div>
                 </section>
